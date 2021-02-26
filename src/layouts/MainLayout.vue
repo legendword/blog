@@ -23,13 +23,13 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/post/1" exact>
+          <q-item clickable v-ripple to="/user/1" exact>
             <q-item-section avatar>
               <q-icon name="send" />
             </q-item-section>
 
             <q-item-section>
-              Test Post
+              Test User
             </q-item-section>
           </q-item>
 
@@ -48,11 +48,11 @@
         <q-avatar size="56px" class="q-mb-sm">
           <!-- <img src="https://cdn.quasar.dev/img/boy-avatar.png"> -->
         </q-avatar>
-        <div v-if="isLoggedIn">
-          <div class="text-weight-medium text-center">{{ user.username }}</div>
-          <div class="absolute-bottom q-mb-sm text-center"><q-btn flat color="primary" label="Sign Out" @click="signOut" /></div>
+        <div v-if="isLoggedIn" class="drawerUserInfo">
+          <div key="username" class="text-weight-medium text-center">{{ user.username }}</div>
+          <div key="useraction" class="absolute-bottom q-mb-sm text-center"><q-btn flat color="primary" label="Sign Out" @click="signOut" /></div>
         </div>
-        <div v-else>
+        <div v-else class="drawerUserInfo">
           <div class="text-weight-medium text-center">Not Signed In</div>
           <div class="absolute-bottom q-mb-sm text-center"><q-btn flat color="primary" label="Sign In" @click="signIn" /></div>
         </div>
@@ -86,7 +86,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { signOut, userInfo } from '../api'
+import api from '../api'
 import LogIn from '../components/LogIn'
 export default {
   components: {
@@ -108,7 +108,7 @@ export default {
       this.logInDialog = true
     },
     signOut() {
-      signOut().then(res => {
+      api('signout').then(res => {
         if (res.data.error) {
           this.$q.notify({
             color: 'negative',
@@ -137,27 +137,37 @@ export default {
     toggleDrawer() {
       console.log('toggle')
       this.leftDrawer = !this.leftDrawer
+    },
+    setData(r) {
+      if (r.error) {}
+      else if (r.isLoggedIn == true) {
+        this.$store.commit('userLogIn', r.user)
+      }
     }
   },
   watch: {
     miniDrawerMode: 'drawerMouseOut'
   },
-  mounted() {
-    userInfo().then(res => {
-      let r = res.data
-      console.log(r);
-      if (r.error) {}
-      else if (r.isLoggedIn == true) {
-        this.$store.commit('userLogIn', r.user)
-      }
+  beforeRouteEnter (to, from, next) {
+    api('userinfo').then(res => {
+      next(vm => vm.setData(res.data))
     })
   }
+  //don't need beforeRouteUpdate because userInfo needs only be fetched once
 }
 </script>
 
 <style scoped>
 .userDrawer {
   height: 130px;
+}
+.drawerUserInfo {
+  opacity: 1;
+  transition: opacity 300ms;
+}
+.q-drawer--mini .drawerUserInfo {
+  display: none;
+  opacity: 0;
 }
 /*
 .menu-list .q-item {

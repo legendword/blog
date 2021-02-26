@@ -1,17 +1,17 @@
 <template>
   <q-page class="q-px-xl q-pb-xl">
-    <h4 class="q-mb-sm">Featured</h4>
+    <h4 class="q-mb-sm">All Posts</h4>
     <div class="row q-col-gutter-md">
-      <q-intersection transition="fade" class="col-12 wideCard" v-for="item in featuredList" :key="item.id">
+      <q-intersection transition="fade" class="col-12 wideCard" v-for="item in postList" :key="item.postId">
         <router-link :to="'/post/'+item.postId" class="noLinkStyle">
           <q-card class="post-card">
             <q-card-section>
               <div class="text-h6 post-card-title">{{ item.title }}</div>
-              <div class="text-subtitle2">by {{ item.author }}</div>
+              <div class="text-subtitle2">by <router-link :to="'/author/'+item.authorId" class="noLinkStyle">{{ item.authorName }}</router-link></div>
             </q-card-section>
 
             <q-card-section class="q-pt-none">
-              {{ item.contentPreview }}
+              {{ previewContent(item.content) }}
             </q-card-section>
           </q-card>
         </router-link>
@@ -50,20 +50,34 @@
 </template>
 
 <script>
+import api from '../api'
 export default {
   name: 'PageIndex',
   data() {
     return {
-      featuredList: [
-        {
-          id: 1,
-          postId: 1,
-          title: 'Sample Post',
-          contentPreview: 'Post Content..... Content Test',
-          author: 'Legendword'
-        }
-      ]
+      postList: []
     }
+  },
+  methods: {
+    previewContent(str) {
+      return str ? str.replace(/[#_:=]/ig,'').trim() : ''
+    }
+  },
+  mounted() {
+    api('listpost').then(res => {
+      let r = res.data
+      if (r.error) {
+        this.$q.notify({
+          color: 'negative',
+          message: r.msg,
+          position: 'top',
+          timeout: 2000
+        })
+      }
+      else if (r.success) {
+        this.postList = r.posts
+      }
+    })
   }
 }
 </script>

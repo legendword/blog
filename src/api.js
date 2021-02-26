@@ -8,3 +8,5 @@ export const signUp = params => axios.post(`${base}/backend/signup.php`, JSON.st
 export const signIn = params => axios.post(`${base}/backend/signin.php`, JSON.stringify(params));
 export const signOut = params => axios.post(`${base}/backend/signout.php`, JSON.stringify(params));
 export const userInfo = params => axios.post(`${base}/backend/userinfo.php`, JSON.stringify(params));
+const api = (name, params) => axios.post(`${base}/backend/${name}.php`, JSON.stringify(params));
+export default api;

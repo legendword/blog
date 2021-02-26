@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { signUp, signIn } from '../api'
+import api from '../api'
 export default {
     name: 'LogIn',
     props: {
@@ -72,7 +72,7 @@ export default {
             this.$emit('closed')
         },
         submitSignUp() {
-            signUp({
+            api('signup', {
                 email: this.email,
                 password: this.password
             }).then(res => {
@@ -94,7 +94,7 @@ export default {
             })
         },
         submitLogIn() {
-            signIn({
+            api('signin', {
                 email: this.email,
                 password: this.password
             }).then(res => {

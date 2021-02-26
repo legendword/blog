@@ -6,9 +6,10 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Index.vue') },
       { path: 'collection', component: () => import('pages/Collection.vue') },
-      { path: 'post/:id', component: () => import('pages/Post.vue') },
+      { path: 'post/:id', component: () => import('pages/Post.vue'), meta: { miniDrawer: true } },
       { path: 'compose', component: () => import('pages/Compose.vue') },
-      { path: 'newAccount', component: () => import('pages/NewAccount.vue') }
+      { path: 'newAccount', component: () => import('pages/NewAccount.vue') },
+      { path: 'user/:id', component: () => import('pages/UserProfile.vue') }
     ]
   },
 

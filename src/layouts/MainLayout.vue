@@ -62,10 +62,9 @@
     <q-footer reveal elevated class="bg-indigo-8 text-white">
       <q-toolbar>
         <q-btn @click="toggleDrawer" flat round dense icon="menu" class="q-mr-sm" />
-        <q-toolbar-title>
-          Legendword Blog
-        </q-toolbar-title>
-        <q-space />
+          <q-toolbar-title>
+            {{ barTitle }}
+          </q-toolbar-title>        
         <!--
         <q-tabs v-model="tab" shrink switch-indicator>
           <q-tab name="tab2" label="Reading" />
@@ -101,6 +100,9 @@ export default {
     }
   },
   computed: {
+    barTitle () {
+      return this.$route.meta.customBarTitle ? this.$store.state.barTitle : 'Legendword Blog'
+    },
     ...mapState(['user','isLoggedIn','miniDrawerMode'])
   },
   methods: {
@@ -139,6 +141,7 @@ export default {
       this.leftDrawer = !this.leftDrawer
     },
     setData(r) {
+      console.log('userinfo', r)
       if (r.error) {}
       else if (r.isLoggedIn == true) {
         this.$store.commit('userLogIn', r.user)

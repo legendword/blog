@@ -25,11 +25,15 @@ export default new Vuex.Store({
     miniDrawerMode: false,
     user: null,
     isLoggedIn: false,
-    newAccount: null
+    newAccount: null,
+    barTitle: 'Legendword Blog'
   },
   getters: {
   },
   mutations: {
+    setBarTitle(state, val = 'Legendword Blog') {
+      state.barTitle = val
+    },
     newAccount(state, val) {
       state.newAccount = val;
     },
@@ -43,6 +47,13 @@ export default new Vuex.Store({
     userLogOut (state) {
       state.isLoggedIn = false
       state.user = null
+    },
+    userProfileChange (state, val) {
+      if (state.user != null) {
+        for (let i in val) {
+          state.user[i] = val[i]
+        }
+      }
     }
   }
 })

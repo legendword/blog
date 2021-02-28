@@ -48,7 +48,7 @@ export default new Vuex.Store({
       state.isLoggedIn = false
       state.user = null
     },
-    userProfileChange (state, val) {
+    userDataChange (state, val) {
       if (state.user != null) {
         for (let i in val) {
           state.user[i] = val[i]

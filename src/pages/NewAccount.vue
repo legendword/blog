@@ -10,6 +10,7 @@
 
 <script>
 export default {
+    name: 'NewAccount',
     methods: {
         backHome() {
             this.$router.push('/')

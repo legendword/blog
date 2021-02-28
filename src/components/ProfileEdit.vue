@@ -99,7 +99,7 @@ export default {
                         })
                     }
                     else if (r.success) {
-                        this.$store.commit('userProfileChange', {
+                        this.$store.commit('userDataChange', {
                             username: r.user.username
                         })
                         this.$emit('closed')

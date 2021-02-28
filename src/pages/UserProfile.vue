@@ -115,6 +115,7 @@ export default {
                         this.user[i] = newVal[i]
                     }
                 }
+                this.user.isAuthor = this.user.isAuthor == '1'
             },
             deep: true
         }
@@ -146,6 +147,9 @@ export default {
                     })
                     this.user.isAuthor = true
                     this.user.authorId = r.authorId
+                    this.$store.commit('userDataChange', {
+                        isAuthor: '1'
+                    })
                 }
             })
         },

@@ -5,10 +5,11 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Index.vue') },
-      { path: 'collection', component: () => import('pages/Collection.vue') },
+      { path: 'collections', component: () => import('pages/Collections.vue') },
       { path: 'post/:id', component: () => import('pages/Post.vue'), meta: { miniDrawer: true, customBarTitle: true } },
       { path: 'compose', component: () => import('pages/Compose.vue') },
       { path: 'newAccount', component: () => import('pages/NewAccount.vue') },
+      { path: 'me', component: () => import('pages/Me.vue') },
       { path: 'user/:id', component: () => import('pages/UserProfile.vue'), meta: { customBarTitle: true } },
       { path: 'author/:id', component: () => import('pages/AuthorProfile.vue'), meta: { customBarTitle: true } }
     ]

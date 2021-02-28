@@ -13,33 +13,33 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/collection" exact>
+          <q-item clickable v-ripple to="/collections" exact>
             <q-item-section avatar>
               <q-icon name="star" />
             </q-item-section>
 
             <q-item-section>
-              Collection
+              Collections
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/user/1" exact>
-            <q-item-section avatar>
-              <q-icon name="send" />
-            </q-item-section>
-
-            <q-item-section>
-              Test User
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple to="/compose" exact>
+          <q-item clickable v-ripple to="/404" exact>
             <q-item-section avatar>
               <q-icon name="drafts" />
             </q-item-section>
 
             <q-item-section>
-              Compose
+              Following
+            </q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple to="/me" exact>
+            <q-item-section avatar>
+              <q-icon name="dashboard" />
+            </q-item-section>
+
+            <q-item-section>
+              Me
             </q-item-section>
           </q-item>
         </q-list>
@@ -88,6 +88,7 @@ import { mapState } from 'vuex'
 import api from '../api'
 import LogIn from '../components/LogIn'
 export default {
+  name: 'MainLayout',
   components: {
     LogIn
   },

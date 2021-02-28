@@ -6,20 +6,23 @@
         </div>
         <div v-else>
             <h4>{{ post.title }}</h4>
-            <div class="row q-gutter-md">
+            <div class="row q-gutter-md q-mb-lg">
                 <div class="col-12 col-sm-auto text-subtitle1">
                     <q-card>
                         <q-card-section>
                             <div class="row">
                                 <div class="col-auto q-pr-md">
-                                    <q-avatar color="primary" text-color="white">{{ post.authorName ? post.authorName[0]:'' }}</q-avatar>
+                                    <router-link :to="'/author/'+post.authorId" class="noLinkStyle">
+                                        <q-avatar color="primary" text-color="white">{{ post.authorName ? post.authorName[0]:'' }}</q-avatar>
+                                    </router-link>
                                 </div>
                                 <div class="col q-my-auto">
-                                    <div><strong>{{ post.authorName }}</strong></div>
-                                    <div class="text-caption">0 Followers</div>
+                                    <router-link :to="'/author/'+post.authorId" class="noLinkStyle"><strong>{{ post.authorName }}</strong></router-link>
+                                    <div class="text-caption">{{ post.followerCount }} Followers</div>
                                 </div>
-                                <div class="col-auto q-my-auto q-ml-md">
-                                    <q-btn flat color="primary" label="Follow"></q-btn>
+                                <div class="col-auto q-my-auto q-ml-md" v-show="isLoggedIn">
+                                    <q-btn flat :color="hoverUnfollow ? 'negative' : 'grey'" :label="hoverUnfollow ? 'Unfollow' : 'Following'" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followAuthor" v-if="post.isFollowing"></q-btn>
+                                    <q-btn flat color="primary" label="Follow" @click="followAuthor" v-else></q-btn>
                                 </div>
                             </div>
                         </q-card-section>
@@ -39,6 +42,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- 
                                 <div class="col q-pl-md">
                                     <div class="row">
                                         <div class="col-auto">
@@ -48,7 +52,7 @@
                                             {{ post.publishTime }}
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </q-card-section>
                         <q-card-section class="q-pt-xs q-pb-sm">
@@ -63,6 +67,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!--
                                 <div class="col q-pl-md">
                                     <div class="row">
                                         <div class="col-auto">
@@ -72,7 +77,7 @@
                                             {{ post.views }}
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </q-card-section>
                     </q-card>
@@ -86,20 +91,39 @@
 
 <script>
 import api from '../api'
+import { mapState } from 'vuex'
 export default {
     name: 'Post',
     data() {
         return {
             post: {},
-            postNotFound: false
+            postNotFound: false,
+            hoverUnfollow: false
         }
     },
+    computed: mapState(['isLoggedIn']),
     created() {
         if (this.$store.state.miniDrawerMode == false) {
             this.$store.commit('setMiniDrawerMode', true);
         }
     },
     methods: {
+        followAuthor() {
+            api('performaction', {
+                type: 'followAuthor',
+                to: this.post.authorId
+            }).then(res => {
+                let r = res.data
+                console.log(r)
+                if (r.error) {
+                    this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
+                }
+                else if (r.success) {
+                    this.post.followerCount = parseInt(this.post.followerCount) + parseInt(r.followerDelta)
+                    this.post.isFollowing = !this.post.isFollowing
+                }
+            })
+        },
         setData(r) {
             if (r.error) {
                 if (r.errorType && r.errorType == 'PostNotFound') {
@@ -145,3 +169,10 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.noLinkStyle, .noLinkStyle:hover, .noLinkStyle:active, .noLinkStyle:visited {
+  text-decoration: none;
+  color: initial;
+}
+</style>

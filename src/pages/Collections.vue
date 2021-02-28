@@ -11,6 +11,7 @@
 <script>
 import { mapMutations } from 'vuex'
 export default {
+    name: 'Collections',
     computed: {
         miniDrawerMode: {
             get () {

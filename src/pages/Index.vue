@@ -42,7 +42,7 @@
 import api from '../api'
 import PostCard from '../components/PostCard'
 export default {
-  name: 'PageIndex',
+  name: 'Home',
   data() {
     return {
       postList: []

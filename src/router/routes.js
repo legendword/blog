@@ -11,7 +11,8 @@ const routes = [
       { path: 'newAccount', component: () => import('pages/NewAccount.vue') },
       { path: 'me', component: () => import('pages/Me.vue') },
       { path: 'user/:id', component: () => import('pages/UserProfile.vue'), meta: { customBarTitle: true } },
-      { path: 'author/:id', component: () => import('pages/AuthorProfile.vue'), meta: { customBarTitle: true } }
+      { path: 'author/:id', component: () => import('pages/AuthorProfile.vue'), meta: { customBarTitle: true } },
+      { path: 'search', component: () => import('pages/Search.vue') }
     ]
   },
 

@@ -1,5 +1,6 @@
 <template>
-  <q-page class="q-px-xl q-pb-xl">
+  <q-page class="q-pa-lg">
+    <search-bar></search-bar>
     <h4 class="q-mb-lg">All Posts</h4>
     <div class="row q-col-gutter-md">
       <q-intersection transition="fade" class="col-12 wideCard" v-for="item in postList" :key="item.postId">
@@ -41,6 +42,7 @@
 <script>
 import api from '../api'
 import PostCard from '../components/PostCard'
+import SearchBar from '../components/SearchBar'
 export default {
   name: 'Home',
   data() {
@@ -49,7 +51,8 @@ export default {
     }
   },
   components: {
-    PostCard
+    PostCard,
+    SearchBar
   },
   mounted() {
     api('listpost', {
@@ -76,11 +79,5 @@ export default {
 .noLinkStyle, .noLinkStyle:hover, .noLinkStyle:active, .noLinkStyle:visited {
   text-decoration: none;
   color: initial;
-}
-.wideCard {
-  height: 150px;
-}
-.wideCard .post-card {
-  height: 140px;
 }
 </style>

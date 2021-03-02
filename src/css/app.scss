@@ -1,1 +1,16 @@
 // app global css in SCSS form
+
+.text-shade-light {
+    color: initial;
+}
+.bg-shade-light {
+    background: #FEF3EC;
+}
+
+
+.wideCard {
+    min-height: 150px;
+}
+.wideCard .post-card {
+    min-height: 140px;
+}

@@ -8,7 +8,8 @@
             </template>
         </q-banner>
         <div v-show="isLoggedIn && user.isAuthor == '1'">
-            <q-input outlined v-model="newPost.title" label="Title" class="q-mb-md"></q-input>
+            <q-input counter maxlength="30" v-model="newPost.title" label="Title" class="q-mb-md"></q-input>
+            <q-input autogrow counter maxlength="100" v-model="newPost.description" label="Description" class="q-mb-md"></q-input>
             <div class="q-mt-md row no-wrap">
                 <div class="col">
                     <h6 class="q-my-md">Content</h6>
@@ -47,6 +48,7 @@ export default {
         return {
             newPost: {
                 title: '',
+                description: '',
                 content: ''
             },
             scrollAreaThumbStyle: {
@@ -60,16 +62,25 @@ export default {
     computed: mapState(['user', 'isLoggedIn']),
     methods: {
         submitPost() {
-            if (this.newPost.title.length == 0 || this.newPost.content.length == 0) {
+            if (this.newPost.title.length == 0 || this.newPost.content.length == 0 || this.newPost.description.length == 0) {
                 this.$q.notify({
                     type: 'negative',
-                    message: 'The post must have a title.',
+                    message: 'The post must have a title, a description, and some content.',
+                    position: 'top'
+                })
+                return
+            }
+            if (this.newPost.title.length > 30 || this.newPost.description.length > 100) {
+                this.$q.notify({
+                    type: 'negative',
+                    message: 'Title/Description exceeds maximum length.',
                     position: 'top'
                 })
                 return
             }
             api('newpost', {
                 title: this.newPost.title,
+                description: this.newPost.description,
                 content: this.newPost.content
             }).then(res => {
                 let r = res.data

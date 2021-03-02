@@ -23,7 +23,7 @@
                 -->
                 <div class="row">
                     <div class="col-12 col-md-6 text-h6 userName q-py-sm">
-                        {{ author.displayName }} <q-chip color="teal" text-color="white" icon="create">Author</q-chip>
+                        {{ author.displayName }} <q-chip color="accent" text-color="white" icon="create">Author</q-chip>
                     </div>
                     <q-card class="col-12 col-md-6 userStats bg-transparent row text-center">
                         <q-card-section class="col">
@@ -185,11 +185,5 @@ export default {
 }
 .userStats {
     max-width: 400px;
-}
-.wideCard {
-  height: 150px;
-}
-.wideCard .post-card {
-  height: 140px;
 }
 </style>

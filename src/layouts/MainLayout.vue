@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh LpR fFf">
-    <q-drawer content-class="bg-grey-3" show-if-above v-model="leftDrawer" :width="200" side="left" :mini="miniDrawer" @mouseover="drawerMouseOver" @mouseout="drawerMouseOut">
+    <q-drawer content-class="bg-shade-light" show-if-above v-model="leftDrawer" :width="200" side="left" :mini="miniDrawer" @mouseover="drawerMouseOver" @mouseout="drawerMouseOut">
       <q-scroll-area class="fit">
         <q-list padding class="menu-list">
           <q-item clickable v-ripple to="/" exact>
@@ -9,7 +9,7 @@
             </q-item-section>
 
             <q-item-section>
-              Home
+              Discover
             </q-item-section>
           </q-item>
 
@@ -59,7 +59,7 @@
       </div>
     </q-drawer>
 
-    <q-footer reveal elevated class="bg-indigo-8 text-white">
+    <q-footer reveal elevated class="bg-secondary text-white">
       <q-toolbar>
         <q-btn @click="toggleDrawer" flat round dense icon="menu" class="q-mr-sm" />
           <q-toolbar-title>

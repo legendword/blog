@@ -23,7 +23,7 @@
                 -->
                 <div class="row">
                     <div class="col-12 col-md-6 text-h6 userName q-py-sm">
-                        {{ user.username }} <q-chip v-show="user.isAuthor" color="teal" text-color="white" icon="create" clickable @click="goToAuthorPage">Author</q-chip>
+                        {{ user.username }} <q-chip v-show="user.isAuthor" color="accent" text-color="white" icon="create" clickable @click="goToAuthorPage">Author</q-chip>
                     </div>
                     <q-card class="col-12 col-md-6 userStats bg-transparent row text-center">
                         <q-card-section class="col">
@@ -50,7 +50,7 @@
                     <q-tab-panels v-model="tab" animated>
                         <q-tab-panel name="profile">
                             <div>
-                                <q-btn color="teal" v-show="user.isAuthor" @click="goToAuthorPage"> Go To Author Page &gt; </q-btn>
+                                <q-btn color="accent" v-show="user.isAuthor" @click="goToAuthorPage"> Go To Author Page &gt; </q-btn>
                             </div>
                             <div class="text-h6 q-my-md">
                                 Profile

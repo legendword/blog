@@ -30,7 +30,7 @@
                                     <q-avatar color="primary" text-color="white">{{ author.displayName ? author.displayName[0]:'' }}</q-avatar>
                                 </div>
                                 <div class="col q-my-auto">
-                                    <div><strong>{{ author.displayName }}</strong> <q-chip size="sm" color="teal" text-color="white" icon="create" class="q-ml-sm">Author</q-chip></div>
+                                    <div><strong>{{ author.displayName }}</strong> <q-chip size="sm" color="accent" text-color="white" icon="create" class="q-ml-sm">Author</q-chip></div>
                                     <div class="text-caption">{{ author.followerCount }} Followers</div>
                                 </div>
                             </div>
@@ -163,13 +163,8 @@ export default {
     methods: {
         removePost(postId) {
             console.log(postId)
-        }
-    },
-    created() {
-        api('userinfo', {
-            detailed: true
-        }).then(res => {
-            let r = res.data
+        },
+        setData(r) {
             console.log(r)
             if (r.error) {
                 this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
@@ -181,6 +176,21 @@ export default {
                     this.author = r.author
                 }
             }
+        }
+    },
+    beforeRouteEnter (to, from, next) {
+        api('userinfo', {
+            detailed: true
+        }).then(res => {
+            next(vm => vm.setData(res.data))
+        })
+    },
+    beforeRouteUpdate (to, from, next) {
+        api('userinfo', {
+            detailed: true
+        }).then(res => {
+            this.setData(res.data)
+            next()
         })
     }
 }

@@ -38,7 +38,7 @@
                                             <q-icon name="schedule" size="18px" class="q-pr-sm"></q-icon>
                                         </div>
                                         <div class="col text-caption q-my-auto">
-                                            {{ post.publishTime }}
+                                            {{ post.publishTimeStr }}
                                         </div>
                                     </div>
                                 </div>

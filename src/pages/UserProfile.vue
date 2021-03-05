@@ -9,7 +9,7 @@
                 -->
                 <div class="row">
                     <div class="col-12 text-body1 userName q-py-sm">
-                        This user does not exist.
+                        {{ $t('userProfile.notFoundMsg') }}
                     </div>
                 </div>
             </q-banner>
@@ -23,20 +23,20 @@
                 -->
                 <div class="row">
                     <div class="col-12 col-md-6 text-h6 userName q-py-sm">
-                        {{ user.username }} <q-chip v-show="user.isAuthor" color="accent" text-color="white" icon="create" clickable @click="goToAuthorPage">Author</q-chip>
+                        {{ user.username }} <q-chip v-show="user.isAuthor" color="accent" text-color="white" icon="create" clickable @click="goToAuthorPage">{{ $t('tag.author') }}</q-chip>
                     </div>
                     <q-card class="col-12 col-md-6 userStats bg-transparent row text-center">
                         <q-card-section class="col">
                             <div class="text-subtitle1 text-bold">{{ user.followingCount }}</div>
-                            <div class="text-body2">Following</div>
+                            <div class="text-body2">{{ $t('general.following') }}</div>
                         </q-card-section>
                         <q-card-section class="col">
                             <div class="text-subtitle1 text-bold">{{ user.followerCount }}</div>
-                            <div class="text-body2">Followers</div>
+                            <div class="text-body2">{{ $tc('computed.followers', user.followerCount) }}</div>
                         </q-card-section>
                         <q-card-section class="col">
                             <div class="text-subtitle1 text-bold">0</div>
-                            <div class="text-body2">Collections</div>
+                            <div class="text-body2">{{ $tc('computed.collections', 0) }}</div>
                         </q-card-section>
                     </q-card>
                 </div>
@@ -44,31 +44,31 @@
             <div class="q-pa-md">
                 <q-card>
                     <q-tabs v-model="tab" align="left">
-                        <q-tab name="profile" label="Profile" class="q-px-lg" />
-                        <q-tab name="collections" label="Collections" class="q-px-lg" />
+                        <q-tab name="profile" :label="$t('userProfile.profile')" class="q-px-lg" />
+                        <q-tab name="collections" :label="$t('userProfile.collections')" class="q-px-lg" />
                     </q-tabs>
                     <q-tab-panels v-model="tab" animated>
                         <q-tab-panel name="profile">
                             <div>
-                                <q-btn color="accent" v-show="user.isAuthor" @click="goToAuthorPage"> Go To Author Page &gt; </q-btn>
+                                <q-btn color="accent" v-show="user.isAuthor" @click="goToAuthorPage"> {{ $t('userProfile.goToAuthorPage') }} &gt; </q-btn>
                             </div>
                             <div class="text-h6 q-my-md">
-                                Profile
+                                {{ $t('userProfile.profile') }}
                                 <div class="float-right">
-                                    <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">Edit Profile</q-btn>
+                                    <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">{{ $t('userProfile.editProfile') }}</q-btn>
                                 </div>
                             </div>
                             Lorem ipsum dolor sit amet consectetur adipisicing elit.
                             <q-banner class="bg-grey-3 q-my-md" v-show="isCurrentUser && !user.isAuthor">
-                                You are not an author yet! Apply to become an author so you can start creating amazing things.
+                                {{ $t('compose.notAuthorMsg') }}
                                 <template v-slot:action>
-                                    <q-btn flat color="primary" label="Become an Author" @click="becomeAnAuthor" />
+                                    <q-btn flat color="primary" :label="$t('compose.becomeAuthor')" @click="becomeAnAuthor" />
                                 </template>
                             </q-banner>
                         </q-tab-panel>
                         <q-tab-panel name="collections">
                             <div class="text-h6 q-my-md">
-                                Collections
+                                {{ $t('userProfile.collections') }}
                             </div>
                             <p class="text-h5">In Development...</p>
                             <p>UserId: {{ userId }}</p>
@@ -141,7 +141,7 @@ export default {
                 else if (r.success) {
                     this.$q.notify({
                         color: 'positive',
-                        message: 'Your application to become an author has been approved! (alpha-testing-no-restriction)',
+                        message: this.$t('compose.authorApplicationApproved'),
                         position: 'top',
                         timeout: 2000
                     })
@@ -181,7 +181,7 @@ export default {
                 this.user = r.user
                 this.user.isAuthor = this.user.isAuthor == '1'
                 this.isCurrentUser = r.isCurrentUser
-                this.$store.commit('setBarTitle', 'User / '+this.user.username)
+                this.$store.commit('setBarTitle', this.$t('barTitle.user') + ' / ' + this.user.username)
             }
         }
     },

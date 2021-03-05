@@ -2,34 +2,34 @@
     <q-dialog v-model="open" persistent transition-show="scale" transition-hide="scale">
         <q-card class="loginDialog" v-if="signUp">
             <q-card-section>
-                <div class="text-h6">New Account</div>
+                <div class="text-h6">{{ $t('logIn.newAccount') }}</div>
             </q-card-section>
             <q-card-section>
                 <q-form class="q-gutter-md q-px-md">
-                    <q-input type="email" v-model="email" lazy-rules :rules="emailRules" label="Email"></q-input>
-                    <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" label="Password"></q-input>
-                    <p>Already have an account? <q-btn label="Sign In" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
+                    <q-input type="email" v-model="email" lazy-rules :rules="emailRules" :label="$t('general.email')"></q-input>
+                    <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" :label="$t('general.password')"></q-input>
+                    <p>{{ $t('logIn.alreadyAccountPrompt') }} <q-btn :label="$t('logIn.alreadyAccountSignIn')" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
                 </q-form>
             </q-card-section>
             <q-card-actions align="right" class="q-pa-lg">
-                <q-btn flat label="Cancel" size="md" @click="backToHome" />
-                <q-btn flat label="Submit" color="primary" size="md" @click="submitSignUp" />
+                <q-btn flat :label="$t('general.cancel')" size="md" @click="backToHome" />
+                <q-btn flat :label="$t('general.submit')" color="primary" size="md" @click="submitSignUp" />
             </q-card-actions>
         </q-card>
         <q-card class="loginDialog" v-else>
             <q-card-section>
-                <div class="text-h6">Sign In</div>
+                <div class="text-h6">{{ $t('logIn.signIn') }}</div>
             </q-card-section>
             <q-card-section>
                 <q-form class="q-gutter-md q-px-md">
-                    <q-input v-model="email" lazy-rules :rules="emailRules" label="Email"></q-input>
-                    <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" label="Password"></q-input>
-                    <p>Don't have an account? <q-btn label="Create One" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
+                    <q-input v-model="email" lazy-rules :rules="emailRules" :label="$t('general.email')"></q-input>
+                    <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" :label="$t('general.password')"></q-input>
+                    <p>{{ $t('logIn.noAccountPrompt') }} <q-btn :label="$t('logIn.noAccountSignUp')" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
                 </q-form>
             </q-card-section>
             <q-card-actions align="right" class="q-pa-lg">
-                <q-btn flat label="Cancel" size="md" @click="backToHome" />
-                <q-btn flat label="Submit" color="primary" size="md" @click="submitLogIn" />
+                <q-btn flat :label="$t('general.cancel')" size="md" @click="backToHome" />
+                <q-btn flat :label="$t('general.submit')" color="primary" size="md" @click="submitLogIn" />
             </q-card-actions>
         </q-card>
     </q-dialog>
@@ -51,10 +51,10 @@ export default {
             email: '',
             password: '',
             emailRules: [
-                val => val && val.length > 0 || 'This is a required field.'
+                val => val && val.length > 0 || this.$t('forms.requiredField')
             ],
             passwordRules: [
-                val => val && val.length > 0 || 'This is a required field.'
+                val => val && val.length > 0 || this.$t('forms.requiredField')
             ]
         }
     },
@@ -111,7 +111,7 @@ export default {
                 else if (r.invalid) {
                     this.$q.notify({
                         color: 'negative',
-                        message: 'Email or Password Incorrect',
+                        message: $t('logIn.incorrect'),
                         position: 'top',
                         timeout: 2000
                     })

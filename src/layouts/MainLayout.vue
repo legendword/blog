@@ -9,7 +9,7 @@
             </q-item-section>
 
             <q-item-section>
-              Discover
+              {{ $t('layoutDrawer.discover') }}
             </q-item-section>
           </q-item>
 
@@ -19,7 +19,8 @@
             </q-item-section>
 
             <q-item-section>
-              Collections
+
+              {{ $t('layoutDrawer.collections') }}
             </q-item-section>
           </q-item>
 
@@ -29,7 +30,7 @@
             </q-item-section>
 
             <q-item-section>
-              Following
+              {{ $t('layoutDrawer.following') }}
             </q-item-section>
           </q-item>
 
@@ -39,15 +40,37 @@
             </q-item-section>
 
             <q-item-section>
-              Me
+              {{ $t('layoutDrawer.me') }}
             </q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>
-      <div class="absolute-bottom userDrawer q-px-md">
-        <q-avatar size="56px" class="q-mb-sm">
-          <!-- <img src="https://cdn.quasar.dev/img/boy-avatar.png"> -->
-        </q-avatar>
+      <div class="absolute-bottom userDrawer q-pb-sm">
+        <q-item clickable v-ripple>
+          <q-item-section avatar>
+            <q-avatar color="primary" text-color="white">{{ isLoggedIn ? user.username[0]:'' }}</q-avatar>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label lines="1" class="text-weight-medium" v-if="isLoggedIn">{{ user.username }}</q-item-label>
+            <q-item-label lines="1" v-else>{{ $t('layoutDrawer.notSignedIn') }}</q-item-label>
+          </q-item-section>
+          <q-menu fit anchor="top middle" self="bottom middle" content-class="bg-primary-light text-primary-light text-weight-medium">
+            <q-list style="min-width: 100px" v-show="isLoggedIn">
+              <q-item clickable v-close-popup to="/settings" exact>
+                <q-item-section>{{ $t('layoutDrawer.settings') }}</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="signOut">
+                <q-item-section>{{ $t('layoutDrawer.signOut') }}</q-item-section>
+              </q-item>
+            </q-list>
+            <q-list style="min-width: 100px" v-show="!isLoggedIn">
+              <q-item clickable v-close-popup @click="signIn">
+                <q-item-section>{{ $t('layoutDrawer.signIn') }}</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-item>
+        <!--
         <div v-if="isLoggedIn" class="drawerUserInfo">
           <div key="username" class="text-weight-medium text-center">{{ user.username }}</div>
           <div key="useraction" class="absolute-bottom q-mb-sm text-center"><q-btn flat color="primary" label="Sign Out" @click="signOut" /></div>
@@ -56,6 +79,7 @@
           <div class="text-weight-medium text-center">Not Signed In</div>
           <div class="absolute-bottom q-mb-sm text-center"><q-btn flat color="primary" label="Sign In" @click="signIn" /></div>
         </div>
+        -->
       </div>
     </q-drawer>
 
@@ -146,6 +170,9 @@ export default {
       if (r.error) {}
       else if (r.isLoggedIn == true) {
         this.$store.commit('userLogIn', r.user)
+        if (r.user.settings.locale != this.$i18n.locale) {
+          this.$root.$i18n.locale = r.user.settings.locale
+        }
       }
     }
   },
@@ -153,7 +180,9 @@ export default {
     miniDrawerMode: 'drawerMouseOut'
   },
   beforeRouteEnter (to, from, next) {
-    api('userinfo').then(res => {
+    api('userinfo', {
+      detailed: true
+    }).then(res => {
       next(vm => vm.setData(res.data))
     })
   }
@@ -162,9 +191,6 @@ export default {
 </script>
 
 <style scoped>
-.userDrawer {
-  height: 130px;
-}
 .drawerUserInfo {
   opacity: 1;
   transition: opacity 300ms;

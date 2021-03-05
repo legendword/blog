@@ -1,10 +1,10 @@
 <template>
     <q-page class="q-pa-lg text-center">
-        <h4>Welcome aboard!</h4>
-        <h5>You can now log in with <strong>{{ newAccount }}</strong></h5>
-        <p>*Email verification is not deployed yet.</p>
+        <h4>{{ $t('newAccount.welcome') }}</h4>
+        <h5>{{ $t('newAccount.youCanNowLogIn.before') }}<strong>{{ newAccount }}</strong>{{ $t('newAccount.youCanNowLogIn.after') }}</h5>
+        <p>{{ $t('newAccount.footnote') }}</p>
         <q-separator></q-separator>
-        <q-btn flat color="primary" label="Back To Home" @click="backHome"></q-btn>
+        <q-btn class="q-mt-lg" flat color="primary" :label="$t('newAccount.backToHome')" @click="backHome"></q-btn>
     </q-page>
 </template>
 

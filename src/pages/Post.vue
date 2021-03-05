@@ -1,8 +1,8 @@
 <template>
     <q-page class="q-pa-lg">
         <div v-if="postNotFound">
-            <h5>Oops..</h5>
-            <h6>This post has been deleted or does not exist.</h6>
+            <h5>{{ $t('post.notFoundTitle') }}</h5>
+            <h6>{{ $t('post.notFoundMsg') }}</h6>
         </div>
         <div v-else>
             <h4>{{ post.title }}</h4>
@@ -18,11 +18,11 @@
                                 </div>
                                 <div class="col q-my-auto">
                                     <router-link :to="'/author/'+post.authorId" class="noLinkStyle"><strong>{{ post.authorName }}</strong></router-link>
-                                    <div class="text-caption">{{ post.followerCount }} Followers</div>
+                                    <div class="text-caption">{{ post.followerCount }} {{ $tc('computed.followers', post.followerCount) }}</div>
                                 </div>
                                 <div class="col-auto q-my-auto q-ml-md" v-show="isLoggedIn">
-                                    <q-btn flat :color="hoverUnfollow ? 'negative' : 'grey'" :label="hoverUnfollow ? 'Unfollow' : 'Following'" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followAuthor" v-if="post.isFollowing"></q-btn>
-                                    <q-btn flat color="primary" label="Follow" @click="followAuthor" v-else></q-btn>
+                                    <q-btn flat :color="hoverUnfollow ? 'negative' : 'grey'" :label="hoverUnfollow ? $t('userAction.unfollow') : $t('userAction.following')" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followAuthor" v-if="post.isFollowing"></q-btn>
+                                    <q-btn flat color="primary" :label="$t('userAction.follow')" @click="followAuthor" v-else></q-btn>
                                 </div>
                             </div>
                         </q-card-section>

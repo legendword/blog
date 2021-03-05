@@ -9,7 +9,7 @@
                 -->
                 <div class="row">
                     <div class="col-12 text-body1 userName q-py-sm">
-                        This author does not exist.
+                        {{ $t('authorProfile.notFoundMsg') }}
                     </div>
                 </div>
             </q-banner>
@@ -23,16 +23,16 @@
                 -->
                 <div class="row">
                     <div class="col-12 col-md-6 text-h6 userName q-py-sm">
-                        {{ author.displayName }} <q-chip color="accent" text-color="white" icon="create">Author</q-chip>
+                        {{ author.displayName }} <q-chip color="accent" text-color="white" icon="create">{{ $t('tag.author') }}</q-chip>
                     </div>
                     <q-card class="col-12 col-md-6 userStats bg-transparent row text-center">
                         <q-card-section class="col">
                             <div class="text-subtitle1 text-bold">{{ author.followerCount }}</div>
-                            <div class="text-body2">Followers</div>
+                            <div class="text-body2">{{ $tc('computed.followers', author.followerCount) }}</div>
                         </q-card-section>
                         <q-card-section class="col">
                             <div class="text-subtitle1 text-bold">{{ author.postCount }}</div>
-                            <div class="text-body2">Posts</div>
+                            <div class="text-body2">{{ $tc('computed.posts', author.postCount) }}</div>
                         </q-card-section>
                     </q-card>
                 </div>
@@ -40,22 +40,22 @@
             <div class="q-pa-md">
                 <q-card>
                     <q-tabs v-model="tab" align="left" ref="tab" @input="tabChange">
-                        <q-tab name="profile" label="Profile" class="q-px-lg" />
-                        <q-tab name="posts" label="Posts" class="q-px-lg" />
+                        <q-tab name="profile" :label="$t('authorProfile.profile')" class="q-px-lg" />
+                        <q-tab name="posts" :label="$t('authorProfile.posts')" class="q-px-lg" />
                     </q-tabs>
                     <q-tab-panels v-model="tab" animated>
                         <q-tab-panel name="profile">
                             <div class="text-h6 q-my-md">
-                                Profile
+                                {{ $t('authorProfile.profile') }}
                                 <div class="float-right">
-                                    <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">Edit Profile</q-btn>
+                                    <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">{{ $t('authorProfile.editProfile') }}</q-btn>
                                 </div>
                             </div>
                             Lorem ipsum dolor sit amet consectetur adipisicing elit.
                         </q-tab-panel>
                         <q-tab-panel name="posts">
                             <div class="text-h6 q-my-md">
-                                Posts
+                                {{ $t('authorProfile.posts') }}
                             </div>
                             <q-intersection transition="fade" class="col-12 wideCard" v-for="item in postList" :key="item.postId">
                                 <post-card :post="item"></post-card>
@@ -156,7 +156,7 @@ export default {
             else {
                 this.author = r.author
                 this.isCurrentUser = this.$store.state.isLoggedIn && r.author.userId == this.$store.state.user.id
-                this.$store.commit('setBarTitle', 'Author / '+this.author.displayName)
+                this.$store.commit('setBarTitle', this.$t('barTitle.author') + ' / ' + this.author.displayName)
             }
         }
     },

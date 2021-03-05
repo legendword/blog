@@ -1,31 +1,31 @@
 <template>
     <q-page class="q-pa-lg">
-        <h5 class="q-my-md">New Post</h5>
+        <h5 class="q-my-md">{{ $t('compose.newPost') }}</h5>
         <q-banner class="bg-grey-3 q-my-md" v-show="isLoggedIn && user.isAuthor == '0'">
-            You are not an author yet! Apply to become an author so you can start creating amazing things.
+            {{ $t('compose.notAuthorMsg') }}
             <template v-slot:action>
-                <q-btn flat color="primary" label="Become an Author" /> <!-- todo: becomeAnAuthor -->
+                <q-btn flat color="primary" :label="$t('compose.becomeAuthor')" /> <!-- todo: becomeAnAuthor -->
             </template>
         </q-banner>
         <div v-show="isLoggedIn && user.isAuthor == '1'">
-            <q-input counter maxlength="30" v-model="newPost.title" label="Title" class="q-mb-md"></q-input>
-            <q-input autogrow counter maxlength="100" v-model="newPost.description" label="Description" class="q-mb-md"></q-input>
+            <q-input counter maxlength="30" v-model="newPost.title" :label="$t('compose.title')" class="q-mb-md"></q-input>
+            <q-input autogrow counter maxlength="100" v-model="newPost.description" :label="$t('compose.description')" class="q-mb-md"></q-input>
             <div class="q-mt-md row no-wrap">
                 <div class="col">
-                    <h6 class="q-my-md">Content</h6>
+                    <h6 class="q-my-md">{{ $t('compose.content') }}</h6>
                     <q-scroll-area class="composeScrollArea bordered">
                         <q-input type="textarea" v-model="newPost.content" input-class="postTextarea q-pa-md" borderless></q-input>
                     </q-scroll-area>
                 </div>
                 <div class="col">
-                    <h6 class="q-my-md">Preview</h6>
+                    <h6 class="q-my-md">{{ $t('compose.preview') }}</h6>
                     <q-scroll-area class="composeScrollArea" :thumbStyle="scrollAreaThumbStyle">
                         <q-markdown class="q-pa-md" no-html :src="newPost.content"></q-markdown>
                     </q-scroll-area>
                 </div>
             </div>
             <div class="q-mt-md">
-                <q-btn color="primary" label="Submit" @click="submitPost"></q-btn>
+                <q-btn color="primary" :label="$t('compose.submit')" @click="submitPost"></q-btn>
             </div>
             <div class="q-mt-md text-caption">
                 Posts made during <strong>alpha testing</strong> can be removed at any time without prior notice. Please do not post content you wish to keep until beta testing.
@@ -65,7 +65,7 @@ export default {
             if (this.newPost.title.length == 0 || this.newPost.content.length == 0 || this.newPost.description.length == 0) {
                 this.$q.notify({
                     type: 'negative',
-                    message: 'The post must have a title, a description, and some content.',
+                    message: this.$t('compose.fieldRequired'),
                     position: 'top'
                 })
                 return
@@ -73,7 +73,7 @@ export default {
             if (this.newPost.title.length > 30 || this.newPost.description.length > 100) {
                 this.$q.notify({
                     type: 'negative',
-                    message: 'Title/Description exceeds maximum length.',
+                    message: this.$t('compose.exceedsMaxLength'),
                     position: 'top'
                 })
                 return
@@ -95,7 +95,7 @@ export default {
                 else if (r.success) {
                     this.$q.notify({
                         color: 'positive',
-                        message: 'Post is published.',
+                        message: this.$t('compose.postIsPublished'),
                         position: 'top',
                         timeout: 2000
                     })

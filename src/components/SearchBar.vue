@@ -1,5 +1,5 @@
 <template>
-    <q-input outlined v-model="searchquery" label="Search..." @keydown="searchKeyDown">
+    <q-input outlined v-model="searchquery" :label="$t('search.searchbar')" @keydown="searchKeyDown">
         <template v-slot:append>
             <q-icon v-if="searchquery != ''" name="close" @click="searchquery = ''" class="cursor-pointer" />
         </template>

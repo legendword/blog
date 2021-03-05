@@ -12,8 +12,8 @@
                                 <div class="col q-my-auto">
                                     <div><strong>{{ user.username }}</strong></div>
                                     <div class="row">
-                                        <div class="col text-caption">{{ user.followingCount }} Following</div>
-                                        <div class="col text-caption">{{ user.followerCount }} Followers</div>
+                                        <div class="col text-caption">{{ user.followingCount }} {{ $t('general.following') }}</div>
+                                        <div class="col text-caption">{{ user.followerCount }} {{ $tc('computed.followers', user.followerCount) }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -22,25 +22,11 @@
                 </router-link>
             </div>
             <div class="col-12 col-sm-4 col-md-6" v-show="user.isAuthor">
-                <router-link :to="'/author/'+author.id" class="noLinkStyle">
-                    <q-card class="q-ma-lg">
-                        <q-card-section>
-                            <div class="row">
-                                <div class="col-auto q-pr-md">
-                                    <q-avatar color="primary" text-color="white">{{ author.displayName ? author.displayName[0]:'' }}</q-avatar>
-                                </div>
-                                <div class="col q-my-auto">
-                                    <div><strong>{{ author.displayName }}</strong> <q-chip size="sm" color="accent" text-color="white" icon="create" class="q-ml-sm">Author</q-chip></div>
-                                    <div class="text-caption">{{ author.followerCount }} Followers</div>
-                                </div>
-                            </div>
-                        </q-card-section>
-                    </q-card>
-                </router-link>
+                <author-card :author="author"></author-card>
             </div>
         </div>
         <div class="q-px-lg" v-show="user.isAuthor">
-            <h5 class="q-mb-sm">Creator</h5>
+            <h5 class="q-mb-sm">{{ $t('me.creator') }}</h5>
             <div class="row q-mb-md">
                 <div class="col-12">
                     
@@ -49,21 +35,21 @@
             <div class="row">
                 <div class="col-auto tabCol">
                     <q-tabs v-model="creatorTab" vertical>
-                        <q-tab name="overview" icon="timeline" label="Overview" />
-                        <q-tab name="posts" icon="article" label="Posts" />
-                        <q-tab name="comments" icon="comment" label="Comments" />
+                        <q-tab name="overview" icon="timeline" :label="$t('general.overview')" />
+                        <q-tab name="posts" icon="article" :label="$t('general.posts')" />
+                        <q-tab name="comments" icon="comment" :label="$t('general.comments')" />
                     </q-tabs>
                 </div>
                 <div class="col">
                     <q-tab-panels v-model="creatorTab" animated vertical>
                         <q-tab-panel name="overview">
-                            <div class="text-h5">Overview</div>
+                            <div class="text-h5">{{ $t('general.overview') }}</div>
                         </q-tab-panel>
                         <q-tab-panel name="posts">
                             <div class="text-h5 q-mb-lg q-pr-md">
-                                Posts
+                                {{ $t('general.posts') }}
                                 <div class="float-right">
-                                    <q-btn color="primary" icon="add" label="New Post" to="/compose" />
+                                    <q-btn color="primary" icon="add" :label="$t('me.newPost')" to="/compose" />
                                 </div>
                             </div>
                             <div class="q-ma-sm q-mb-md" v-for="post in creator.posts" :key="post.postId">
@@ -83,8 +69,8 @@
                                             </div>
                                             <div class="col-auto q-my-auto">
                                                 <q-btn-group>
-                                                    <q-btn color="primary" label="View" :to="'/post/'+post.postId"></q-btn>
-                                                    <q-btn color="grey" label="Remove" @click="removePost(post.postId)"></q-btn>
+                                                    <q-btn color="primary" :label="$t('me.viewPost')" :to="'/post/'+post.postId"></q-btn>
+                                                    <q-btn color="grey" :label="$t('me.removePost')" @click="removePost(post.postId)"></q-btn>
                                                 </q-btn-group>
                                             </div>
                                         </div>
@@ -113,13 +99,15 @@
 </template>
 
 <script>
+import AuthorCard from 'src/components/AuthorCard.vue'
 import { mapState } from 'vuex'
 import api from '../api'
 import LogIn from '../components/LogIn'
 export default {
     name: 'Me',
     components: {
-        LogIn
+        LogIn,
+        AuthorCard
     },
     data() {
         return {

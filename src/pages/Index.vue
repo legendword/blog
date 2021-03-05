@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-lg">
     <search-bar></search-bar>
-    <h4 class="q-mb-lg">All Posts</h4>
+    <h4 class="q-mb-lg">{{ $t('indexPage.allPosts') }}</h4>
     <div class="row q-col-gutter-md">
       <q-intersection transition="fade" class="col-12 wideCard" v-for="item in postList" :key="item.postId">
         <post-card :post="item"></post-card>

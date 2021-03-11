@@ -4,11 +4,19 @@
             <h5>{{ $t('post.notFoundTitle') }}</h5>
             <h6>{{ $t('post.notFoundMsg') }}</h6>
         </div>
-        <div v-else>
+        <div v-else class="post-layout">
             <h4>{{ post.title }}</h4>
-            <div class="row q-gutter-md q-mb-lg">
-                <div class="col-12 col-sm-auto text-subtitle1">
-                    <q-card>
+            <div class="row q-gutter-md q-mb-lg justify-between">
+                <div class="col-12 col-md text-subtitle1 post-infoLine row inline wrap items-center">
+                    <div>
+                        {{ $t('post.publishedOn.before') }} <span class="text-weight-medium">{{ post.publishTimeStr }}</span> {{ $t('post.publishedOn.after') }}
+                    </div>
+                    <div class="q-pl-lg">
+                        {{ $t('post.views.before') }} <span class="text-weight-medium">{{ post.views }}</span> {{ $t('post.views.after') }}
+                    </div>
+                </div>
+                <div class="col-12 col-md-auto text-subtitle1">
+                    <q-card flat bordered>
                         <q-card-section>
                             <div class="row">
                                 <div class="col-auto q-pr-md">
@@ -28,8 +36,10 @@
                         </q-card-section>
                     </q-card>
                 </div>
+
+                <!-- 
                 <div class="col-12 col-sm-auto text-subtitle1">
-                    <q-card>
+                    <q-card flat bordered>
                         <q-card-section class="q-pb-xs q-pt-sm">
                             <div class="row">
                                 <div class="col">
@@ -42,7 +52,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- 
                                 <div class="col q-pl-md">
                                     <div class="row">
                                         <div class="col-auto">
@@ -52,7 +61,7 @@
                                             {{ post.publishTime }}
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
                         </q-card-section>
                         <q-card-section class="q-pt-xs q-pb-sm">
@@ -67,7 +76,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!--
                                 <div class="col q-pl-md">
                                     <div class="row">
                                         <div class="col-auto">
@@ -77,13 +85,13 @@
                                             {{ post.views }}
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
                         </q-card-section>
                     </q-card>
-                </div>
+                </div> -->
             </div>
-            <q-markdown class="q-my-md" no-html :src="post.content"></q-markdown>
+            <q-markdown class="post-content q-py-md col-12 col-md-8" no-html :src="post.content"></q-markdown>
             <p class="text-caption">Post Id: {{ $route.params.id }}</p>
         </div>
     </q-page>
@@ -103,8 +111,8 @@ export default {
     },
     computed: mapState(['isLoggedIn']),
     created() {
-        if (this.$store.state.miniDrawerMode == false) {
-            this.$store.commit('setMiniDrawerMode', true);
+        if (this.$store.state.hideDrawerMode == false) {
+            this.$store.commit('setHideDrawerMode', true);
         }
     },
     methods: {
@@ -162,8 +170,8 @@ export default {
         })
     },
     beforeRouteLeave (to, from, next) {
-        if (!to.meta.miniDrawer) {
-            this.$store.commit('setMiniDrawerMode', false);
+        if (!to.meta.hideDrawer) {
+            this.$store.commit('setHideDrawerMode', false);
         }
         next()
     }
@@ -174,5 +182,13 @@ export default {
 .noLinkStyle, .noLinkStyle:hover, .noLinkStyle:active, .noLinkStyle:visited {
   text-decoration: none;
   color: initial;
+}
+.post-layout {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.post-infoLine {
+    color: #636363;
 }
 </style>

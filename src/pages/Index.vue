@@ -7,6 +7,9 @@
         <post-card :post="item"></post-card>
       </q-intersection>
     </div>
+    <div v-show="maxPages > 1">
+      <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true"></q-pagination>
+    </div>
     <!--
     <h4 class="q-mb-sm">Categories</h4>
     <div class="row q-col-gutter-md">
@@ -47,7 +50,14 @@ export default {
   name: 'Home',
   data() {
     return {
-      postList: []
+      postList: [],
+      postCount: 0,
+      postPage: 0
+    }
+  },
+  computed: {
+    maxPages () {
+      return Math.floor(this.postCount / 10) + (this.postCount % 10 == 0 ? 0 : 1)
     }
   },
   components: {
@@ -69,6 +79,7 @@ export default {
       }
       else if (r.success) {
         this.postList = r.posts
+        this.postCount = r.postCount
       }
     })
   }

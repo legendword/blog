@@ -2,8 +2,6 @@
     <q-input outlined v-model="searchquery" :label="$t('search.searchbar')" @keydown="searchKeyDown">
         <template v-slot:append>
             <q-icon v-if="searchquery != ''" name="close" @click="searchquery = ''" class="cursor-pointer" />
-        </template>
-        <template v-slot:after>
             <q-btn color="primary" round flat icon="search" @click="search" />
         </template>
     </q-input>

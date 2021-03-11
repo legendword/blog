@@ -8,7 +8,7 @@
                 <q-form class="q-gutter-md q-px-md">
                     <q-input type="email" v-model="email" lazy-rules :rules="emailRules" :label="$t('general.email')"></q-input>
                     <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" :label="$t('general.password')"></q-input>
-                    <p>{{ $t('logIn.alreadyAccountPrompt') }} <q-btn :label="$t('logIn.alreadyAccountSignIn')" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
+                    <p><span style="line-height: 36px;padding-right: 5px;">{{ $t('logIn.alreadyAccountPrompt') }}</span> <q-btn :label="$t('logIn.alreadyAccountSignIn')" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
                 </q-form>
             </q-card-section>
             <q-card-actions align="right" class="q-pa-lg">
@@ -24,7 +24,7 @@
                 <q-form class="q-gutter-md q-px-md">
                     <q-input v-model="email" lazy-rules :rules="emailRules" :label="$t('general.email')"></q-input>
                     <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" :label="$t('general.password')"></q-input>
-                    <p>{{ $t('logIn.noAccountPrompt') }} <q-btn :label="$t('logIn.noAccountSignUp')" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
+                    <p><span style="line-height: 36px;padding-right: 5px;">{{ $t('logIn.noAccountPrompt') }}</span> <q-btn :label="$t('logIn.noAccountSignUp')" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
                 </q-form>
             </q-card-section>
             <q-card-actions align="right" class="q-pa-lg">
@@ -43,6 +43,9 @@ export default {
         open: {
             type: Boolean,
             required: true
+        },
+        noBackToHome: {
+            type: Boolean
         }
     },
     data() {
@@ -68,8 +71,13 @@ export default {
         },
         backToHome() {
             this.resetFields()
-            if (this.$route.path!='/') this.$router.push('/')
-            this.$emit('closed')
+            if (this.noBackToHome) {
+                this.$emit('closed')
+            }
+            else {
+                if (this.$route.path!='/') this.$router.push('/')
+                this.$emit('closed')
+            }
         },
         submitSignUp() {
             api('signup', {
@@ -111,7 +119,7 @@ export default {
                 else if (r.invalid) {
                     this.$q.notify({
                         color: 'negative',
-                        message: $t('logIn.incorrect'),
+                        message: this.$t('logIn.incorrect'),
                         position: 'top',
                         timeout: 2000
                     })

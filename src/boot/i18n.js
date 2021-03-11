@@ -27,7 +27,7 @@ else if (navigator.language && navigator.language != '') {
 }
 
 const i18n = new VueI18n({
-  locale: 'en',
+  locale: userLanguage,
   fallbackLocale: 'en',
   messages
 })

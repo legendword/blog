@@ -68,7 +68,15 @@ export default {
     },
     post: {
         notFoundTitle: '糟糕',
-        notFoundMsg: '文章不存在或已被删除'
+        notFoundMsg: '文章不存在或已被删除',
+        publishedOn: {
+            before: '发表于',
+            after: ''
+        },
+        views: {
+            before: '阅读',
+            after: ''
+        }
     },
     logIn: {
         newAccount: '用户注册',
@@ -94,6 +102,9 @@ export default {
         newPost: '创建新文章',
         viewPost: '查看',
         removePost: '删除'
+    },
+    followingPage: {
+        newPosts: '最近更新'
     },
     indexPage: {
         allPosts: '全部文章'

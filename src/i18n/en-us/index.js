@@ -68,7 +68,15 @@ export default {
     },
     post: {
         notFoundTitle: 'Oops...',
-        notFoundMsg: 'This post has been deleted or does not exist.'
+        notFoundMsg: 'This post has been deleted or does not exist.',
+        publishedOn: {
+            before: 'Published on',
+            after: ''
+        },
+        views: {
+            before: '',
+            after: 'Views'
+        }
     },
     logIn: {
         newAccount: 'New Account',
@@ -94,6 +102,9 @@ export default {
         newPost: 'New Post',
         viewPost: 'View',
         removePost: 'Remove'
+    },
+    followingPage: {
+        newPosts: 'New Posts'
     },
     indexPage: {
         allPosts: 'All Posts'

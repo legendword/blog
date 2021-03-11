@@ -23,6 +23,7 @@ export default new Vuex.Store({
   strict: process.env.DEBUGGING,
   state: {
     miniDrawerMode: false,
+    hideDrawerMode: false,
     user: null,
     isLoggedIn: false,
     newAccount: null,
@@ -36,6 +37,9 @@ export default new Vuex.Store({
     },
     newAccount(state, val) {
       state.newAccount = val;
+    },
+    setHideDrawerMode (state, val) {
+      state.hideDrawerMode = val
     },
     setMiniDrawerMode (state, val) {
       state.miniDrawerMode = val

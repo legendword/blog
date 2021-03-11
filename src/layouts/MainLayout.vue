@@ -1,6 +1,16 @@
 <template>
   <q-layout view="hHh LpR fFf">
-    <q-drawer content-class="bg-shade-light" show-if-above v-model="leftDrawer" :width="200" side="left" :mini="miniDrawer" @mouseover="drawerMouseOver" @mouseout="drawerMouseOut">
+
+    <q-header reveal elevated class="bg-secondary text-white">
+      <q-toolbar>
+        <q-btn @click="toggleDrawer" flat round dense icon="menu" class="q-mr-sm" />
+        <q-toolbar-title>
+          {{ barTitle }}
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-header>
+
+    <q-drawer content-class="bg-shade-light" show-if-above :behavior="hideDrawerMode ? 'mobile' : 'default'" v-model="leftDrawer" :width="200" side="left" :mini="miniDrawer" @mouseover="drawerMouseOver" @mouseout="drawerMouseOut">
       <q-scroll-area class="fit">
         <q-list padding class="menu-list">
           <q-item clickable v-ripple to="/" exact>
@@ -12,7 +22,7 @@
               {{ $t('layoutDrawer.discover') }}
             </q-item-section>
           </q-item>
-
+          <!--
           <q-item clickable v-ripple to="/collections" exact>
             <q-item-section avatar>
               <q-icon name="star" />
@@ -22,9 +32,9 @@
 
               {{ $t('layoutDrawer.collections') }}
             </q-item-section>
-          </q-item>
+          </q-item> -->
 
-          <q-item clickable v-ripple to="/404" exact>
+          <q-item clickable v-ripple to="/following" exact>
             <q-item-section avatar>
               <q-icon name="drafts" />
             </q-item-section>
@@ -83,23 +93,10 @@
       </div>
     </q-drawer>
 
-    <q-footer reveal elevated class="bg-secondary text-white">
-      <q-toolbar>
-        <q-btn @click="toggleDrawer" flat round dense icon="menu" class="q-mr-sm" />
-          <q-toolbar-title>
-            {{ barTitle }}
-          </q-toolbar-title>        
-        <!--
-        <q-tabs v-model="tab" shrink switch-indicator>
-          <q-tab name="tab2" label="Reading" />
-          <q-tab name="tab1" label="Home" />
-        </q-tabs>
-        -->
-      </q-toolbar>
-    </q-footer>
-
     <q-page-container>
-      <router-view />
+      <transition name="fade">
+        <router-view />
+      </transition>
     </q-page-container>
 
     <log-in :open="logInDialog" @closed="logInDialog = false"></log-in>
@@ -108,13 +105,15 @@
 </template>
 
 <script>
+import SearchBar from 'src/components/SearchBar.vue'
 import { mapState } from 'vuex'
 import api from '../api'
 import LogIn from '../components/LogIn'
 export default {
   name: 'MainLayout',
   components: {
-    LogIn
+    LogIn,
+    SearchBar
   },
   data () {
     return {
@@ -128,7 +127,7 @@ export default {
     barTitle () {
       return this.$route.meta.customBarTitle ? this.$store.state.barTitle : 'Legendword Blog'
     },
-    ...mapState(['user','isLoggedIn','miniDrawerMode'])
+    ...mapState(['user','isLoggedIn','miniDrawerMode', 'hideDrawerMode'])
   },
   methods: {
     signIn() {

@@ -1,0 +1,7 @@
+{
+  "appId": "com.legendword.blog",
+  "appName": "Legendword Blog",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}

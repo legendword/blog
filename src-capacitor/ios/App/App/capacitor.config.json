@@ -1,0 +1,10 @@
+{
+  "appId": "com.legendword.blog",
+  "appName": "Legendword Blog",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "server": {
+    "url": "http://192.168.0.14:8080"
+  }
+}

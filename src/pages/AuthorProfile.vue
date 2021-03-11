@@ -1,12 +1,7 @@
 <template>
     <q-page class="q-pb-lg">
         <div v-if="authorNotFound">
-            <q-banner class="q-pa-lg bg-deep-purple-6 text-white">
-                <!--
-                <template v-slot:avatar>
-                    <q-icon name="account_circle" color="white" />
-                </template>
-                -->
+            <q-banner class="q-pa-lg bg-primary text-white">
                 <div class="row">
                     <div class="col-12 text-body1 userName q-py-sm">
                         {{ $t('authorProfile.notFoundMsg') }}
@@ -16,11 +11,6 @@
         </div>
         <div v-else>
             <q-banner class="q-px-lg q-pt-lg">
-                <!--
-                <template v-slot:avatar>
-                    <q-icon name="account_circle" color="white" />
-                </template>
-                -->
                 <div class="text-h6 userName q-py-sm row items-center">
                     <div class="col-auto">
                         <q-avatar size="64px" color="deep-purple-6" text-color="white" class="q-my-auto">{{ author.displayName?author.displayName[0]:'' }}</q-avatar>
@@ -69,7 +59,7 @@
         <profile-edit profileMode="author" :data="author" :open="openProfileEdit" @closed="openProfileEdit = false"></profile-edit>
         <!-- place QPageScroller at end of page -->
         <q-page-scroller expand position="top" :scroll-offset="200" :offset="[0, 0]">
-            <div class="col cursor-pointer q-pa-sm bg-deep-purple-6 text-white text-center">
+            <div class="col cursor-pointer q-pa-sm bg-secondary text-white text-center">
                 {{ author.displayName }}
             </div>
         </q-page-scroller>
@@ -174,6 +164,7 @@ export default {
                 this.$store.commit('setBarTitle')
             }
             else {
+                console.log(r.author)
                 this.author = r.author
                 this.isCurrentUser = this.$store.state.isLoggedIn && r.author.userId == this.$store.state.user.id
                 this.$store.commit('setBarTitle', this.$t('barTitle.author') + ' / ' + this.author.displayName)

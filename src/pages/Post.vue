@@ -91,17 +91,22 @@
                     </q-card>
                 </div> -->
             </div>
-            <q-markdown class="post-content q-py-md col-12 col-md-8" no-html :src="post.content"></q-markdown>
+            <MarkDownItVue class="post-content q-py-md col-12 col-md-8" :content="post.content ? post.content : ''"></MarkDownItVue>
             <p class="text-caption">Post Id: {{ $route.params.id }}</p>
         </div>
     </q-page>
 </template>
 
 <script>
+import MarkDownItVue from 'markdown-it-vue'
+import 'markdown-it-vue/dist/markdown-it-vue.css'
 import api from '../api'
 import { mapState } from 'vuex'
 export default {
     name: 'Post',
+    components: {
+        MarkDownItVue
+    },
     data() {
         return {
             post: {},

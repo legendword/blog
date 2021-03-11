@@ -1,0 +1,12 @@
+{
+  "name": "blog",
+  "version": "0.0.1",
+  "description": "An elegant blog system by Legendword, built with Quasar.",
+  "author": "Legendword <zwh@legendword.com>",
+  "private": true,
+  "dependencies": {
+    "@capacitor/cli": "^2.0.0",
+    "@capacitor/core": "^2.0.0",
+    "@capacitor/ios": "^2.4.7"
+  }
+}

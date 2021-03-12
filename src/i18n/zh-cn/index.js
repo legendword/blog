@@ -53,6 +53,7 @@ export default {
         profileUpdatedCaption: '刷新页面查看最新信息'
     },
     compose: {
+        barTitle: '写作',
         newPost: '创建文章',
         notAuthorMsg: '你还不是作者！申请成为作者即可创作',
         becomeAuthor: '成为作者',

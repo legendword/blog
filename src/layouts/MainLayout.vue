@@ -4,6 +4,7 @@
     <q-header reveal elevated class="bg-secondary text-white">
       <q-toolbar>
         <q-btn @click="toggleDrawer" flat round dense icon="menu" class="q-mr-sm" />
+        <q-btn @click="routerGoBack" v-if="canGoBack" flat round dense icon="chevron_left" class="q-mr-sm" />
         <q-toolbar-title>
           {{ barTitle }}
         </q-toolbar-title>
@@ -13,44 +14,13 @@
     <q-drawer content-class="bg-shade-light" show-if-above :behavior="hideDrawerMode ? 'mobile' : 'default'" v-model="leftDrawer" :width="200" side="left" :mini="miniDrawer" @mouseover="drawerMouseOver" @mouseout="drawerMouseOut">
       <q-scroll-area class="fit">
         <q-list padding class="menu-list">
-          <q-item clickable v-ripple to="/" exact>
+          <q-item v-for="item in menuItems" :key="item.link" clickable v-ripple :to="item.link" exact>
             <q-item-section avatar>
-              <q-icon name="inbox" />
+              <q-icon :name="item.icon" />
             </q-item-section>
 
             <q-item-section>
-              {{ $t('layoutDrawer.discover') }}
-            </q-item-section>
-          </q-item>
-          <!--
-          <q-item clickable v-ripple to="/collections" exact>
-            <q-item-section avatar>
-              <q-icon name="star" />
-            </q-item-section>
-
-            <q-item-section>
-
-              {{ $t('layoutDrawer.collections') }}
-            </q-item-section>
-          </q-item> -->
-
-          <q-item clickable v-ripple to="/following" exact>
-            <q-item-section avatar>
-              <q-icon name="drafts" />
-            </q-item-section>
-
-            <q-item-section>
-              {{ $t('layoutDrawer.following') }}
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple to="/me" exact>
-            <q-item-section avatar>
-              <q-icon name="dashboard" />
-            </q-item-section>
-
-            <q-item-section>
-              {{ $t('layoutDrawer.me') }}
+              {{ $t(item.name) }}
             </q-item-section>
           </q-item>
         </q-list>
@@ -94,9 +64,7 @@
     </q-drawer>
 
     <q-page-container>
-      <transition name="fade">
-        <router-view />
-      </transition>
+      <router-view />
     </q-page-container>
 
     <log-in :open="logInDialog" @closed="logInDialog = false"></log-in>
@@ -109,6 +77,7 @@ import SearchBar from 'src/components/SearchBar.vue'
 import { mapState } from 'vuex'
 import api from '../api'
 import LogIn from '../components/LogIn'
+import mainMenuItems from '../mainMenu'
 export default {
   name: 'MainLayout',
   components: {
@@ -120,14 +89,22 @@ export default {
       leftDrawer: false,
       miniDrawer: false,
       tab: 'tab1',
-      logInDialog: false
+      logInDialog: false,
+      menuItems: mainMenuItems,
+      menuLinks: []
     }
   },
   computed: {
-    barTitle () {
+    barTitle() {
       return this.$route.meta.customBarTitle ? this.$store.state.barTitle : 'Legendword Blog'
     },
-    ...mapState(['user','isLoggedIn','miniDrawerMode', 'hideDrawerMode'])
+    canGoBack() {
+      return !this.menuLinks.includes(this.$route.path)
+    },
+    hideDrawerMode() {
+      return this.$route.meta.hideDrawer ? true : false
+    },
+    ...mapState(['user','isLoggedIn','miniDrawerMode'])
   },
   methods: {
     signIn() {
@@ -154,6 +131,9 @@ export default {
         }
       })
     },
+    routerGoBack() {
+      this.$router.go(-1)
+    },
     drawerMouseOver() {
       this.miniDrawer = false
     },
@@ -177,6 +157,12 @@ export default {
   },
   watch: {
     miniDrawerMode: 'drawerMouseOut'
+  },
+  created() {
+    if (window.history && window.history.length) {
+      this.$store.commit('setHistoryLength', window.history.length)
+    }
+    this.menuLinks = mainMenuItems.map(v => v.link)
   },
   beforeRouteEnter (to, from, next) {
     api('userinfo', {

@@ -23,23 +23,23 @@ export default new Vuex.Store({
   strict: process.env.DEBUGGING,
   state: {
     miniDrawerMode: false,
-    hideDrawerMode: false,
     user: null,
     isLoggedIn: false,
     newAccount: null,
-    barTitle: 'Legendword Blog'
+    barTitle: 'Legendword Blog',
+    historyLength: 0
   },
   getters: {
   },
   mutations: {
+    setHistoryLength(state, val) {
+      state.historyLength = val
+    },
     setBarTitle(state, val = 'Legendword Blog') {
       state.barTitle = val
     },
     newAccount(state, val) {
       state.newAccount = val;
-    },
-    setHideDrawerMode (state, val) {
-      state.hideDrawerMode = val
     },
     setMiniDrawerMode (state, val) {
       state.miniDrawerMode = val

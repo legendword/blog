@@ -115,11 +115,6 @@ export default {
         }
     },
     computed: mapState(['isLoggedIn']),
-    created() {
-        if (this.$store.state.hideDrawerMode == false) {
-            this.$store.commit('setHideDrawerMode', true);
-        }
-    },
     methods: {
         followAuthor() {
             api('performaction', {
@@ -173,12 +168,6 @@ export default {
             this.setData(res.data)
             next()
         })
-    },
-    beforeRouteLeave (to, from, next) {
-        if (!to.meta.hideDrawer) {
-            this.$store.commit('setHideDrawerMode', false);
-        }
-        next()
     }
 }
 </script>

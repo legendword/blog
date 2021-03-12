@@ -53,6 +53,7 @@ export default {
         profileUpdatedCaption: 'Refresh to see updated profile.'
     },
     compose: {
+        barTitle: 'Compose',
         newPost: 'New Post',
         notAuthorMsg: 'You are not an author yet! Apply to become an author so you can start creating amazing things.',
         becomeAuthor: 'Become an Author',

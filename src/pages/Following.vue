@@ -3,9 +3,11 @@
         <need-to-log-in v-if="!isLoggedIn" />
         <div v-else class="q-pa-lg">
             <h4 class="q-mb-lg">{{ $t('followingPage.newPosts') }}</h4>
-            <q-intersection transition="fade" class="wideCard" v-for="item in postList" :key="item.postId">
-                <post-card :post="item"></post-card>
-            </q-intersection>
+            <div class="row q-col-gutter-md">
+                <q-intersection transition="fade" class="col-12 wideCard" v-for="item in postList" :key="item.postId">
+                    <post-card :post="item"></post-card>
+                </q-intersection>
+            </div>
         </div>
     </q-page>
 </template>

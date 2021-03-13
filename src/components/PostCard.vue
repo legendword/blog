@@ -21,6 +21,10 @@
 
                     <q-icon class="q-pl-sm q-pr-sm" name="visibility" size="1rem" />
                     <span class="q-my-auto vertical-middle">{{ calcNumber(post.views) }}</span>
+
+                    <span class="q-pl-sm">
+                        <q-chip class="q-ma-none" outline color="primary">{{post.category}}</q-chip>
+                    </span>
                 </div>
             </q-card-section>
         </q-card>

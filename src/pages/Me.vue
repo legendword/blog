@@ -29,18 +29,19 @@
             </div>
             <div class="q-px-lg" v-show="user.isAuthor">
                 <h5 class="q-mb-sm">{{ $t('me.creator') }}</h5>
-                <div class="row q-mb-md">
-                    <div class="col-12">
-                        
-                    </div>
-                </div>
                 <div class="row">
-                    <div class="col-auto tabCol">
-                        <q-tabs class="bg-shade-light" v-model="creatorTab" vertical>
-                            <q-tab name="overview" icon="timeline" :label="$t('general.overview')" />
-                            <q-tab name="posts" icon="article" :label="$t('general.posts')" />
-                            <q-tab name="comments" icon="comment" :label="$t('general.comments')" />
-                        </q-tabs>
+                    <div class="col-auto">
+                        <q-list bordered separator class="creatorTabs text-weight-medium">
+                            <q-item clickable v-ripple :active="creatorTab == 'overview'" @click="creatorTab = 'overview'">
+                                <q-item-section>{{ $t('general.overview') }}</q-item-section>
+                            </q-item>
+                            <q-item clickable v-ripple :active="creatorTab == 'posts'" @click="creatorTab = 'posts'">
+                                <q-item-section>{{ $t('general.posts') }}</q-item-section>
+                            </q-item>
+                            <q-item clickable v-ripple :active="creatorTab == 'comments'" @click="creatorTab = 'comments'">
+                                <q-item-section>{{ $t('general.comments') }}</q-item-section>
+                            </q-item>
+                        </q-list>
                     </div>
                     <div class="col">
                         <q-tab-panels v-model="creatorTab" animated vertical>
@@ -62,7 +63,7 @@
                                                     <div class="text-h5">{{ post.title }}</div>
                                                     <div class="row text-body1 q-gutter-md">
                                                         <div class="col col-md-auto">
-                                                            {{ post.publishTime }}
+                                                            {{ post.publishTimeStr }}
                                                         </div>
                                                         <div class="col col-md-auto">
                                                             {{ post.views }}
@@ -90,7 +91,7 @@
                                 </div>
                             </q-tab-panel>
                             <q-tab-panel name="comments">
-                                <div class="text-h5">Comments</div>
+                                <div class="text-h5">{{ $t('general.comments') }}</div>
                             </q-tab-panel>
                         </q-tab-panels>
                     </div>
@@ -153,6 +154,7 @@ export default {
     methods: {
         removePost(postId) {
             console.log(postId)
+            this.$q.notify({ color: 'negative', message: 'Removing post is an upcoming feature.', position: 'top', timeout: 2000 });
         },
         setData(r) {
             console.log(r)
@@ -191,9 +193,7 @@ export default {
   text-decoration: none;
   color: initial;
 }
-.tabCol {
-    width: 100px;
-    max-width: 100px;
-    min-width: 100px;
+.creatorTabs {
+    width: 150px;
 }
 </style>

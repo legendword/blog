@@ -128,6 +128,7 @@ export default {
                     this.$store.commit('userLogIn', r.user)
                     this.resetFields()
                     this.$emit('closed')
+                    this.$router.go(0)
                 }
             })
         }

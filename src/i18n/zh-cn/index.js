@@ -36,6 +36,22 @@ export default {
         author: '作者',
         user: '用户'
     },
+    settings: {
+        title: '设置',
+        general: {
+            title: '通用',
+            language: '语言',
+            languages: {
+                Chinese: '中文',
+                English: '英文'
+            }
+        }
+    },
+    needToLogIn: {
+        msg: '登录后即可使用全部功能',
+        signInBtn: '登录',
+        backToHomeBtn: '返回主页'
+    },
     userProfile: {
         notFoundMsg: '用户不存在',
         profile: '详情',
@@ -60,10 +76,11 @@ export default {
         authorApplicationApproved: '作者申请已通过！ (alpha-testing-no-restriction)',
         title: '标题',
         description: '简介',
+        category: '分类',
         content: '内容',
         preview: '预览',
         submit: '提交',
-        fieldRequired: '文章必须有标题，简介，内容。',
+        fieldRequired: '文章必须有标题，简介，分类，内容。',
         exceedsMaxLength: '标题或简介超出最大字符数',
         postIsPublished: '文章已发布'
     },

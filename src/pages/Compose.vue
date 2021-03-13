@@ -8,8 +8,24 @@
             </template>
         </q-banner>
         <div v-show="isLoggedIn && user.isAuthor == '1'">
-            <q-input counter maxlength="30" v-model="newPost.title" :label="$t('compose.title')" class="q-mb-md"></q-input>
+            <q-input counter maxlength="50" v-model="newPost.title" :label="$t('compose.title')" class="q-mb-md"></q-input>
             <q-input autogrow counter maxlength="100" v-model="newPost.description" :label="$t('compose.description')" class="q-mb-md"></q-input>
+            <div class="row q-gutter-md">
+                <div class="col-12 col-sm-auto">
+                    <q-select class="composeCategorySelect" outlined v-model="newPost.category" :options="postCategories" option-value="id" option-label="name" emit-value map-options :label="$t('compose.category')"></q-select>
+                </div>
+                <div class="col-12 col-sm">
+                    <div class="text-body2 text-grey-8">Tags ({{newPost.tags.length}}/{{tagsLimit}})</div>
+                    <div class="row inline items-center">
+                        <q-chip v-for="(tag, index) in newPost.tags" :key="index" removable color="primary" text-color="white" @remove="removeTag(index)">{{tag}}</q-chip>
+                        <q-input class="q-pl-sm" maxlength="20" v-model="newTag" dense borderless @keydown="newTagKeydown" label="+ Add Tag">
+                            <template v-slot:append>
+                                <q-btn class="touch-only" v-if="newTag != ''" round dense flat icon="add" color="primary" @click="insertTag" />
+                            </template>
+                        </q-input>
+                    </div>
+                </div>
+            </div>
             <div class="q-mt-md row">
                 <div class="col-12 col-md-6">
                     <h6 class="q-my-md">{{ $t('compose.content') }}</h6>
@@ -64,7 +80,7 @@
                     <h6 class="q-my-md">{{ $t('compose.preview') }}</h6>
                     <q-scroll-area class="composeScrollArea" :thumbStyle="scrollAreaThumbStyle">
                         <!--<q-markdown class="q-pa-md" no-html :src="newPost.content"></q-markdown> -->
-                        <MarkDownItVue class="q-pa-md post-content" :content="newPost.content"></MarkDownItVue>
+                        <MarkDownItVue class="q-pa-md post-content" :content="newPost.content" :options="markdownItVueOptions"></MarkDownItVue>
                     </q-scroll-area>
                 </div>
             </div>
@@ -82,6 +98,7 @@
 <script>
 import MarkDownItVue from 'markdown-it-vue'
 import 'markdown-it-vue/dist/markdown-it-vue.css'
+import markdownItVueOptions from '../markdownItVueOptions'
 import { mapState } from 'vuex'
 import LogIn from '../components/LogIn'
 import api from '../api'
@@ -105,6 +122,7 @@ export default {
     },
     data() {
         return {
+            markdownItVueOptions: markdownItVueOptions,
             headingSizes: ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'],
             editorActions: editorActions,
             editorActionsPerformed: {
@@ -121,10 +139,15 @@ export default {
                 url: '',
                 label: ''
             },
+            tagsLimit: 5,
+            newTag: '',
+            postCategories: [],
             newPost: {
                 title: '',
                 description: '',
-                content: ''
+                content: '',
+                category: '',
+                tags: []
             },
             scrollAreaThumbStyle: {
                 width: '4px',
@@ -145,6 +168,26 @@ export default {
         }
     },
     methods: {
+        removeTag(ind) {
+            this.newPost.tags.splice(ind, 1)
+        },
+        insertTag() {
+            if (this.newPost.tags.includes(this.newTag) || this.newPost.tags.length == this.tagsLimit) {
+                return
+            }
+            this.newPost.tags.push(this.newTag)
+            this.newTag = ''
+        },
+        newTagKeydown(ev) {
+            if (ev.keyCode == 13) { //Enter
+                this.insertTag()
+            }
+            else if (ev.keyCode == 8) {
+                if (this.newTag.length == 0 && this.newPost.tags.length > 0) {
+                    this.newPost.tags.pop()
+                }
+            }
+        },
         headingAction(ind) {
             let text = ''
             for (let i=0;i<=ind;i++) {
@@ -260,17 +303,17 @@ export default {
             }
         },
         submitPost() {
-            if (this.newPost.title.length == 0 || this.newPost.content.length == 0 || this.newPost.description.length == 0) {
+            if (this.newPost.title.length == 0 || this.newPost.content.length == 0 || this.newPost.description.length == 0 || this.newPost.category == '') {
                 this.$q.notify({
-                    type: 'negative',
+                    type: 'warning',
                     message: this.$t('compose.fieldRequired'),
                     position: 'top'
                 })
                 return
             }
-            if (this.newPost.title.length > 30 || this.newPost.description.length > 100) {
+            if (this.newPost.title.length > 50 || this.newPost.description.length > 100) {
                 this.$q.notify({
-                    type: 'negative',
+                    type: 'warning',
                     message: this.$t('compose.exceedsMaxLength'),
                     position: 'top'
                 })
@@ -279,9 +322,12 @@ export default {
             api('newpost', {
                 title: this.newPost.title,
                 description: this.newPost.description,
-                content: this.newPost.content
+                content: this.newPost.content,
+                category: this.newPost.category,
+                tags: this.newPost.tags
             }).then(res => {
                 let r = res.data
+                console.log(r)
                 if (r.error) {
                     this.$q.notify({
                         color: 'negative',
@@ -304,11 +350,28 @@ export default {
     },
     created() {
         this.$store.commit('setBarTitle', this.$t('compose.barTitle'))
+        api('listcategories').then(res => {
+            let r = res.data
+                if (r.error) {
+                    this.$q.notify({
+                        color: 'negative',
+                        message: r.msg,
+                        position: 'top',
+                        timeout: 2000
+                    })
+                }
+                else if (r.success) {
+                    this.postCategories = r.categories
+                }
+        })
     }
 }
 </script>
 
 <style lang="scss">
+.composeCategorySelect {
+    min-width: 200px;
+}
 .barNoMLImportant {
     margin-left: 0 !important;
 }

@@ -1,11 +1,11 @@
 <template>
     <q-page class="q-pa-lg">
-        <div class="text-h4 q-mb-lg">Settings</div>
+        <div class="text-h4 q-mb-lg">{{$t('settings.title')}}</div>
         <q-list bordered>
-            <q-item-label header>General</q-item-label>
+            <q-item-label header>{{$t('settings.general.title')}}</q-item-label>
             <q-item>
                 <q-item-section>
-                    Language
+                    {{$t('settings.general.language')}}
                 </q-item-section>
                 <q-item-section side class="settingSelect">
                     <q-select dense v-model="language" outlined :options="options.languages" map-options emit-value />
@@ -28,11 +28,11 @@ export default {
         return {
             options: {
                 languages: [
-                    {value: 'en', label: 'English'},
-                    {value: 'zh', label: 'Chinese'}
+                    {value: 'en', label: this.$t('settings.general.languages.English')},
+                    {value: 'zh', label: this.$t('settings.general.languages.Chinese')}
                 ]
             },
-            language: this.$i18n.locale
+            language: this.$root.$i18n.locale
         }
     },
     computed: {
@@ -48,7 +48,7 @@ export default {
     },
     watch: {
         language(lang) {
-            this.$i18n.locale = lang
+            this.$root.$i18n.locale = lang
             if (this.isLoggedIn) {
                 api('editusersetting', {
                     column: 'locale',

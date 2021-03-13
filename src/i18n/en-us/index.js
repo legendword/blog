@@ -36,6 +36,22 @@ export default {
         author: 'Author',
         user: 'User'
     },
+    settings: {
+        title: 'Settings',
+        general: {
+            title: 'General',
+            language: 'Language',
+            languages: {
+                Chinese: 'Chinese',
+                English: 'English'
+            }
+        }
+    },
+    needToLogIn: {
+        msg: 'Sign In To Access Full Functionalities',
+        signInBtn: 'Sign In',
+        backToHomeBtn: 'Back To Home'
+    },
     userProfile: {
         notFoundMsg: 'This user does not exist.',
         profile: 'Profile',
@@ -60,10 +76,11 @@ export default {
         authorApplicationApproved: 'Your application to become an author has been approved! (alpha-testing-no-restriction)',
         title: 'Title',
         description: 'Description',
+        category: 'Category',
         content: 'Content',
         preview: 'Preview',
         submit: 'Submit',
-        fieldRequired: 'The post must have a title, a description, and some content.',
+        fieldRequired: 'The post must have a title, a description, a category, and some content.',
         exceedsMaxLength: 'Title/Description exceeds maximum length.',
         postIsPublished: 'Post is published.'
     },

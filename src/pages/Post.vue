@@ -7,12 +7,18 @@
         <div v-else class="post-layout">
             <h4>{{ post.title }}</h4>
             <div class="row q-gutter-md q-mb-lg justify-between">
-                <div class="col-12 col-md text-subtitle1 post-infoLine row inline wrap items-center">
-                    <div>
-                        {{ $t('post.publishedOn.before') }} <span class="text-weight-medium">{{ post.publishTimeStr }}</span> {{ $t('post.publishedOn.after') }}
+                <div class="col-12 col-md">
+                    <div class="q-mt-md text-subtitle1 post-infoLine row inline wrap items-center">
+                        <div>
+                            {{ $t('post.publishedOn.before') }} <span class="text-weight-medium">{{ post.publishTimeStr }}</span> {{ $t('post.publishedOn.after') }}
+                        </div>
+                        <div class="q-pl-lg">
+                            {{ $t('post.views.before') }} <span class="text-weight-medium">{{ post.views }}</span> {{ $t('post.views.after') }}
+                        </div>
                     </div>
-                    <div class="q-pl-lg">
-                        {{ $t('post.views.before') }} <span class="text-weight-medium">{{ post.views }}</span> {{ $t('post.views.after') }}
+                    <div>
+                        <q-chip class="text-weight-medium" clickable outline color="primary">{{post.category}}</q-chip>
+                        <q-chip v-for="tag in post.tags" :key="tag.id" clickable color="primary" text-color="white">{{tag.name}}</q-chip>
                     </div>
                 </div>
                 <div class="col-12 col-md-auto text-subtitle1">
@@ -91,7 +97,7 @@
                     </q-card>
                 </div> -->
             </div>
-            <MarkDownItVue class="post-content q-py-md col-12 col-md-8" :content="post.content ? post.content : ''"></MarkDownItVue>
+            <MarkDownItVue class="post-content q-py-md col-12 col-md-8" :content="post.content ? post.content : ''" :options="markdownItVueOptions"></MarkDownItVue>
             <p class="text-caption">Post Id: {{ $route.params.id }}</p>
         </div>
     </q-page>
@@ -100,6 +106,7 @@
 <script>
 import MarkDownItVue from 'markdown-it-vue'
 import 'markdown-it-vue/dist/markdown-it-vue.css'
+import markdownItVueOptions from '../markdownItVueOptions'
 import api from '../api'
 import { mapState } from 'vuex'
 export default {
@@ -109,6 +116,7 @@ export default {
     },
     data() {
         return {
+            markdownItVueOptions: markdownItVueOptions,
             post: {},
             postNotFound: false,
             hoverUnfollow: false

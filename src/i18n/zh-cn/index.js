@@ -12,7 +12,13 @@ export default {
         cancel: '取消',
         submit: '提交',
         username: '用户名',
-        displayName: '作者名'
+        displayName: '作者名',
+        sortBy: '排序',
+        sort: {
+            timeDesc: '最新发布',
+            timeAsc: '最早发布',
+            viewsDesc: '最多阅读'
+        }
     },
     computed: {
         followers: '粉丝',
@@ -35,6 +41,20 @@ export default {
     barTitle: {
         author: '作者',
         user: '用户'
+    },
+    categories: {
+        article: '文章',
+        novel: '小说',
+        nonfiction: '纪实',
+        changelog: '更新日志'
+    },
+    category: {
+        title: '分类',
+        notFoundMsg: '分类不存在',
+    },
+    tagPage: {
+        title: '标签',
+        notFoundMsg: '标签不存在'
     },
     settings: {
         title: '设置',

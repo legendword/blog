@@ -17,8 +17,8 @@
                         </div>
                     </div>
                     <div>
-                        <q-chip class="text-weight-medium" clickable outline color="primary">{{post.category}}</q-chip>
-                        <q-chip v-for="tag in post.tags" :key="tag.id" clickable color="primary" text-color="white">{{tag.name}}</q-chip>
+                        <q-chip class="text-weight-medium" clickable outline color="primary" @click="goToCategory">{{post.category ? $t('categories.'+post.category) : ''}}</q-chip>
+                        <q-chip v-for="tag in post.tags" :key="tag.id" clickable color="primary" text-color="white" @click="goToTag(tag.name)">{{tag.name}}</q-chip>
                     </div>
                 </div>
                 <div class="col-12 col-md-auto text-subtitle1">
@@ -124,6 +124,14 @@ export default {
     },
     computed: mapState(['isLoggedIn']),
     methods: {
+        goToCategory() {
+            if (this.post.category) {
+                this.$router.push('/category/'+this.post.category)
+            }
+        },
+        goToTag(tagName) {
+            this.$router.push('/tag/'+tagName)
+        },
         followAuthor() {
             api('performaction', {
                 type: 'followAuthor',

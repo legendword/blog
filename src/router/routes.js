@@ -14,7 +14,9 @@ const routes = [
       { path: 'author/:id', component: () => import('pages/AuthorProfile.vue'), meta: { customBarTitle: true } },
       { path: 'search', component: () => import('pages/Search.vue') },
       { path: 'settings', component: () => import('pages/Settings.vue') },
-      { path: 'following', component: () => import('pages/Following.vue') }
+      { path: 'following', component: () => import('pages/Following.vue') },
+      { path: 'category/:name', component: () => import('pages/Category.vue') },
+      { path: 'tag/:name', component: () => import('pages/Tag.vue') }
     ]
   },
 

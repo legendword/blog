@@ -350,7 +350,9 @@ export default {
     },
     created() {
         this.$store.commit('setBarTitle', this.$t('compose.barTitle'))
-        api('listcategories').then(res => {
+        api('listcategories', {
+            newpost: true
+        }).then(res => {
             let r = res.data
                 if (r.error) {
                     this.$q.notify({
@@ -361,6 +363,9 @@ export default {
                     })
                 }
                 else if (r.success) {
+                    for (let i=0;i<r.categories.length;i++) {
+                        r.categories[i].name = this.$t('categories.'+r.categories[i].name)
+                    }
                     this.postCategories = r.categories
                 }
         })

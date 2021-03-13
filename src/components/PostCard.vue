@@ -23,7 +23,7 @@
                     <span class="q-my-auto vertical-middle">{{ calcNumber(post.views) }}</span>
 
                     <span class="q-pl-sm">
-                        <q-chip class="q-ma-none" outline color="primary">{{post.category}}</q-chip>
+                        <q-chip class="q-ma-none" outline color="primary">{{$t('categories.'+post.category)}}</q-chip>
                     </span>
                 </div>
             </q-card-section>

@@ -12,7 +12,13 @@ export default {
         cancel: 'Cancel',
         submit: 'Submit',
         username: 'Username',
-        displayName: 'Display Name'
+        displayName: 'Display Name',
+        sortBy: 'Sort By',
+        sort: {
+            timeDesc: 'Date Published (Newest)',
+            timeAsc: 'Date Published (Oldest)',
+            viewsDesc: 'Most Views'
+        }
     },
     computed: {
         followers: 'Follower | Followers',
@@ -35,6 +41,20 @@ export default {
     barTitle: {
         author: 'Author',
         user: 'User'
+    },
+    categories: {
+        article: 'Article',
+        novel: 'Novel',
+        nonfiction: 'Nonfiction',
+        changelog: 'ChangeLog'
+    },
+    category: {
+        title: 'Category',
+        notFoundMsg: 'This category does not exist.'
+    },
+    tagPage: {
+        title: 'Tag',
+        notFoundMsg: 'This tag does not exist.'
     },
     settings: {
         title: 'Settings',

@@ -17,7 +17,8 @@ export default {
         sort: {
             timeDesc: '最新发布',
             timeAsc: '最早发布',
-            viewsDesc: '最多阅读'
+            viewsDesc: '最多阅读',
+            likesDesc: '最多点赞'
         }
     },
     computed: {
@@ -45,7 +46,9 @@ export default {
     categories: {
         article: '文章',
         novel: '小说',
-        nonfiction: '纪实',
+        experience: '经历',
+        knowledge: '技术/知识',
+        guideline: '规则',
         changelog: '更新日志'
     },
     category: {
@@ -114,7 +117,9 @@ export default {
         views: {
             before: '阅读',
             after: ''
-        }
+        },
+        emptyCommentMsg: '评论不能为空',
+        commentSuccess: '评论发表成功'
     },
     logIn: {
         newAccount: '用户注册',

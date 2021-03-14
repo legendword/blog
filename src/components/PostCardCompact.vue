@@ -2,11 +2,11 @@
     <router-link :to="'/post/'+post.postId" class="noLinkStyle">
         <q-card class="post-card">
             <q-card-section>
-                <div class="text-h6 post-card-title">{{ post.title }}</div>
+                <div class="text-h6 post-card-title ellipsis">{{ post.title }}</div>
             </q-card-section>
 
             <q-card-section class="q-pt-none">
-                {{ post.description }}
+                <div class="ellipsis">{{ post.description }}</div>
             </q-card-section>
 
             <q-card-section class="q-pt-none">
@@ -14,7 +14,7 @@
                     <q-icon class="q-pr-sm" name="person_outline" size="1rem" />
                     <span class="q-my-auto vertical-middle">{{ post.authorName }}</span>
 
-                    <span>
+                    <span v-show="false">
                         <q-icon class="q-pl-sm q-pr-sm" name="schedule" size="1rem" />
                         <span class="q-my-auto vertical-middle">{{ calcTimeElapsed(post.publishTime) }}</span>
                     </span>
@@ -22,7 +22,7 @@
                     <q-icon class="q-pl-sm q-pr-sm" name="visibility" size="1rem" />
                     <span class="q-my-auto vertical-middle">{{ calcNumber(post.views) }}</span>
 
-                    <span class="q-pl-sm">
+                    <span class="gt-sm q-pl-sm">
                         <q-chip class="q-ma-none" outline color="primary">{{$t('categories.'+post.category)}}</q-chip>
                     </span>
                 </div>
@@ -34,7 +34,7 @@
 <script>
 import { formatTimeElapsed, formatViews } from '../util'
 export default {
-    name: 'PostCard',
+    name: 'PostCardCompact',
     props: {
         post: {
             type: Object,

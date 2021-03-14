@@ -17,7 +17,8 @@ export default {
         sort: {
             timeDesc: 'Date Published (Newest)',
             timeAsc: 'Date Published (Oldest)',
-            viewsDesc: 'Most Views'
+            viewsDesc: 'Most Views',
+            likesDesc: 'Most Likes'
         }
     },
     computed: {
@@ -45,7 +46,9 @@ export default {
     categories: {
         article: 'Article',
         novel: 'Novel',
-        nonfiction: 'Nonfiction',
+        experience: 'Experience',
+        knowledge: 'Skill/Knowledge',
+        guideline: 'Guideline',
         changelog: 'ChangeLog'
     },
     category: {
@@ -114,7 +117,9 @@ export default {
         views: {
             before: '',
             after: 'Views'
-        }
+        },
+        emptyCommentMsg: 'Comment cannot be empty!',
+        commentSuccess: 'Comment added'
     },
     logIn: {
         newAccount: 'New Account',

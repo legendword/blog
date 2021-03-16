@@ -130,9 +130,15 @@
                                 <div>
                                     <span class="text-weight-medium commentUsername" @click="$router.push('/user/'+childComment.userId)">
                                         {{childComment.username}}
-                                        <q-badge rounded color="accent" class="q-ml-xs" v-show="childComment.userIsAuthor == '1'">
-                                            <q-icon name="done" color="white" />
-                                        </q-badge>
+                                        <span v-show="childComment.userIsAuthor == '1'">
+                                            <q-badge rounded outline color="primary" class="q-mx-xs" v-if="childComment.userId == post.authorUserId">
+                                                <q-icon name="create" color="primary" />
+                                                Author
+                                            </q-badge>
+                                            <q-badge rounded color="accent" class="q-mx-xs" v-else>
+                                                <q-icon name="done" color="white" />
+                                            </q-badge>
+                                        </span>
                                     </span>
                                     <span class="q-ml-sm post-infoLine">{{formatTime(childComment.publishTime)}}</span>
                                 </div>

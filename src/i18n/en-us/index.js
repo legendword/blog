@@ -29,7 +29,8 @@ export default {
     forms: {
         requiredField: 'This is a required field.',
         maxChar: 'Maximum {0} Characters',
-        onlyLettersAndSpaces: 'Can only contain letters and spaces.'
+        onlyLettersAndSpaces: 'Can only contain letters and spaces.',
+        nameTaken: 'This name is taken'
     },
     userAction: {
         unfollow: 'Unfollow',
@@ -50,6 +51,14 @@ export default {
         knowledge: 'Skill/Knowledge',
         guideline: 'Guideline',
         changelog: 'ChangeLog'
+    },
+    collections: {
+        menuHeader: 'Collections',
+        menu: {
+            browse: 'Browse',
+            favorites: 'Favorites',
+            mine: 'Mine'
+        }
     },
     category: {
         title: 'Category',
@@ -144,7 +153,12 @@ export default {
         creator: 'Creator',
         newPost: 'New Post',
         viewPost: 'View',
-        removePost: 'Remove'
+        removePost: 'Remove',
+        stats: {
+            totalViews: 'Views',
+            totalComments: 'Comments',
+            totalFollowers: 'Followers'
+        }
     },
     followingPage: {
         newPosts: 'New Posts'

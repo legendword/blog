@@ -6,12 +6,12 @@
             </q-card-section>
             <q-card-section v-if="profileMode == 'user'">
                 <q-form class="q-gutter-md q-px-md">
-                    <q-input v-model="username" lazy-rules :rules="usernameRules" :label="$t('general.username')"></q-input>
+                    <q-input debounce="500" v-model="username" lazy-rules :rules="usernameRules" :label="$t('general.username')" ref="username"></q-input>
                 </q-form>
             </q-card-section>
             <q-card-section v-else>
                 <q-form class="q-gutter-md q-px-md">
-                    <q-input v-model="displayName" lazy-rules :rules="displayNameRules" :label="$t('general.displayName')"></q-input>
+                    <q-input debounce="500" v-model="displayName" lazy-rules :rules="displayNameRules" :label="$t('general.displayName')" ref="displayName"></q-input>
                 </q-form>
             </q-card-section>
             <q-card-actions align="right" class="q-pa-lg">
@@ -45,13 +45,15 @@ export default {
             usernameRules: [
                 val => val && val.length > 0 || this.$t('forms.requiredField'),
                 val => val.length <= 20 || this.$t('forms.maxChar', ['20']),
-                val => /^[a-zA-Z ]+$/.test(val) || this.$t('forms.onlyLettersAndSpaces')
+                val => /^[a-zA-Z ]+$/.test(val) || this.$t('forms.onlyLettersAndSpaces'),
+                this.checkUsername
             ],
             displayName: '',
             displayNameRules: [
                 val => val && val.length > 0 || this.$t('forms.requiredField'),
                 val => val.length <= 20 || this.$t('forms.maxChar', ['20']),
-                val => /^[a-zA-Z ]+$/.test(val) || this.$t('forms.onlyLettersAndSpaces')
+                val => /^[a-zA-Z ]+$/.test(val) || this.$t('forms.onlyLettersAndSpaces'),
+                this.checkDisplayName
             ]
         }
     },
@@ -66,6 +68,48 @@ export default {
         }
     },
     methods: {
+        checkUsername() {
+            return new Promise((resolve, reject) => {
+                api("checkname", {
+                    name: this.username,
+                    type: 'user'
+                }).then(res => {
+                    let r = res.data
+                    if (r.success) {
+                        if (r.result == true) {
+                            resolve(true)
+                        }
+                        else {
+                            resolve(this.$t('forms.nameTaken'))
+                        }
+                    }
+                    else {
+                        reject(r)
+                    }
+                })
+            })
+        },
+        checkDisplayName() {
+            return new Promise((resolve, reject) => {
+                api("checkname", {
+                    name: this.displayName,
+                    type: 'author'
+                }).then(res => {
+                    let r = res.data
+                    if (r.success) {
+                        if (r.result == true) {
+                            resolve(true)
+                        }
+                        else {
+                            resolve(this.$t('forms.nameTaken'))
+                        }
+                    }
+                    else {
+                        reject(r)
+                    }
+                })
+            })
+        },
         resetFields() {
             if (this.data) {
                 var fields
@@ -84,7 +128,7 @@ export default {
             this.resetFields()
             this.$emit('closed')
         },
-        submitEdit() {
+        submitRealEdit() {
             if (this.profileMode == 'user') {
                 api('edituserprofile', {
                     username: this.username
@@ -136,6 +180,21 @@ export default {
                         })
                     }
                 })
+            }
+        },
+        submitEdit() {
+            let vld = this.profileMode == 'user' ? this.$refs.username.validate() : this.$refs.displayName.validate()
+            if (vld.then) {
+                vld.then(outcome => {
+                    if (outcome === true) {
+                        this.submitRealEdit()
+                    }
+                })
+            }
+            else {
+                if (vld === true) {
+                    this.submitRealEdit()
+                }
             }
         }
     }

@@ -10,6 +10,7 @@
                 <q-item-section side class="settingSelect">
                     <q-select dense v-model="language" outlined :options="options.languages" map-options emit-value />
                 </q-item-section>
+                <!-- todo miniDrawerMode -->
             </q-item>
             <!--
             <q-expansion-item expand-separator icon="settings" label="General">

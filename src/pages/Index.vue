@@ -10,35 +10,6 @@
     <div class="flex flex-center q-mt-md" v-show="this.postList.length > 0">
       <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true"></q-pagination>
     </div>
-    <!--
-    <h4 class="q-mb-sm">Categories</h4>
-    <div class="row q-col-gutter-md">
-      <div class="col-6">
-        <q-card class="post-card">
-          <q-card-section>
-            <div class="text-h6 post-card-title">Our Changing Planet</div>
-            <div class="text-subtitle2">by John Doe</div>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none">
-            Test
-          </q-card-section>
-        </q-card>
-      </div>
-      <div class="col-6">
-        <q-card class="post-card">
-          <q-card-section>
-            <div class="text-h6 post-card-title">Our Changing Planet</div>
-            <div class="text-subtitle2">by John Doe</div>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none">
-            Test
-          </q-card-section>
-        </q-card>
-      </div>
-    </div>
-      -->
   </q-page>
 </template>
 

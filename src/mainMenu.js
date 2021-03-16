@@ -2,17 +2,22 @@ const mainMenuItems = [
     {
         name: 'layoutDrawer.discover',
         link: '/',
-        icon: 'inbox'
+        icon: 'ion-book'
+    },
+    {
+        name: 'layoutDrawer.collections',
+        link: '/collections',
+        icon: 'ion-bookmarks'  
     },
     {
         name: 'layoutDrawer.following',
         link: '/following',
-        icon: 'drafts'
+        icon: 'ion-today'
     },
     {
         name: 'layoutDrawer.me',
         link: '/me',
-        icon: 'dashboard'
+        icon: 'ion-home'
     }
 ];
 export default mainMenuItems;

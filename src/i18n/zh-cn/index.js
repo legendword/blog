@@ -29,7 +29,8 @@ export default {
     forms: {
         requiredField: '此项为必填',
         maxChar: '最多{0}个字符',
-        onlyLettersAndSpaces: '只能包括字母和数字'
+        onlyLettersAndSpaces: '只能包括字母和数字',
+        nameTaken: '名称已被占用'
     },
     userAction: {
         unfollow: '取消关注',
@@ -144,7 +145,12 @@ export default {
         creator: '创作者中心',
         newPost: '创建新文章',
         viewPost: '查看',
-        removePost: '删除'
+        removePost: '删除',
+        stats: {
+            totalViews: '阅读',
+            totalComments: '评论',
+            totalFollowers: '粉丝'
+        }
     },
     followingPage: {
         newPosts: '最近更新'

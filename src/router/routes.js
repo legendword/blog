@@ -5,7 +5,9 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Index.vue') },
-      { path: 'collections', component: () => import('pages/Collections.vue') },
+      { path: 'collections', redirect: 'collections/browse' },
+      { path: 'collections/:tab', component: () => import('pages/Collections.vue') },
+      { path: 'collection/:id', component: () => import('pages/Collection.vue'), meta: { customBarTitle: true } },
       { path: 'post/:id', component: () => import('pages/Post.vue'), meta: { hideDrawer: true, customBarTitle: true } },
       { path: 'compose', component: () => import('pages/Compose.vue'), meta: { hideDrawer: true, customBarTitle: true } },
       { path: 'newAccount', component: () => import('pages/NewAccount.vue') },

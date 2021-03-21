@@ -11,6 +11,8 @@ export default {
         password: '密码',
         cancel: '取消',
         submit: '提交',
+        done: '完成',
+        save: '保存',
         username: '用户名',
         displayName: '作者名',
         sortBy: '排序',
@@ -24,7 +26,7 @@ export default {
     computed: {
         followers: '粉丝',
         posts: '文章',
-        collections: 'Collection | Collections'
+        collections: '收藏夹'
     },
     forms: {
         requiredField: '此项为必填',
@@ -43,6 +45,45 @@ export default {
     barTitle: {
         author: '作者',
         user: '用户'
+    },
+    collections: {
+        menuHeader: '收藏夹',
+        menu: {
+            browse: '浏览',
+            favorites: '我喜欢的',
+            mine: '我创建的'
+        },
+        title: {
+            browse: '浏览',
+            favorites: '喜欢的收藏夹',
+            mine: '我的收藏夹'
+        },
+        newCollection: '新建收藏夹',
+        newCollectionDialog: {
+            name: '收藏夹名称'
+        },
+        deleteCollectionDialog: {
+            title: '确认删除',
+            msg: '确认删除此收藏夹？'
+        }
+    },
+    collection: {
+        title: '收藏夹',
+        lastUpdated: '最近更新',
+        editInfo: '修改信息',
+        editInfoDialog: {
+            title: '收藏夹名称',
+            description: '简介 (可选)',
+            public: '公开收藏夹',
+            mustHaveTitle: '收藏夹必须有一个名称',
+            updated: '收藏夹信息已更新'
+        },
+        editPosts: '管理文章',
+        deletePostDialog: {
+            title: '确认移除',
+            msg: '确认移除此文章？'
+        },
+        notFoundMsg: '这个收藏夹似乎不存在'
     },
     categories: {
         article: '文章',
@@ -79,7 +120,7 @@ export default {
     userProfile: {
         notFoundMsg: '用户不存在',
         profile: '详情',
-        collections: 'Collections',
+        collections: '收藏夹',
         goToAuthorPage: '作者主页',
         editProfile: '编辑信息',
         profileUpdated: '信息已更新'
@@ -120,7 +161,10 @@ export default {
             after: ''
         },
         emptyCommentMsg: '评论不能为空',
-        commentSuccess: '评论发表成功'
+        commentSuccess: '评论发表成功',
+        addToCollection: '添加至收藏夹',
+        newCollection: '新建收藏夹',
+        addedToCollection: '收藏成功'
     },
     logIn: {
         newAccount: '用户注册',
@@ -133,7 +177,7 @@ export default {
     },
     layoutDrawer: {
         discover: '发现',
-        collections: '收藏',
+        collections: '收藏夹',
         following: '关注',
         me: '我',
         notSignedIn: '未登录',
@@ -150,7 +194,8 @@ export default {
             totalViews: '阅读',
             totalComments: '评论',
             totalFollowers: '粉丝'
-        }
+        },
+        postViews: '阅读'
     },
     followingPage: {
         newPosts: '最近更新'

@@ -1,5 +1,5 @@
 <template>
-    <q-item class="q-pa-md" clickable v-ripple :to="'/post/'+post.postId">
+    <q-item class="q-pa-md" clickable :to="'/post/'+post.postId">
         <q-item-section>
             <q-item-label class="text-h6">{{ post.title }}</q-item-label>
             <q-item-label class="q-pt-xs">{{ post.description }}</q-item-label>
@@ -14,6 +14,10 @@
 
                 <q-icon class="q-pl-sm q-pr-sm" name="visibility" size="1rem" />
                 <span class="q-my-auto vertical-middle">{{ calcNumber(post.views) }}</span>
+
+                <span class="q-pl-sm">
+                    <q-chip class="q-ma-none" outline color="primary">{{$t('categories.'+post.category)}}</q-chip>
+                </span>
             </q-item-label>
         </q-item-section>
     </q-item>

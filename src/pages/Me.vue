@@ -78,7 +78,7 @@
                                                             {{ post.publishTimeStr }}
                                                         </div>
                                                         <div class="col col-md-auto">
-                                                            {{ post.views }}
+                                                            {{ post.views }} {{$t('me.postViews')}}
                                                         </div>
                                                     </div>
                                                 </div>

@@ -11,6 +11,8 @@ export default {
         password: 'Password',
         cancel: 'Cancel',
         submit: 'Submit',
+        done: 'Done',
+        save: 'Save',
         username: 'Username',
         displayName: 'Display Name',
         sortBy: 'Sort By',
@@ -44,6 +46,45 @@ export default {
         author: 'Author',
         user: 'User'
     },
+    collections: {
+        menuHeader: 'Collections',
+        menu: {
+            browse: 'Browse',
+            favorites: 'Favorites',
+            mine: 'Mine'
+        },
+        title: {
+            browse: 'Browse',
+            favorites: 'My Favorites',
+            mine: 'My Collections'
+        },
+        newCollection: 'New Collection',
+        newCollectionDialog: {
+            name: 'Collection Name'
+        },
+        deleteCollectionDialog: {
+            title: 'Confirm Deletion',
+            msg: 'Are you sure you want to delete this collection?'
+        }
+    },
+    collection: {
+        title: 'Collection',
+        lastUpdated: 'Last Updated',
+        editInfo: 'Edit Info',
+        editInfoDialog: {
+            title: 'Title',
+            description: 'Description (Optional)',
+            public: 'Public',
+            mustHaveTitle: 'Collection must have a title!',
+            updated: 'Collection Info Updated'
+        },
+        editPosts: 'Manage Posts',
+        deletePostDialog: {
+            title: 'Confirm',
+            msg: 'Are you sure you want to delete this post?'
+        },
+        notFoundMsg: 'This collection does not seem to exist.'
+    },
     categories: {
         article: 'Article',
         novel: 'Novel',
@@ -51,14 +92,6 @@ export default {
         knowledge: 'Skill/Knowledge',
         guideline: 'Guideline',
         changelog: 'ChangeLog'
-    },
-    collections: {
-        menuHeader: 'Collections',
-        menu: {
-            browse: 'Browse',
-            favorites: 'Favorites',
-            mine: 'Mine'
-        }
     },
     category: {
         title: 'Category',
@@ -128,7 +161,10 @@ export default {
             after: 'Views'
         },
         emptyCommentMsg: 'Comment cannot be empty!',
-        commentSuccess: 'Comment added'
+        commentSuccess: 'Comment added',
+        addToCollection: 'Add To Collection',
+        newCollection: 'New Collection',
+        addedToCollection: 'Added to Collection'
     },
     logIn: {
         newAccount: 'New Account',
@@ -158,7 +194,8 @@ export default {
             totalViews: 'Views',
             totalComments: 'Comments',
             totalFollowers: 'Followers'
-        }
+        },
+        postViews: 'Views'
     },
     followingPage: {
         newPosts: 'New Posts'

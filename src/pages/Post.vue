@@ -5,7 +5,32 @@
             <h6>{{ $t('post.notFoundMsg') }}</h6>
         </div>
         <div v-else class="post-layout">
-            <h4>{{ post.title }}</h4>
+            <!-- title and add to collection btn -->
+            <div class="row q-mt-lg q-mb-xl">
+                <div class="col">
+                    <div class="text-h4 word-break">{{ post.title }}</div>
+                </div>
+                <div class="col-auto" v-show="isLoggedIn">
+                    <q-btn round flat color="primary" size="28" icon="o_bookmark_add" @click="loadUserCollections">
+                        <q-popup-proxy :breakpoint="500" anchor="bottom end" self="top right">
+                            <q-card style="width: 300px; max-width: 80vw;">
+                                <q-card-section>
+                                    <div class="text-h6 q-mb-md">{{$t('post.addToCollection')}}</div>
+                                    <q-list bordered separator>
+                                        <q-item clickable v-ripple>
+                                            <q-item-section class="text-primary word-break" @click="newCollection">+ {{$t('post.newCollection')}}</q-item-section>
+                                        </q-item>
+                                        <q-item v-for="item in userCollections" :key="item.id" clickable v-ripple v-close-popup @click="addToCollection(item.id)">
+                                            <q-item-section class="word-break">{{ item.title }}</q-item-section>
+                                        </q-item>
+                                    </q-list>
+                                </q-card-section>
+                            </q-card>
+                        </q-popup-proxy>
+                    </q-btn>
+                </div>
+            </div>
+            <!-- post info and author info -->
             <div class="row q-gutter-md q-mb-lg justify-between">
                 <div class="col-12 col-md">
                     <div class="q-mt-md text-subtitle1 post-infoLine row inline wrap items-center">
@@ -43,7 +68,9 @@
                     </q-card>
                 </div>
             </div>
-            <MarkDownItVue class="post-content q-py-md col-12 col-md-8" :content="post.content ? post.content : ''" :options="markdownItVueOptions"></MarkDownItVue>
+            <!-- post content -->
+            <MarkDownItVue class="post-content q-pt-lg q-pb-md col-12 col-md-8" :content="post.content ? post.content : ''" :options="markdownItVueOptions"></MarkDownItVue>
+            <!-- comments -->
             <div class="q-mt-xl">
                 <q-separator />
                 <div class="q-mt-lg row justify-between">
@@ -78,7 +105,7 @@
                         <div class="post-infoLine text-italic text-center">Log in to add a comment</div>
                     </div>
                 </div>
-                <div>
+                <div class="q-mb-md">
                     <div v-for="comment in comments" :key="comment.id" class="q-mt-md">
                         <q-separator class="q-my-md" />
                         <div>
@@ -189,16 +216,94 @@ export default {
             ],
             commentSortBy: 'timeDesc', //todo comment sort
             addReplyId: 0,
-            newReply: ''
+            newReply: '',
+            userCollections: []
         }
     },
     computed: {
+        postId() {
+            return this.$route.params.id
+        },
         commentCount() {
             return this.post.comments ? this.post.comments.length : ''
         },
         ...mapState(['isLoggedIn', 'user'])
     },
     methods: {
+        addToCollection(cid) {
+            api('collectionaddpost', {
+                collectionId: cid,
+                postId: this.postId
+            }).then(res => {
+                let r = res.data
+                if (r.success) {
+                    this.$q.notify({
+                        color: 'positive',
+                        message: this.$t('post.addedToCollection'),
+                        position: 'top',
+                        timeout: 2000
+                    })
+                }
+                else {
+                    this.$q.notify({
+                        color: 'negative',
+                        message: r.msg,
+                        position: 'top',
+                        timeout: 2000
+                    })
+                }
+            })
+        },
+        newCollection() {
+            //!!! mostly in sync with newCollection in Collections.vue
+            this.$q.dialog({
+                title: this.$t('collections.newCollection'),
+                prompt: {
+                    model: '',
+                    label: this.$t('collections.newCollectionDialog.name'),
+                    isValid: val => val.length > 0 && val.length <= 50,
+                    type: 'text'
+                },
+                cancel: true,
+                persistent: true
+            }).onOk(val => {
+                console.log(val)
+                api('newcollection', {
+                    title: val
+                }).then(res => {
+                    let r = res.data
+                    if (r.success) {
+                        this.loadUserCollections()
+                    }
+                    else {
+                        this.$q.notify({
+                            color: 'negative',
+                            message: r.msg,
+                            position: 'top',
+                            timeout: 2000
+                        })
+                    }
+                })
+            })
+        },
+        loadUserCollections() {
+            api('listcollections', {
+                type: 'mine'
+            }).then(res => {
+                let r = res.data
+                if (r.success) {
+                    this.userCollections = r.collections
+                }
+                else {
+                    this.$q.notify({
+                        color: 'negative',
+                        message: r.msg,
+                        position: 'top',
+                        timeout: 2000
+                    })
+                }
+            })
+        },
         changeSortBy(val) {
             this.commentSortBy = val
             this.comments = this.sortComments(this.comments)
@@ -305,7 +410,7 @@ export default {
         },
         getPost() {
             api('getpost', {
-                id: this.$route.params.id
+                id: this.postId
             }).then(res => {
                 this.setData(res.data)
             })
@@ -319,7 +424,7 @@ export default {
             }
             else {
                 api('newcomment', {
-                    postId: this.$route.params.id,
+                    postId: this.postId,
                     content: this.newReply,
                     parentId: this.addReplyId
                 }).then(res => {
@@ -343,7 +448,7 @@ export default {
             }
             else {
                 api('newcomment', {
-                    postId: this.$route.params.id,
+                    postId: this.postId,
                     content: this.newComment
                 }).then(res => {
                     let r = res.data

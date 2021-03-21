@@ -1,6 +1,12 @@
 <template>
   <q-page class="q-pa-lg">
     <search-bar></search-bar>
+    <q-banner class="bg-accent text-white q-ma-md">
+      Legendword Blog is in <b>Beta Testing</b>. If you encountered any issues or would like to propose a new feature, please open an Issue on GitHub.
+      <template v-slot:action>
+        <q-btn flat color="white" label="GitHub" @click="goToGitHub" />
+      </template>
+    </q-banner>
     <h4 class="q-mb-lg">{{ $t('indexPage.allPosts') }}</h4>
     <div class="row q-col-gutter-md">
       <q-intersection transition="fade" class="col-6 col-lg-4" v-for="item in postList" :key="item.postId">
@@ -44,6 +50,9 @@ export default {
     }
   },
   methods: {
+    goToGitHub() {
+      location.href = 'https://github.com/legendword/blog'
+    },
     getPosts() {
       api('listpost', {
         type: 'all',

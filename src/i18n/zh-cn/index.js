@@ -202,7 +202,9 @@ export default {
         newPosts: '最近更新'
     },
     indexPage: {
-        allPosts: '全部文章'
+        allPosts: '全部文章',
+        allCategories: '分类',
+        otherCategories: '其他分类'
     },
     search: {
         searchbar: '搜索...',

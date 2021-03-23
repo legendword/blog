@@ -14,7 +14,7 @@
     <q-drawer content-class="bg-shade-light" show-if-above :behavior="hideDrawerMode ? 'mobile' : 'default'" v-model="leftDrawer" :width="200" side="left" :mini="miniDrawer" @mouseover="drawerMouseOver" @mouseout="drawerMouseOut">
       <q-scroll-area class="fit">
         <q-list padding class="menu-list">
-          <q-item v-for="item in menuItems" :key="item.link" clickable v-ripple :to="item.link" exact>
+          <q-item v-for="item in menuItems" :key="item.link" clickable v-ripple :to="item.link" :exact="item.exact ? true : false">
             <q-item-section avatar>
               <q-icon :name="item.icon" />
             </q-item-section>

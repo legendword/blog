@@ -344,6 +344,7 @@ export default {
                         timeout: 2000
                     })
                     //after post publish
+                    this.$router.push('/me')
                 }
             })
         }

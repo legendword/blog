@@ -101,6 +101,7 @@ export default {
     },
     watch: {
         tab: function () {
+            this.$router.replace('/search/'+this.tab+this.$route.fullPath.substring(this.$route.path.length))
             this.newSearch(this.actualQuery)
         }
     },
@@ -131,7 +132,11 @@ export default {
             })
         }
     },
-    mounted() {
+    created() {
+        let tab = this.$route.params.tab
+        if (tab) {
+            this.tab = tab
+        }
         this.newSearch(this.searchquery)
     }
 }

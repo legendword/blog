@@ -8,7 +8,7 @@
             <div class="row justify-between q-mb-md">
                 <div class="text-h5">{{$t('general.posts')}}</div>
                 <div>
-                    <q-btn-dropdown icon="sort" color="primary" :label="$t('general.sortBy')">
+                    <q-btn-dropdown flat icon="sort" color="primary" :label="$t('general.sortBy')">
                         <q-list>
                             <q-item v-for="item in sortOptions" :key="item.value" clickable v-close-popup @click="changeSortBy(item.value)" :active="sortBy == item.value">
                                 <q-item-section>
@@ -20,9 +20,12 @@
                 </div>
             </div>
             <div class="row q-col-gutter-md">
-                <q-intersection transition="fade" class="col-12 wideCard" v-for="item in postList" :key="item.postId">
+                <q-intersection class="col-12 wideCard" v-for="item in postList" :key="item.postId">
                     <post-card :post="item"></post-card>
                 </q-intersection>
+            </div>
+            <div class="flex flex-center q-mt-md" v-show="postList.length > 0">
+                <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
             </div>
         </div>
     </q-page>
@@ -45,10 +48,21 @@ export default {
                 {label: this.$t('general.sort.timeAsc'), value: 'timeAsc'},
                 {label: this.$t('general.sort.viewsDesc'), value: 'viewsDesc'}
             ],
-            postList: []
+            postList: [],
+            postCount: 0,
+            postPage: 1,
+            postPerPage: 10
+        }
+    },
+    computed: {
+        maxPages () {
+            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this. postPerPage == 0 ? 0 : 1)
         }
     },
     methods: {
+        changePage(val) {
+            this.getPosts()
+        },
         changeSortBy(value) {
             this.sortBy = value
             this.getPosts()
@@ -57,10 +71,10 @@ export default {
             api('listpost', {
                 type: 'category',
                 category: this.$route.params.name,
-                sort: this.sortBy
+                sort: this.sortBy,
+                page: this.postPage
             }).then(res => {
                 let r = res.data
-                console.log(r)
                 if (r.error) {
                     if (r.errorType && r.errorType == 'CategoryNotFound') {
                         this.categoryNotFound = true
@@ -71,6 +85,10 @@ export default {
                 }
                 else {
                     this.postList = r.posts
+                    if (this.postPage == 1) {
+                        console.log(r)
+                        this.postCount = r.postCount
+                    }
                 }
             })
         }

@@ -67,43 +67,50 @@
                                         <q-btn color="primary" icon="add" :label="$t('me.newPost')" to="/compose" />
                                     </div>
                                 </div>
-                                <div class="q-ma-sm q-mb-md" v-for="post in creator.posts" :key="post.postId">
-                                    <q-card>
-                                        <q-card-section>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <div class="text-h5">{{ post.title }}</div>
-                                                    <div class="row text-body1 q-gutter-md">
-                                                        <div class="col col-md-auto">
-                                                            {{ post.publishTimeStr }}
-                                                        </div>
-                                                        <div class="col col-md-auto">
-                                                            {{ post.views }} {{$t('me.postViews')}}
+                                <div>
+                                    <div class="q-ma-sm q-mb-md" v-if="creatorPostLoading">
+                                        <q-card>
+                                            <q-card-section>
+                                                <q-skeleton type="rect" class="q-mb-sm"></q-skeleton>
+                                                <q-skeleton type="text"></q-skeleton>
+                                            </q-card-section>
+                                        </q-card>
+                                    </div>
+                                    <div class="q-ma-sm q-mb-md" v-for="post in creator.posts" :key="post.postId">
+                                        <q-card>
+                                            <q-card-section>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="text-h5">{{ post.title }}</div>
+                                                        <div class="row text-body1 q-gutter-md">
+                                                            <div class="col col-md-auto">
+                                                                {{ post.publishTimeStr }}
+                                                            </div>
+                                                            <div class="col col-md-auto">
+                                                                {{ post.views }} {{$t('me.postViews')}}
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <div class="col-auto q-my-auto">
+                                                        <q-btn-group>
+                                                            <q-btn color="primary" :label="$t('me.viewPost')" :to="'/post/'+post.postId"></q-btn>
+                                                            <q-btn color="grey" :label="$t('me.removePost')" @click="removePost(post.postId)"></q-btn>
+                                                        </q-btn-group>
+                                                    </div>
                                                 </div>
-                                                <div class="col-auto q-my-auto">
-                                                    <q-btn-group>
-                                                        <q-btn color="primary" :label="$t('me.viewPost')" :to="'/post/'+post.postId"></q-btn>
-                                                        <q-btn color="grey" :label="$t('me.removePost')" @click="removePost(post.postId)"></q-btn>
-                                                    </q-btn-group>
-                                                </div>
-                                            </div>
-                                            
-                                        </q-card-section>
-                                    </q-card>
-                                </div>
-                                <div class="q-ma-sm q-mb-md" v-if="creatorPostLoading">
-                                    <q-card>
-                                        <q-card-section>
-                                            <q-skeleton type="rect" class="q-mb-sm"></q-skeleton>
-                                            <q-skeleton type="text"></q-skeleton>
-                                        </q-card-section>
-                                    </q-card>
+                                                
+                                            </q-card-section>
+                                        </q-card>
+                                        
+                                    </div>
+                                    <div class="flex flex-center q-mt-md" v-if="!creatorPostLoading">
+                                        <q-pagination v-model="creatorPagination.posts.current" :max="creatorPagination.posts.max" input @input="creatorPostsPageChange" />
+                                    </div>
                                 </div>
                             </q-tab-panel>
                             <q-tab-panel name="comments">
                                 <div class="text-h5">{{ $t('general.comments') }}</div>
+                                <upcoming-feature></upcoming-feature>
                             </q-tab-panel>
                         </q-tab-panels>
                     </div>
@@ -118,11 +125,13 @@ import AuthorCard from '../components/AuthorCard.vue'
 import { mapState } from 'vuex'
 import api from '../api'
 import NeedToLogIn from '../components/NeedToLogIn.vue'
+import UpcomingFeature from '../components/UpcomingFeature.vue'
 export default {
     name: 'Me',
     components: {
         NeedToLogIn,
-        AuthorCard
+        AuthorCard,
+        UpcomingFeature
     },
     data() {
         return {
@@ -132,6 +141,12 @@ export default {
             creator: {
                 stats: [],
                 posts: []
+            },
+            creatorPagination: {
+                posts: {
+                    current: 1,
+                    max: 0
+                }
             },
             creatorPostLoading: false
         }
@@ -145,6 +160,30 @@ export default {
         }
     },
     methods: {
+        creatorPostsPageChange(val) {
+            this.creatorPostLoading = true
+            this.creator.posts = []
+            api('listpost', {
+                type: 'author',
+                id: this.author.id,
+                page: val
+            }).then(res => {
+                let r = res.data
+                console.log(r)
+                if (r.error) {
+                    this.$q.notify({
+                        color: 'negative',
+                        message: r.msg,
+                        position: 'top',
+                        timeout: 2000
+                    })
+                }
+                else if (r.success) {
+                    this.creator.posts = r.posts
+                }
+                this.creatorPostLoading = false
+            })
+        },
         fetchCreatorTab(val) {
             if (val == 'overview') {
                 api('authorstats').then(res => {
@@ -188,6 +227,8 @@ export default {
                     }
                     else if (r.success) {
                         this.creator.posts = r.posts
+                        let postCount = parseInt(r.postCount)
+                        this.creatorPagination.posts.max = Math.floor(postCount / 10) + (postCount % 10 == 0 ? 0 : 1)
                     }
                     this.creatorPostLoading = false
                 })

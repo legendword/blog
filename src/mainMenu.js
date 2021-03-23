@@ -2,7 +2,8 @@ const mainMenuItems = [
     {
         name: 'layoutDrawer.discover',
         link: '/',
-        icon: 'ion-book'
+        icon: 'ion-book',
+        exact: true
     },
     {
         name: 'layoutDrawer.collections',

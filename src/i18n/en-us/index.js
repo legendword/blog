@@ -202,7 +202,9 @@ export default {
         newPosts: 'New Posts'
     },
     indexPage: {
-        allPosts: 'All Posts'
+        allPosts: 'All Posts',
+        allCategories: 'Categories',
+        otherCategories: 'Other Categories'
     },
     search: {
         searchbar: 'Search...',

@@ -4,6 +4,7 @@
         <div class="q-my-md text-h5 text-weight-regular">{{ $t('search.searchResultFor') }} <span class="text-weight-bold">{{ actualQuery }}</span></div>
         <q-tabs v-model="tab" align="left" no-caps class="bg-secondary text-white shadow-2">
             <q-tab name="posts" :label="$t('general.posts')" />
+            <q-tab name="collections" :label="$t('general.collections')" />
             <q-tab name="authors" :label="$t('general.authors')" />
             <q-tab name="users" :label="$t('general.users')" />
         </q-tabs>
@@ -15,6 +16,19 @@
                 <div v-else>
                     <q-list bordered separator v-if="resultList.posts.length">
                         <PostListItem v-for="item in resultList.posts" :key="item.postId" :post="item"></PostListItem>
+                    </q-list>
+                    <div class="text-h6 q-pl-md" v-else>
+                        {{ $t('search.noResultsFound') }}
+                    </div>
+                </div>
+            </q-tab-panel>
+            <q-tab-panel name="collections" class="q-px-none">
+                <div v-if="isLoading" class="row justify-center q-my-md">
+                    <q-circular-progress indeterminate size="50px" color="primary" class="col-auto" />
+                </div>
+                <div v-else>
+                    <q-list bordered separator v-if="resultList.collections.length">
+                        <CollectionListItem v-for="item in resultList.collections" :key="item.id" :collection="item" showUser></CollectionListItem>
                     </q-list>
                     <div class="text-h6 q-pl-md" v-else>
                         {{ $t('search.noResultsFound') }}
@@ -57,13 +71,15 @@ import api from '../api'
 import SearchBar from '../components/SearchBar.vue'
 import AuthorCard from '../components/AuthorCard.vue'
 import UserCard from '../components/UserCard.vue'
+import CollectionListItem from '../components/CollectionListItem.vue'
 export default {
     name: 'Search',
     components: {
         SearchBar,
         PostListItem,
         AuthorCard,
-        UserCard
+        UserCard,
+        CollectionListItem
     },
     data() {
         return {
@@ -72,7 +88,8 @@ export default {
             resultList: {
                 posts: [],
                 authors: [],
-                users: []
+                users: [],
+                collections: []
             },
             isLoading: false
         }

@@ -42,7 +42,7 @@
                                 <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">{{ $t('authorProfile.editProfile') }}</q-btn>
                             </div>
                         </div>
-                        Profile is coming in a future release.
+                        <upcoming-feature version="0.2"></upcoming-feature>
                     </q-tab-panel>
                     <q-tab-panel name="posts">
                         <div class="text-h6 q-my-md">
@@ -71,11 +71,13 @@ import api from '../api';
 import { mapState } from 'vuex';
 import ProfileEdit from '../components/ProfileEdit'
 import PostCard from '../components/PostCard'
+import UpcomingFeature from 'src/components/UpcomingFeature.vue';
 export default {
     name: 'AuthorProfile',
     components: {
         ProfileEdit,
-        PostCard
+        PostCard,
+        UpcomingFeature
     },
     data() {
         return {

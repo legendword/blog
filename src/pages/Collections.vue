@@ -22,7 +22,7 @@
         <q-tab-panels v-model="currentMenu" animated>
             <q-tab-panel name="browse">
                 <div class="text-h5">{{$t('collections.title.browse')}}</div>
-                <upcoming-feature class="q-ma-md" version="0.1" />
+                <upcoming-feature class="q-ma-md" version="0.1.2" />
             </q-tab-panel>
             <q-tab-panel name="favorites">
                 <div class="text-h5">{{$t('collections.title.favorites')}}</div>

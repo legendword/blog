@@ -1,6 +1,7 @@
 export default {
     general: {
         posts: 'Posts',
+        collections: 'Collections',
         authors: 'Authors',
         users: 'Users',
         following: 'Following',

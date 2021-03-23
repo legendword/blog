@@ -1,5 +1,5 @@
 <template>
-    <q-card>
+    <q-card class="q-ma-md">
         <q-card-section>
             <div class="text-h6">Upcoming Feature</div>
             <div class="text-subtitle2">{{version ? 'Coming in v'+version : ''}}</div>

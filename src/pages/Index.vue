@@ -8,14 +8,37 @@
       </template>
     </q-banner>
     <h4 class="q-mb-lg">{{ $t('indexPage.allPosts') }}</h4>
-    <div class="row q-col-gutter-md">
-      <q-intersection transition="fade" class="col-6 col-lg-4" v-for="item in postList" :key="item.postId">
-        <post-card-compact :post="item"></post-card-compact>
-      </q-intersection>
-    </div>
-    <div class="flex flex-center q-mt-md" v-show="this.postList.length > 0">
-      <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true"></q-pagination>
-    </div>
+    <template v-if="postLoading">
+      <div class="row q-col-gutter-md">
+        <div class="col-6 col-lg-4" v-for="i in postPerPage" :key="i">
+          <q-card>
+            <q-card-section>
+              <div class="text-h6">
+                <q-skeleton type="text" width="80%" />
+              </div>
+            </q-card-section>
+            <q-card-section class="q-pt-none">
+                <q-skeleton type="text" />
+            </q-card-section>
+            <q-card-section class="q-pt-none">
+              <div class="text-subtitle2">
+                <q-skeleton type="text" width="65%" />
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
+      </div>
+    </template>
+    <template v-else>
+      <div class="row q-col-gutter-md">
+        <q-intersection transition="fade" class="col-6 col-lg-4" v-for="item in postList" :key="item.postId">
+          <post-card-compact :post="item"></post-card-compact>
+        </q-intersection>
+      </div>
+      <div class="flex flex-center q-mt-md" v-show="this.postList.length > 0">
+        <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true"></q-pagination>
+      </div>
+    </template>
   </q-page>
 </template>
 
@@ -28,6 +51,7 @@ export default {
   name: 'Home',
   data() {
     return {
+      postLoading: false,
       postList: [],
       postCount: 0,
       postPage: 1,
@@ -54,6 +78,7 @@ export default {
       location.href = 'https://github.com/legendword/blog'
     },
     getPosts() {
+      this.postLoading = true
       api('listpost', {
         type: 'all',
         count: this.postPerPage,
@@ -73,10 +98,11 @@ export default {
           this.postList = r.posts
           this.postCount = parseInt(r.postCount)
         }
+        this.postLoading = false
       })
     }
   },
-  mounted() {
+  created() {
     this.getPosts()
   }
 }

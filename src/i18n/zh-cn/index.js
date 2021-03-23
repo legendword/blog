@@ -1,6 +1,7 @@
 export default {
     general: {
         posts: '文章',
+        collections: '收藏夹',
         authors: '作者',
         users: '用户',
         following: '关注',

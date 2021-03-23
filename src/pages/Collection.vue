@@ -7,7 +7,10 @@
         <div v-show="!collectionNotFound">
             <div class="text-h4 q-my-md word-break">{{ collection.title }}</div>
             <div class="text-subtitle1 q-my-md text-grey-8 word-break">{{ collection.description }}</div>
-            <div class="collection-infoLine q-mb-lg">
+            <div class="collection-infoLine q-mb-lg flex items-center">
+                <span class="q-pr-md">
+                    <q-btn color="primary" flat dense :label="collection.username" :to="'/user/'+collection.userId" />
+                </span>
                 <span class="q-pr-md">
                     {{ $t('collection.lastUpdated')+':' }} {{ collection.updateTime ? formatTime(collection.updateTime) : '' }}
                 </span>

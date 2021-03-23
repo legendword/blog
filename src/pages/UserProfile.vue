@@ -63,20 +63,34 @@
                                 <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">{{ $t('userProfile.editProfile') }}</q-btn>
                             </div>
                         </div>
-                        Profile is coming in a future release.
                         <q-banner class="bg-grey-3 q-my-md" v-show="isCurrentUser && !user.isAuthor">
                             {{ $t('compose.notAuthorMsg') }}
                             <template v-slot:action>
                                 <q-btn flat color="primary" :label="$t('compose.becomeAuthor')" @click="becomeAnAuthor" />
                             </template>
                         </q-banner>
+                        <upcoming-feature version="0.2"></upcoming-feature>
                     </q-tab-panel>
                     <q-tab-panel name="collections">
                         <div class="text-h6 q-my-md">
                             {{ $t('userProfile.collections') }}
                         </div>
-                        <p class="text-h5">In Development...</p>
-                        <p>UserId: {{ userId }}</p>
+                        <q-list class="q-mx-md" v-if="collectionsLoading">
+                            <q-item v-for="i in 2" :key="i">
+                                <q-item-section>
+                                    <q-item-label class="text-subtitle2 collectionItemTitle">
+                                        <q-skeleton type="text" />
+                                    </q-item-label>
+                                    <q-item-label caption class="collectionItemInfo">
+                                        <q-skeleton type="text" width="45%" />
+                                    </q-item-label>
+                                </q-item-section>
+                            </q-item>
+                        </q-list>
+                        <q-list bordered separator class="q-mx-md" v-else>
+                            <collection-list-item v-for="item in collections" :key="item.id" :collection="item">
+                            </collection-list-item>
+                        </q-list>
                     </q-tab-panel>
                 </q-tab-panels>
             </div>
@@ -89,10 +103,14 @@
 import api from '../api';
 import { mapState } from 'vuex';
 import ProfileEdit from '../components/ProfileEdit'
+import UpcomingFeature from '../components/UpcomingFeature'
+import CollectionListItem from '../components/CollectionListItem'
 export default {
     name: 'UserProfile',
     components: {
-        ProfileEdit
+        ProfileEdit,
+        UpcomingFeature,
+        CollectionListItem
     },
     data() {
         return {
@@ -101,7 +119,9 @@ export default {
             userNotFound: false,
             tab: 'profile',
             openProfileEdit: false,
-            hoverUnfollow: false
+            hoverUnfollow: false,
+            collections: [],
+            collectionsLoading: false
         }
     },
     computed: {
@@ -116,6 +136,24 @@ export default {
         }
     },
     watch: {
+        tab: function(val) {
+            if (val == 'collections') {
+                this.collectionsLoading = true
+                api('listcollections', {
+                    type: 'user',
+                    id: this.userId
+                }).then(res => {
+                    let r = res.data
+                    if (r.success) {
+                        this.collections = r.collections
+                    }
+                    else {
+                        this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
+                    }
+                    this.collectionsLoading = false
+                })
+            }
+        },
         currentUser: {
             handler: function(newVal) {
                 if (this.isCurrentUser) {

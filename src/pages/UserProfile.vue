@@ -1,5 +1,5 @@
 <template>
-    <q-page class="q-pb-lg">
+    <q-page class="q-pb-lg" v-show="loaded">
         <div v-if="userNotFound">
             <q-banner class="q-pa-lg bg-primary text-white">
                 <!--
@@ -47,11 +47,11 @@
                 <div class="row q-my-md text-subtitle1 q-gutter-md">
                     <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.followingCount }}</span> {{ $t('general.following') }}</div>
                     <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.followerCount }}</span> {{ $tc('computed.followers', user.followerCount) }}</div>
-                    <div class="col col-sm-auto"><span class="text-h6 text-primary">0</span> {{ $tc('computed.collections', 0) }}</div>
+                    <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.collectionCount }}</span> {{ $tc('computed.collections', user.collectionCount) }}</div>
                 </div>
             </q-banner>
             <div class="q-pa-md">
-                <q-tabs v-model="tab" align="left">
+                <q-tabs v-model="tab" align="left" @input="tabChange">
                     <q-tab name="profile" :label="$t('userProfile.profile')" class="q-px-lg" />
                     <q-tab name="collections" :label="$t('userProfile.collections')" class="q-px-lg" />
                 </q-tabs>
@@ -114,6 +114,7 @@ export default {
     },
     data() {
         return {
+            loaded: false,
             user: {},
             isCurrentUser: false,
             userNotFound: false,
@@ -136,24 +137,6 @@ export default {
         }
     },
     watch: {
-        tab: function(val) {
-            if (val == 'collections') {
-                this.collectionsLoading = true
-                api('listcollections', {
-                    type: 'user',
-                    id: this.userId
-                }).then(res => {
-                    let r = res.data
-                    if (r.success) {
-                        this.collections = r.collections
-                    }
-                    else {
-                        this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
-                    }
-                    this.collectionsLoading = false
-                })
-            }
-        },
         currentUser: {
             handler: function(newVal) {
                 if (this.isCurrentUser) {
@@ -218,49 +201,70 @@ export default {
         enterProfileEdit() {
             this.openProfileEdit = true
         },
-        setData(r) {
-            this.user = {}
-            this.isCurrentUser = false
-            this.userNotFound = false
-            if (r.error) {
-                if (r.errorType) {
-                    if (r.errorType == 'UserNotFound') {
-                        this.userNotFound = true;
+        tabChange(val) {
+            let newPath = '/user/'+this.$route.params.id+'/'+val
+            if (this.$route.path != newPath) {
+                this.$router.replace(newPath)
+            }
+            if (val == 'collections') {
+                this.collectionsLoading = true
+                api('listcollections', {
+                    type: 'user',
+                    id: this.userId
+                }).then(res => {
+                    let r = res.data
+                    if (r.success) {
+                        this.collections = r.collections
                     }
+                    else {
+                        this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
+                    }
+                    this.collectionsLoading = false
+                })
+            }
+        },
+        loadInfo() {
+            api('userinfo', {
+                id: this.$route.params.id
+            }).then(res => {
+                let r = res.data
+                this.user = {}
+                this.isCurrentUser = false
+                this.userNotFound = false
+                if (r.error) {
+                    if (r.errorType) {
+                        if (r.errorType == 'UserNotFound') {
+                            this.userNotFound = true;
+                        }
+                    }
+                    else {
+                        this.$q.notify({
+                            color: 'negative',
+                            message: r.msg,
+                            position: 'top',
+                            timeout: 2000
+                        })
+                    }
+                    this.$store.commit('setBarTitle')
                 }
                 else {
-                    this.$q.notify({
-                        color: 'negative',
-                        message: r.msg,
-                        position: 'top',
-                        timeout: 2000
-                    })
+                    console.log(r)
+                    this.user = r.user
+                    this.user.isAuthor = this.user.isAuthor == '1'
+                    this.isCurrentUser = r.isCurrentUser
+                    this.$store.commit('setBarTitle', this.$t('barTitle.user') + ' / ' + this.user.username)
+                    this.tabChange(this.tab)
+                    this.loaded = true
                 }
-                this.$store.commit('setBarTitle')
-            }
-            else {
-                console.log(r)
-                this.user = r.user
-                this.user.isAuthor = this.user.isAuthor == '1'
-                this.isCurrentUser = r.isCurrentUser
-                this.$store.commit('setBarTitle', this.$t('barTitle.user') + ' / ' + this.user.username)
-            }
+            })
         }
     },
-    beforeRouteEnter (to, from, next) {
-        api('userinfo', {
-            id: to.params.id
-        }).then(res => {
-            next(vm => vm.setData(res.data))
-        })
-    },
-    beforeRouteUpdate (to, from, next) {
-        api('userinfo', {
-            id: to.params.id
-        }).then(res => {
-            this.setData(res.data)
-            next()
-        })
+    created() {
+        let tab = this.$route.params.tab
+        if (['profile', 'collections'].includes(tab)) {
+            this.tab = tab
+        }
+        this.loadInfo()
     }
 }
 </script>

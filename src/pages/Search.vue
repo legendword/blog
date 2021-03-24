@@ -14,9 +14,14 @@
                     <q-circular-progress indeterminate size="50px" color="primary" class="col-auto" />
                 </div>
                 <div v-else>
-                    <q-list bordered separator v-if="resultList.posts.length">
-                        <PostListItem v-for="item in resultList.posts" :key="item.postId" :post="item"></PostListItem>
-                    </q-list>
+                    <div v-if="resultList.posts.length">
+                        <q-list bordered separator>
+                            <PostListItem v-for="item in resultList.posts" :key="item.postId" :post="item"></PostListItem>
+                        </q-list>
+                        <div class="flex flex-center q-mt-md">
+                            <q-pagination v-model="pagination.posts.page" color="primary" :max="pagination.posts.maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
+                        </div>
+                    </div>
                     <div class="text-h6 q-pl-md" v-else>
                         {{ $t('search.noResultsFound') }}
                     </div>
@@ -91,6 +96,13 @@ export default {
                 users: [],
                 collections: []
             },
+            pagination: {
+                posts: { page: 1, maxPages: 0 },
+                authors: { page: 1, maxPages: 0 },
+                users: { page: 1, maxPages: 0 },
+                collections: { page: 1, maxPages: 0 }
+            },
+            resultPerPage: 10,
             isLoading: false
         }
     },
@@ -106,6 +118,9 @@ export default {
         }
     },
     methods: {
+        changePage(val) {
+            this.newSearch(this.actualQuery)
+        },
         newSearch(val) {
             this.actualQuery = val
             let currentTab = this.tab
@@ -113,7 +128,8 @@ export default {
             this.isLoading = true
             api('search', {
                 type: currentTab,
-                query: val
+                query: val,
+                page: this.pagination[currentTab].page
             }).then(res => {
                 let r = res.data
                 console.log(r)
@@ -127,6 +143,10 @@ export default {
                 }
                 else if (r.success) {
                     this.resultList[currentTab] = r.result
+                    if (r.resultCount) {
+                        let resultCount = parseInt(r.resultCount)
+                        this.pagination[currentTab].maxPages = Math.floor(resultCount / this.resultPerPage) + (resultCount % this.resultPerPage == 0 ? 0 : 1)
+                    }
                 }
                 this.isLoading = false
             })

@@ -56,7 +56,7 @@ export default {
     },
     computed: {
         maxPages () {
-            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this. postPerPage == 0 ? 0 : 1)
+            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1)
         }
     },
     methods: {
@@ -87,7 +87,7 @@ export default {
                     this.postList = r.posts
                     if (this.postPage == 1) {
                         console.log(r)
-                        this.postCount = r.postCount
+                        this.postCount = parseInt(r.postCount)
                     }
                 }
             })

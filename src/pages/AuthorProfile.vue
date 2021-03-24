@@ -1,5 +1,5 @@
 <template>
-    <q-page class="q-pb-lg">
+    <q-page class="q-pb-lg" v-show="loaded">
         <div v-if="authorNotFound">
             <q-banner class="q-pa-lg bg-primary text-white">
                 <div class="row">
@@ -48,9 +48,12 @@
                         <div class="text-h6 q-my-md">
                             {{ $t('authorProfile.posts') }}
                         </div>
-                        <q-intersection transition="fade" class="col-12 wideCard" v-for="item in postList" :key="item.postId">
+                        <q-intersection class="col-12 wideCard" v-for="item in postList" :key="item.postId">
                             <post-card :post="item"></post-card>
                         </q-intersection>
+                        <div class="flex flex-center q-mt-md" v-show="postCount > 0">
+                            <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
+                        </div>
                         <!-- <q-scroll-observer @scroll="scrollHandler" scroll-target="body" /> -->
                     </q-tab-panel>
                 </q-tab-panels>
@@ -81,8 +84,12 @@ export default {
     },
     data() {
         return {
+            loaded: false,
             author: {},
             postList: [],
+            postCount: 0,
+            postPage: 1,
+            postPerPage: 10,
             isCurrentUser: false,
             authorNotFound: false,
             tab: 'profile',
@@ -96,9 +103,15 @@ export default {
         },
         isLoggedIn () {
             return this.$store.state.isLoggedIn
+        },
+        maxPages () {
+            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1)
         }
     },
     methods: {
+        changePage(val) {
+            this.tabChange(this.tab)
+        },
         followAuthor() {
             api('performaction', {
                 type: 'followAuthor',
@@ -116,13 +129,18 @@ export default {
             })
         },
         tabChange(val) {
-            console.log(val)
+            let newPath = '/author/'+this.$route.params.id+'/'+val
+            if (this.$route.path != newPath) {
+                this.$router.replace(newPath)
+            }
             if (val == 'posts') {
                 api('listpost', {
                     type: 'author',
-                    id: this.author.id
+                    id: this.author.id,
+                    page: this.postPage
                 }).then(res => {
                     let r = res.data
+                    console.log(r)
                     if (r.error) {
                         this.$q.notify({
                             color: 'negative',
@@ -133,6 +151,9 @@ export default {
                     }
                     else if (r.success) {
                         this.postList = r.posts
+                        if (r.postCount) {
+                            this.postCount = parseInt(r.postCount)
+                        }
                     }
                 })
             }
@@ -145,48 +166,47 @@ export default {
         enterProfileEdit() {
             this.openProfileEdit = true
         },
-        setData(r) {
-            this.author = {}
-            this.isCurrentUser = false
-            this.authorNotFound = false
-            if (r.error) {
-                if (r.errorType) {
-                    if (r.errorType == 'AuthorNotFound') {
-                        this.authorNotFound = true;
+        loadInfo() {
+            api('authorinfo', {
+                id: this.$route.params.id
+            }).then(res => {
+                let r = res.data
+                this.author = {}
+                this.isCurrentUser = false
+                this.authorNotFound = false
+                if (r.error) {
+                    if (r.errorType) {
+                        if (r.errorType == 'AuthorNotFound') {
+                            this.authorNotFound = true;
+                        }
                     }
+                    else {
+                        this.$q.notify({
+                            color: 'negative',
+                            message: r.msg,
+                            position: 'top',
+                            timeout: 2000
+                        })
+                    }
+                    this.$store.commit('setBarTitle')
                 }
                 else {
-                    this.$q.notify({
-                        color: 'negative',
-                        message: r.msg,
-                        position: 'top',
-                        timeout: 2000
-                    })
+                    console.log(r.author)
+                    this.author = r.author
+                    this.isCurrentUser = this.$store.state.isLoggedIn && r.author.userId == this.$store.state.user.id
+                    this.$store.commit('setBarTitle', this.$t('barTitle.author') + ' / ' + this.author.displayName)
+                    this.tabChange(this.tab)
+                    this.loaded = true
                 }
-                this.$store.commit('setBarTitle')
-            }
-            else {
-                console.log(r.author)
-                this.author = r.author
-                this.isCurrentUser = this.$store.state.isLoggedIn && r.author.userId == this.$store.state.user.id
-                this.$store.commit('setBarTitle', this.$t('barTitle.author') + ' / ' + this.author.displayName)
-            }
+            })
         }
     },
-    beforeRouteEnter (to, from, next) {
-        api('authorinfo', {
-            id: to.params.id
-        }).then(res => {
-            next(vm => vm.setData(res.data))
-        })
-    },
-    beforeRouteUpdate (to, from, next) {
-        api('authorinfo', {
-            id: to.params.id
-        }).then(res => {
-            this.setData(res.data)
-            next()
-        })
+    created() {
+        let tab = this.$route.params.tab
+        if (['profile', 'posts'].includes(tab)) {
+            this.tab = tab
+        }
+        this.loadInfo()
     }
 }
 </script>

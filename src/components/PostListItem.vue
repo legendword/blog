@@ -4,20 +4,17 @@
             <q-item-label class="text-h6">{{ post.title }}</q-item-label>
             <q-item-label class="q-pt-xs">{{ post.description }}</q-item-label>
             <q-item-label caption class="q-pt-sm">
-                <q-icon class="q-pr-sm" name="person_outline" size="1rem" />
+                <q-icon class="q-pr-xs" name="person_outline" size="1rem" />
                 <span class="q-my-auto vertical-middle">{{ post.authorName }}</span>
 
-                <span>
-                    <q-icon class="q-pl-sm q-pr-sm" name="schedule" size="1rem" />
-                    <span class="q-my-auto vertical-middle">{{ calcTimeElapsed(post.publishTime) }}</span>
-                </span>
+                <q-icon class="q-pl-sm q-pr-xs" name="schedule" size="1rem" />
+                <span class="q-my-auto vertical-middle">{{ calcTimeElapsed(post.publishTime) }}</span>
 
-                <q-icon class="q-pl-sm q-pr-sm" name="visibility" size="1rem" />
+                <q-icon class="q-pl-sm q-pr-xs" name="visibility" size="1rem" />
                 <span class="q-my-auto vertical-middle">{{ calcNumber(post.views) }}</span>
 
-                <span class="q-pl-sm">
-                    <q-chip class="q-ma-none" outline color="primary">{{$t('categories.'+post.category)}}</q-chip>
-                </span>
+                <q-icon class="q-pl-sm q-pr-xs" name="label" size="1rem" />
+                <span class="q-my-auto vertical-middle">{{$t('categories.'+post.category)}}</span>
             </q-item-label>
         </q-item-section>
     </q-item>

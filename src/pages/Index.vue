@@ -118,7 +118,9 @@ export default {
         else if (r.success) {
           console.log(r)
           this.postList = r.posts
-          this.postCount = parseInt(r.postCount)
+          if (r.postCount !== undefined) {
+            this.postCount = parseInt(r.postCount)
+          }
         }
         this.postLoading = false
       })

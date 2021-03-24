@@ -4,9 +4,12 @@
         <div v-else class="q-pa-lg">
             <h4 class="q-mb-lg">{{ $t('followingPage.newPosts') }}</h4>
             <div class="row q-col-gutter-md">
-                <q-intersection transition="fade" class="col-12 wideCard" v-for="item in postList" :key="item.postId">
+                <q-intersection class="col-12 wideCard" v-for="item in postList" :key="item.postId">
                     <post-card :post="item"></post-card>
                 </q-intersection>
+            </div>
+            <div class="flex flex-center q-mt-md" v-show="postList.length > 0">
+                <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
             </div>
         </div>
     </q-page>
@@ -25,18 +28,27 @@ export default {
     data() {
         return {
             postList: [],
-            postCount: 0
+            postCount: 0,
+            postPage: 1,
+            postPerPage: 10
         }
     },
     computed: {
         isLoggedIn() {
             return this.$store.state.isLoggedIn
+        },
+        maxPages () {
+            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1)
         }
     },
-    mounted() {
-        if (this.isLoggedIn) {
+    methods: {
+        changePage() {
+            this.getPosts()
+        },
+        getPosts() {
             api('listpost', {
-                type: 'following'
+                type: 'following',
+                page: this.postPage
             }).then(res => {
                 let r = res.data
                 if (r.error) {
@@ -49,9 +61,16 @@ export default {
                 }
                 else if (r.success) {
                     this.postList = r.posts
-                    this.postCount = r.postCount
+                    if (this.postPage == 1) {
+                        this.postCount = parseInt(r.postCount)
+                    }
                 }
             })
+        }
+    },
+    created() {
+        if (this.isLoggedIn) {
+            this.getPosts()
         }
     }
 }

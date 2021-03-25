@@ -1,10 +1,17 @@
 <p align="center">
-  <img width="256" height="256" src="https://raw.githubusercontent.com/legendword/blog/main/public/favicon.ico">
+  <img width="256" height="256" src="https://raw.githubusercontent.com/legendword/blog/main/public/favicon.ico" />
 </p>
 
 <h1 align="center">
   Legendword Blog (WordBlog)
 </h1>
+
+<p align="center">
+  <img src="https://img.shields.io/github/downloads/legendword/blog/total" />
+  <img src="https://img.shields.io/github/commits-since/legendword/blog/latest?include_prereleases" />
+  <img src="https://img.shields.io/website?down_color=lightgrey&down_message=offline&up_color=green&up_message=online&url=https%3A%2F%2Fblog.legendword.com" />
+</p>
+
 
 Legendword Blog is an elegant, open-source blog system by Legendword, built with Quasar.
 

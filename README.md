@@ -1,4 +1,10 @@
-# Legendword Blog (WordBlog)
+<p align="center">
+  <img width="256" height="256" src="https://raw.githubusercontent.com/legendword/blog/main/public/favicon.ico">
+</p>
+
+<h1 align="center">
+  Legendword Blog (WordBlog)
+</h1>
 
 Elegant open-source blog system by Legendword, built with Quasar.
 

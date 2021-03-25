@@ -3,6 +3,7 @@ import axios from 'axios'
 axios.defaults.withCredentials = true
 
 const base = 'http://localhost/legendword_blog'
+//const base = 'http://192.168.0.14/legendword_blog'
 
 export const signUp = params => axios.post(`${base}/backend/signup.php`, JSON.stringify(params));
 export const signIn = params => axios.post(`${base}/backend/signin.php`, JSON.stringify(params));

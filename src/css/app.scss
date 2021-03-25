@@ -20,6 +20,25 @@
     word-break: break-all;
 }
 
+.link-text, .link-text:visited {
+    text-decoration: none;
+    color: initial;
+    cursor: pointer;
+    transition: color 300ms;
+}
+.link-text:hover, .link-text:active {
+    text-decoration: none;
+    color: $primary;
+}
+
+.link-primary, .link-primary:visited {
+    text-decoration: none;
+    color: $primary;
+    cursor: pointer;
+}
+.link-primary:hover, .link-primary:active {
+    text-decoration: underline;
+}
 
 .wideCard {
     min-height: 150px;

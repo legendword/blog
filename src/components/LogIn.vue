@@ -85,19 +85,19 @@ export default {
                 password: this.password
             }).then(res => {
                 let r = res.data
-                if (r.error) {
+                if (r.success) {
+                    this.$store.commit('newAccount', this.email)
+                    this.resetFields()
+                    this.$emit('closed')
+                    this.$router.push('/newAccount')
+                }
+                else {
                     this.$q.notify({
                         color: 'negative',
                         message: r.msg,
                         position: 'top',
                         timeout: 2000
                     })
-                }
-                else if (r.success) {
-                    this.$store.commit('newAccount', this.email)
-                    this.resetFields()
-                    this.$emit('closed')
-                    this.$router.push('/newAccount')
                 }
             })
         },
@@ -108,15 +108,7 @@ export default {
             }).then(res => {
                 let r = res.data
                 console.log(r);
-                if (r.error) {
-                    this.$q.notify({
-                        color: 'negative',
-                        message: r.msg,
-                        position: 'top',
-                        timeout: 2000
-                    })
-                }
-                else if (r.invalid) {
+                if (r.invalid) {
                     this.$q.notify({
                         color: 'negative',
                         message: this.$t('logIn.incorrect'),
@@ -129,6 +121,14 @@ export default {
                     this.resetFields()
                     this.$emit('closed')
                     this.$router.go(0)
+                }
+                else {
+                    this.$q.notify({
+                        color: 'negative',
+                        message: r.msg,
+                        position: 'top',
+                        timeout: 2000
+                    })
                 }
             })
         }

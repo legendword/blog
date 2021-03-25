@@ -19,7 +19,7 @@
                         <span class="q-mr-sm q-my-auto vertical-middle">{{ author.displayName }}</span>
                         <q-chip color="accent" text-color="white" icon="create">{{ $t('tag.author') }}</q-chip>
                     </div>
-                    <div class="col-auto q-mx-md" v-if="isLoggedIn">
+                    <div class="col-12 col-sm-auto q-mx-sm-md q-mt-md q-mt-sm-none text-center" v-show="isLoggedIn">
                         <q-btn class="q-px-md" :text-color="hoverUnfollow ? 'white' : 'black'" :color="hoverUnfollow ? 'negative' : 'white'" :label="$t('userAction.' + (hoverUnfollow ? 'unfollow' : 'following'))" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followAuthor" v-if="author.isFollowing"></q-btn>
                         <q-btn class="q-px-md" color="primary" :label="$t('userAction.follow')" @click="followAuthor" v-else></q-btn>
                     </div>
@@ -54,18 +54,11 @@
                         <div class="flex flex-center q-mt-md" v-show="postCount > 0">
                             <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
                         </div>
-                        <!-- <q-scroll-observer @scroll="scrollHandler" scroll-target="body" /> -->
                     </q-tab-panel>
                 </q-tab-panels>
             </div>
         </div>
         <profile-edit profileMode="author" :data="author" :open="openProfileEdit" @closed="openProfileEdit = false"></profile-edit>
-        <!-- place QPageScroller at end of page -->
-        <q-page-scroller expand position="top" :scroll-offset="200" :offset="[0, 0]">
-            <div class="col cursor-pointer q-pa-sm bg-secondary text-white text-center">
-                {{ author.displayName }}
-            </div>
-        </q-page-scroller>
     </q-page>
 </template>
 

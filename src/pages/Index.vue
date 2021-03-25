@@ -9,13 +9,13 @@
     </q-banner>
     <h4 class="q-mb-lg">{{ $t('indexPage.allCategories') }}</h4>
     <div class="row q-col-gutter-md">
-      <div class="col-6 col-md-3" v-for="item in mainCategories" :key="item.name">
+      <div class="col-12 col-sm-6 col-md-3" v-for="item in mainCategories" :key="item.name">
         <q-card :style="{backgroundColor: item.color, color: '#fff'}" class="categoryCard" @click="$router.push('/category/'+item.name)">
-          <q-card-section class="row items-center">
+          <q-card-section class="row items-center no-wrap">
             <q-avatar>
               <q-icon :name="item.icon" />
             </q-avatar>
-            <div class="text-h6">{{$t('categories.'+item.name)}}</div>
+            <div class="text-h6 ellipsis">{{$t('categories.'+item.name)}}</div>
           </q-card-section>
         </q-card>
       </div>
@@ -29,7 +29,7 @@
     <h4 class="q-mb-lg">{{ $t('indexPage.allPosts') }}</h4>
     <template v-if="postLoading">
       <div class="row q-col-gutter-md">
-        <div class="col-6 col-lg-4" v-for="i in postPerPage" :key="i">
+        <div class="col-12 col-sm-6 col-lg-4" v-for="i in postPerPage" :key="i">
           <q-card>
             <q-card-section>
               <div class="text-h6">
@@ -50,7 +50,7 @@
     </template>
     <template v-else>
       <div class="row q-col-gutter-md">
-        <q-intersection transition="fade" class="col-6 col-lg-4" v-for="item in postList" :key="item.postId">
+        <q-intersection class="col-12 col-sm-6 col-lg-4" v-for="item in postList" :key="item.postId">
           <post-card-compact :post="item"></post-card-compact>
         </q-intersection>
       </div>

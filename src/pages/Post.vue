@@ -1,5 +1,5 @@
 <template>
-    <q-page class="q-pa-lg">
+    <q-page class="q-pa-md q-pa-sm-lg">
         <div v-if="postNotFound">
             <h5>{{ $t('post.notFoundTitle') }}</h5>
             <h6>{{ $t('post.notFoundMsg') }}</h6>
@@ -31,13 +31,13 @@
                 </div>
             </div>
             <!-- post info and author info -->
-            <div class="row q-gutter-md q-mb-lg justify-between">
+            <div class="row q-mb-lg justify-between">
                 <div class="col-12 col-md">
                     <div class="q-mt-md text-subtitle1 post-infoLine row inline wrap items-center">
                         <div>
-                            {{ $t('post.publishedOn.before') }} <span class="text-weight-medium">{{ post.publishTimeStr }}</span> {{ $t('post.publishedOn.after') }}
+                            {{ $t('post.publishedOn.before') }} <span class="text-weight-medium gt-xs">{{ post.publishTimeStr }}</span><span class="text-weight-medium xs">{{ post.publishTimeStr ? post.publishTimeStr.substring(0, 10) : '' }}</span> {{ $t('post.publishedOn.after') }}
                         </div>
-                        <div class="q-pl-lg">
+                        <div class="q-pl-md q-pl-sm-lg">
                             {{ $t('post.views.before') }} <span class="text-weight-medium">{{ post.views }}</span> {{ $t('post.views.after') }}
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                         <q-chip v-for="tag in post.tags" :key="tag.id" clickable color="primary" text-color="white" @click="goToTag(tag.name)">{{tag.name}}</q-chip>
                     </div>
                 </div>
-                <div class="col-12 col-md-auto text-subtitle1">
+                <div class="col-12 col-md-auto q-pt-md q-pt-md-none text-subtitle1">
                     <q-card flat bordered>
                         <q-card-section>
                             <div class="row">
@@ -59,7 +59,7 @@
                                     <router-link :to="'/author/'+post.authorId" class="noLinkStyle"><strong>{{ post.authorName }}</strong></router-link>
                                     <div class="text-caption">{{ post.followerCount }} {{ $tc('computed.followers', post.followerCount) }}</div>
                                 </div>
-                                <div class="col-auto q-my-auto q-ml-md" v-show="isLoggedIn">
+                                <div class="col-auto q-my-auto" v-show="isLoggedIn">
                                     <q-btn flat :color="hoverUnfollow ? 'negative' : 'grey'" :label="hoverUnfollow ? $t('userAction.unfollow') : $t('userAction.following')" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followAuthor" v-if="post.isFollowing"></q-btn>
                                     <q-btn flat color="primary" :label="$t('userAction.follow')" @click="followAuthor" v-else></q-btn>
                                 </div>
@@ -74,7 +74,7 @@
             <div class="q-mt-xl">
                 <q-separator />
                 <div class="q-mt-lg row justify-between">
-                    <div>
+                    <div ref="comments">
                         <span class="text-h5">Comments</span>
                         <span class="q-ml-sm text-subtitle1 post-infoLine">{{commentCount === '' ? '' : '('+commentCount+')'}}</span>
                     </div>
@@ -197,6 +197,8 @@ import markdownItVueOptions from '../markdownItVueOptions'
 import api from '../api'
 import { mapState } from 'vuex'
 import { formatTimeElapsed } from '../util'
+import { scroll } from 'quasar'
+const { getScrollTarget, setScrollPosition } = scroll
 export default {
     name: 'Post',
     components: {
@@ -512,6 +514,20 @@ export default {
                 this.parseComments()
             }
         }
+    },
+    mounted() {
+        //scroll to comments
+        /*
+        if (this.$route.hash) {
+            let hash = this.$route.hash.substring(1)
+            if (this.$refs[hash]) {
+                let target = getScrollTarget(this.$refs[hash])
+                let offset = this.$refs[hash].offsetTop
+                let duration = 200
+                setScrollPosition(target, offset, duration)
+            }
+        }
+        */
     },
     beforeRouteEnter (to, from, next) {
         api('getpost', {

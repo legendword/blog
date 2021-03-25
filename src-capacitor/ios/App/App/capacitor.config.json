@@ -1,6 +1,6 @@
 {
   "appId": "com.legendword.blog",
-  "appName": "Legendword Blog",
+  "appName": "WordBlog",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

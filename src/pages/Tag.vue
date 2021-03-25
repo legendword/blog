@@ -1,5 +1,5 @@
 <template>
-    <q-page class="q-pa-lg">
+    <q-page class="q-pa-md q-pa-sm-lg">
         <h4 class="q-mb-lg">{{$t('tagPage.title')}}: {{ $route.params.name }}</h4>
         <div v-show="tagNotFound">
             {{$t('tagPage.notFoundMsg')}}

@@ -16,7 +16,7 @@
             <q-expansion-item expand-separator icon="settings" label="General">
             </q-expansion-item> -->
         </q-list>
-        <div class="q-mt-md">Dev Info: {{ sts }}</div>
+        <div class="q-mt-md" v-show="false">Dev Info: {{ sts }}</div>
     </q-page>
 </template>
 

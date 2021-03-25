@@ -10,21 +10,22 @@
             </q-card-section>
 
             <q-card-section class="q-pt-none">
-                <div class="text-subtitle2">
-                    <q-icon class="q-pr-sm" name="person_outline" size="1rem" />
-                    <span class="q-my-auto vertical-middle">{{ post.authorName }}</span>
+                <div class="text-subtitle2 row">
+                    <div class="col-12 col-sm-auto">
+                        <q-icon class="q-pr-sm" name="person_outline" size="1rem" />
+                        <span class="q-my-auto vertical-middle">{{ post.authorName }}</span>
 
-                    <span>
                         <q-icon class="q-pl-sm q-pr-sm" name="schedule" size="1rem" />
                         <span class="q-my-auto vertical-middle">{{ calcTimeElapsed(post.publishTime) }}</span>
-                    </span>
+                    </div>
+                    <div class="col-12 col-sm-auto q-pt-sm q-pt-sm-none">
+                        <q-icon class="q-pl-sm-sm q-pr-sm" name="visibility" size="1rem" />
+                        <span class="q-my-auto vertical-middle">{{ calcNumber(post.views) }}</span>
 
-                    <q-icon class="q-pl-sm q-pr-sm" name="visibility" size="1rem" />
-                    <span class="q-my-auto vertical-middle">{{ calcNumber(post.views) }}</span>
-
-                    <span class="q-pl-sm">
-                        <q-chip class="q-ma-none" outline color="primary">{{$t('categories.'+post.category)}}</q-chip>
-                    </span>
+                        <span class="q-pl-sm">
+                            <q-chip class="q-ma-none" outline color="primary">{{$t('categories.'+post.category)}}</q-chip>
+                        </span>
+                    </div>
                 </div>
             </q-card-section>
         </q-card>

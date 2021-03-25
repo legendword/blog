@@ -11,6 +11,7 @@ const routes = [
       { path: 'post/:id', component: () => import('pages/Post.vue'), meta: { hideDrawer: true, customBarTitle: true } },
       { path: 'compose', component: () => import('pages/Compose.vue'), meta: { hideDrawer: true, customBarTitle: true } },
       { path: 'newAccount', component: () => import('pages/NewAccount.vue') },
+      { path: 'emailVerification', component: () => import('pages/EmailVerification.vue') },
       { path: 'me', component: () => import('pages/Me.vue') },
       { path: 'user/:id', redirect: 'user/:id/collections' },
       { path: 'user/:id/:tab', component: () => import('pages/UserProfile.vue'), meta: { customBarTitle: true } },

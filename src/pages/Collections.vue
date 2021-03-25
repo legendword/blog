@@ -1,6 +1,6 @@
 <template>
     <q-page>
-        <q-tabs v-model="currentMenu" inline-label class="text-black" active-color="primary" align="justify" :breakpoint="0">
+        <q-tabs v-model="currentMenu" :inline-label="$q.screen.gt.xs" class="text-black" active-color="primary" align="justify">
             <q-tab v-for="item in menuList" :key="item.value" :name="item.value" :icon="item.icon" :label="$t('collections.menu.'+item.value)" content-class="q-px-md q-px-md-xl" />
         </q-tabs>
         <!--
@@ -33,7 +33,7 @@
                     <div class="text-h5">{{$t('collections.title.mine')}}</div>
                     <div>
                         <q-btn-group flat>
-                            <q-btn flat color="primary" :label="$t('collections.newCollection')" icon="add" @click="newCollection" />
+                            <q-btn flat color="primary" :label="$q.screen.lt.sm?'':$t('collections.newCollection')" icon="add" @click="newCollection" />
                         </q-btn-group>
                     </div>
                 </div>

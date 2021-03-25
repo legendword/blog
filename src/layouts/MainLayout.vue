@@ -5,7 +5,7 @@
       <q-toolbar>
         <q-btn @click="toggleDrawer" flat round dense icon="menu" class="q-mr-sm" />
         <q-btn @click="routerGoBack" v-if="canGoBack" flat round dense icon="chevron_left" class="q-mr-sm" />
-        <q-toolbar-title>
+        <q-toolbar-title @click="scrollBackTop">
           {{ barTitle }}
         </q-toolbar-title>
       </q-toolbar>
@@ -107,6 +107,9 @@ export default {
     ...mapState(['user','isLoggedIn','miniDrawerMode'])
   },
   methods: {
+    scrollBackTop() {
+      window.scrollTo({top:0,left:0,behavior:'smooth'})
+    },
     signIn() {
       this.logInDialog = true
     },

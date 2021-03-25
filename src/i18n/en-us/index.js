@@ -217,11 +217,18 @@ export default {
     },
     newAccount: {
         welcome: 'Welcome aboard!',
-        youCanNowLogIn: {
+        emailVerify: 'A verification email is sent to ',
+        verifyNote: 'Please click the link in the verification email to activate your account within 30 minutes.',
+        footnote: 'Did not receive an email? Resolve your problem in this Telegram group:',
+        backToHome: 'Back To Home'
+    },
+    emailVerification: {
+        title: 'Email Verified',
+        msg: {
             before: 'You can now log in with ',
             after: ''
         },
-        footnote: '*Email verification is not deployed yet.',
-        backToHome: 'Back To Home'
+        failedTitle: 'Email Verification Failed',
+        failedMsg: 'The verification link might have expired. Please try signing up again.'
     }
 }

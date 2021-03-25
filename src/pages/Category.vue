@@ -1,5 +1,5 @@
 <template>
-    <q-page class="q-pa-lg">
+    <q-page class="q-pa-md q-pa-sm-lg">
         <h4 class="q-mb-lg">{{$t('category.title')}}: {{ $te('categories.'+$route.params.name) ? $t('categories.'+$route.params.name) : $route.params.name }}</h4>
         <div v-show="categoryNotFound">
             {{$t('category.notFoundMsg')}}

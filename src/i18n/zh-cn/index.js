@@ -217,11 +217,18 @@ export default {
     },
     newAccount: {
         welcome: '注册完成！',
-        youCanNowLogIn: {
-            before: '现在可以使用',
-            after: '登录您的账号'
-        },
-        footnote: '*邮箱验证暂时没有部署',
+        emailVerify: '验证码已经发至',
+        verifyNote: '请在30分钟内点击邮件中的链接完成注册',
+        footnote: '没有收到邮件？加入Telegram群组解决问题：',
         backToHome: '进入首页'
+    },
+    emailVerification: {
+        title: '邮箱验证成功',
+        msg: {
+            before: '现在您可以使用',
+            after: '登录'
+        },
+        failedTitle: '邮箱验证失败',
+        failedMsg: '验证链接可能已经失效，请重新注册。'
     }
 }

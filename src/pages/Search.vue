@@ -1,5 +1,5 @@
 <template>
-    <q-page class="q-pa-lg">
+    <q-page class="q-pa-md q-pa-sm-lg">
         <search-bar in-search-page :initial-query="searchquery" @search="newSearch"></search-bar>
         <div class="q-my-md text-h5 text-weight-regular">{{ $t('search.searchResultFor') }} <span class="text-weight-bold">{{ actualQuery }}</span></div>
         <q-tabs v-model="tab" align="left" no-caps class="bg-secondary text-white shadow-2">

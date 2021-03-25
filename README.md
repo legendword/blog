@@ -1,6 +1,8 @@
-# Legendword Blog (blog)
+# Legendword Blog (WordBlog)
 
-An elegant blog system by Legendword, built with Quasar.
+Elegant open-source blog system by Legendword, built with Quasar.
+
+Feel free to use the component settings, layouts, and styles in your own projects. Feature requests can be posted in the [Issues page](https://github.com/legendword/blog/issues).
 
 ## Install the dependencies
 ```bash

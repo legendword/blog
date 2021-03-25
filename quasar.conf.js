@@ -118,7 +118,7 @@ module.exports = function (/* ctx */) {
       workboxOptions: {}, // only for GenerateSW
       manifest: {
         name: `Legendword Blog`,
-        short_name: `Legendword Blog`,
+        short_name: `WordBlog`,
         description: `An elegant blog system by Legendword, built with Quasar.`,
         display: 'standalone',
         orientation: 'portrait',

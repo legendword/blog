@@ -3,5 +3,6 @@
   "appName": "WordBlog",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "www"
+  "webDir": "www",
+  "server": {}
 }

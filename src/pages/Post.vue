@@ -507,7 +507,12 @@ export default {
             }
             else if (r.success) {
                 console.log(r.post)
-                r.post.likedComments = r.post.likedComments.map(v => v.id)
+                if (r.post.likedComments) {
+                    r.post.likedComments = r.post.likedComments.map(v => v.id)
+                }
+                else {
+                    r.post.likedComments = []
+                }
                 this.post = r.post
                 this.$store.commit('setBarTitle', r.post.title)
                 

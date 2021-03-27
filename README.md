@@ -48,11 +48,11 @@ To download files, go to [Releases](https://github.com/legendword/blog/releases)
 #### Web App
 You can access the Legendword Blog Web App from anywhere with a browser. The URL of the Web App is [https://blog.legendword.com](https://blog.legendword.com)
 #### MacOS
-Download **Legendword.Blog-[version]-darwin-x64.zip** below and unzip it. Move `Legendword Blog.app` to your `~/Applications` folder.
+Download **Legendword.Blog-[version]-darwin-x64.zip** and unzip it. Move `Legendword Blog.app` to your `~/Applications` folder.
 #### Windows
-Download **Legendword.Blog-[version]-win32-x64.zip** below and unzip it. Move all files in the directory to your `Program Files` folder. Create a shortcut for the executable file `Legendword Blog.exe`. You can now run the application using this shortcut.
+Download **Legendword.Blog-[version]-win32-x64.zip** and unzip it. Move all files in the directory to your `Program Files` folder. Create a shortcut for the executable file `Legendword Blog.exe`. You can now run the application using this shortcut.
 #### Linux
-Download **Legendword.Blog-[version]-linux-x64.zip** below and unzip it. Run `Legendword Blog`.
+Download **Legendword.Blog-[version]-linux-x64.zip** and unzip it. Run `Legendword Blog`.
 
 
 ## Debugging/Developing the project on your local machine

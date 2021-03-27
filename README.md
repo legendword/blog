@@ -29,9 +29,7 @@ Currently supported platforms: **MacOS, Windows, Linux**, iOS*
 
 *: iOS app will be published to the App Store in a future release.
 
-To install clients, go to [Releases](https://github.com/legendword/blog/releases) and follow the instructions there.
-
-##### Current Version: v0.1 (Public Beta)
+##### Current Version: v0.1.1 (Public Beta)
 
 ### Key Features:
 - User Accounts: Set custom username and create an author profile linked to the user.
@@ -43,8 +41,21 @@ To install clients, go to [Releases](https://github.com/legendword/blog/releases
 - Creator Tools: See total view, follower, and comment count in the Overview tab. Manage or add posts in the Posts tab. View newest comments in the Comments tab.
 - Multi-Language Support: Set your preferred interface language in the User Settings page.
 
+### How to Install:
 
-## Running the project on your local machine
+To download files, go to [Releases](https://github.com/legendword/blog/releases).
+
+#### Web App
+You can access the Legendword Blog Web App from anywhere with a browser. The URL of the Web App is [https://blog.legendword.com](https://blog.legendword.com)
+#### MacOS
+Download **Legendword.Blog-[version]-darwin-x64.zip** below and unzip it. Move `Legendword Blog.app` to your `~/Applications` folder.
+#### Windows
+Download **Legendword.Blog-[version]-win32-x64.zip** below and unzip it. Move all files in the directory to your `Program Files` folder. Create a shortcut for the executable file `Legendword Blog.exe`. You can now run the application using this shortcut.
+#### Linux
+Download **Legendword.Blog-[version]-linux-x64.zip** below and unzip it. Run `Legendword Blog`.
+
+
+## Debugging/Developing the project on your local machine
 
 ### Learn about the libraries used
 

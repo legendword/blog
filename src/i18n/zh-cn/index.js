@@ -174,7 +174,9 @@ export default {
         alreadyAccountSignIn: '登录',
         noAccountPrompt: '没有账号？',
         noAccountSignUp: '注册',
-        incorrect: '邮箱或密码错误'
+        incorrect: '邮箱或密码错误',
+        signOutSuccessMsg: '退出登录成功',
+        rememberMe: '记住我'
     },
     layoutDrawer: {
         discover: '发现',

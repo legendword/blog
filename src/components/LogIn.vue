@@ -24,6 +24,7 @@
                 <q-form class="q-gutter-md q-px-md">
                     <q-input v-model="email" lazy-rules :rules="emailRules" :label="$t('general.email')"></q-input>
                     <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" :label="$t('general.password')"></q-input>
+                    <q-checkbox v-model="rememberme" :label="$t('logIn.rememberMe')" />
                     <p><span style="line-height: 36px;padding-right: 5px;">{{ $t('logIn.noAccountPrompt') }}</span> <q-btn :label="$t('logIn.noAccountSignUp')" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
                 </q-form>
             </q-card-section>
@@ -53,6 +54,7 @@ export default {
             signUp: false,
             email: '',
             password: '',
+            rememberme: false,
             emailRules: [
                 val => val && val.length > 0 || this.$t('forms.requiredField')
             ],
@@ -104,7 +106,8 @@ export default {
         submitLogIn() {
             api('signin', {
                 email: this.email,
-                password: this.password
+                password: this.password,
+                rememberme: this.rememberme
             }).then(res => {
                 let r = res.data
                 console.log(r);
@@ -118,9 +121,13 @@ export default {
                 }
                 else if (r.success) {
                     this.$store.commit('userLogIn', r.user)
+                    if (r.identifier && r.token) {
+                        this.$q.localStorage.set('token', r.token)
+                        this.$q.localStorage.set('identifier', r.identifier)
+                    }
                     this.resetFields()
                     this.$emit('closed')
-                    this.$router.go(0)
+                    //this.$router.go(0)
                 }
                 else {
                     this.$q.notify({

@@ -114,24 +114,34 @@ export default {
       this.logInDialog = true
     },
     signOut() {
-      api('signout').then(res => {
-        if (res.data.error) {
-          this.$q.notify({
-            color: 'negative',
-            message: res.data.msg,
-            position: 'top',
-            timeout: 2000
-          })
+      let params = {}
+      if (this.$q.localStorage.has('identifier') && this.$q.localStorage.has('token')) {
+        params = {
+          token: this.$q.localStorage.getItem('token'),
+          identifier: this.$q.localStorage.getItem('identifier')
         }
-        else if (res.data.success) {
+      }
+      api('signout', params).then(res => {
+        let r = res.data
+        if (r.success) {
           this.$q.notify({
             color: 'primary',
-            message: 'You are now signed out.',
+            message: this.$t('logIn.signOutSuccessMsg'),
             position: 'top',
             timeout: 2000
           })
           this.$store.commit('userLogOut')
         }
+        else {
+          this.$q.notify({
+            color: 'negative',
+            message: r.msg,
+            position: 'top',
+            timeout: 2000
+          })
+        }
+        this.$q.localStorage.remove('identifier')
+        this.$q.localStorage.remove('token')
       })
     },
     routerGoBack() {
@@ -144,8 +154,47 @@ export default {
       this.miniDrawer = this.miniDrawerMode
     },
     toggleDrawer() {
-      console.log('toggle')
       this.leftDrawer = !this.leftDrawer
+    },
+    callAlive() {
+      api('alive').then(res => {
+        let r = res.data
+        console.log(r)
+        if (r.success) {
+          if (!r.isLoggedIn) {
+            //attempt token login if token is stored
+            if (this.$q.localStorage.has('identifier') && this.$q.localStorage.has('token')) {
+              let identifier = this.$q.localStorage.getItem('identifier')
+              let token = this.$q.localStorage.getItem('token')
+              api('signinwithtoken', {
+                identifier,
+                token
+              }).then(res => {
+                let r = res.data
+                console.log('signInWithToken', r)
+                if (r.failed) {
+                  console.log('signInWithToken Failed')
+                  this.$q.localStorage.remove('identifier')
+                  this.$q.localStorage.remove('token')
+                  if (this.isLoggedIn) this.$store.commit('userLogOut')
+                }
+                else if (r.success) {
+                  console.log('signInWithToken Success')
+                  this.$q.localStorage.set('token', r.token)
+                  this.$store.commit('userLogIn', r.user)
+                }
+                else {
+                  console.error(r.msg)
+                  if (this.isLoggedIn) this.$store.commit('userLogOut')
+                }
+              })
+            }
+            else {
+              if (this.isLoggedIn) this.$store.commit('userLogOut')
+            }
+          }
+        }
+      })
     },
     setData(r) {
       console.log('userinfo', r)
@@ -156,6 +205,7 @@ export default {
           this.$root.$i18n.locale = r.user.settings.locale
         }
       }
+      this.callAlive()
     }
   },
   watch: {
@@ -173,8 +223,11 @@ export default {
     }).then(res => {
       next(vm => vm.setData(res.data))
     })
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.callAlive()
+    next()
   }
-  //don't need beforeRouteUpdate because userInfo needs only be fetched once
 }
 </script>
 

@@ -174,7 +174,9 @@ export default {
         alreadyAccountSignIn: 'Sign In',
         noAccountPrompt: 'Don\'t have an account?',
         noAccountSignUp: 'Create One',
-        incorrect: 'Email or Password Incorrect'
+        incorrect: 'Email or Password Incorrect',
+        signOutSuccessMsg: 'You are now signed out.',
+        rememberMe: 'Remember Me'
     },
     layoutDrawer: {
         discover: 'Discover',

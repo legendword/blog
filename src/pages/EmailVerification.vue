@@ -34,7 +34,7 @@ export default {
             this.loaded = true
         }
         else {
-            api('signupverify', {
+            api.post('/user/verifyEmail', {
                 email: this.$route.query.email,
                 code: this.$route.query.code
             }).then(res => {

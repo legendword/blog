@@ -82,7 +82,7 @@ export default {
             }
         },
         submitSignUp() {
-            api('signup', {
+            api.post('/user/signUp', {
                 email: this.email,
                 password: this.password
             }).then(res => {
@@ -104,7 +104,7 @@ export default {
             })
         },
         submitLogIn() {
-            api('signin', {
+            api.post('/user/signIn', {
                 email: this.email,
                 password: this.password,
                 rememberme: this.rememberme

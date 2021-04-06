@@ -101,7 +101,8 @@ export default {
     },
     getPosts() {
       this.postLoading = true
-      api('listpost', {
+      return
+      api('/posts/list', {
         type: 'all',
         count: this.postPerPage,
         page: this.postPage

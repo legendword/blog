@@ -121,7 +121,7 @@ export default {
           identifier: this.$q.localStorage.getItem('identifier')
         }
       }
-      api('signout', params).then(res => {
+      api.post('/user/signOut', params).then(res => {
         let r = res.data
         if (r.success) {
           this.$q.notify({
@@ -157,6 +157,7 @@ export default {
       this.leftDrawer = !this.leftDrawer
     },
     callAlive() {
+      return
       api('alive').then(res => {
         let r = res.data
         console.log(r)
@@ -198,8 +199,7 @@ export default {
     },
     setData(r) {
       console.log('userinfo', r)
-      if (r.error) {}
-      else if (r.isLoggedIn == true) {
+      if (r.isLoggedIn == true) {
         this.$store.commit('userLogIn', r.user)
         if (r.user.settings.locale != this.$i18n.locale) {
           this.$root.$i18n.locale = r.user.settings.locale
@@ -218,7 +218,7 @@ export default {
     this.menuLinks = mainMenuItems.map(v => v.link)
   },
   beforeRouteEnter (to, from, next) {
-    api('userinfo', {
+    api.get('/user/info', {
       detailed: true
     }).then(res => {
       next(vm => vm.setData(res.data))

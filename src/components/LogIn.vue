@@ -25,7 +25,10 @@
                     <q-input v-model="email" lazy-rules :rules="emailRules" :label="$t('general.email')"></q-input>
                     <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" :label="$t('general.password')"></q-input>
                     <q-checkbox v-model="rememberme" :label="$t('logIn.rememberMe')" />
-                    <p><span style="line-height: 36px;padding-right: 5px;">{{ $t('logIn.noAccountPrompt') }}</span> <q-btn :label="$t('logIn.noAccountSignUp')" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
+                    <p>
+                        <q-btn :label="$t('logIn.noAccountSignUp')" color="primary" flat @click="toggleSignUp" />
+                        <q-btn :label="$t('logIn.passwordRecover')" color="primary" flat @click="forgotPass" />
+                    </p>
                 </q-form>
             </q-card-section>
             <q-card-actions align="right" class="q-pa-lg">
@@ -64,6 +67,39 @@ export default {
         }
     },
     methods: {
+        forgotPass() {
+            this.$q.dialog({
+                title: this.$t('passwordRecovery.prompt.title'),
+                message: this.$t('passwordRecovery.prompt.msg'),
+                prompt: {
+                    model: this.email,
+                    type: 'text'
+                },
+                cancel: true,
+                persistent: true
+            }).onOk(data => {
+                api.post('/user/recoverPassword', {
+                    email: data
+                }).then(res => {
+                    let r = res.data
+                    console.log(r)
+                    if (r.success) {
+                        this.$q.dialog({
+                            title: this.$t('passwordRecovery.prompt.title'),
+                            message: this.$t('passwordRecovery.prompt.successMsg')
+                        })
+                    }
+                    else {
+                        this.$q.notify({
+                            color: 'negative',
+                            message: r.msg,
+                            position: 'top',
+                            timeout: 2000
+                        })
+                    }
+                })
+            })
+        },
         toggleSignUp() {
             this.signUp = !this.signUp
         },

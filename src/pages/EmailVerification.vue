@@ -30,7 +30,7 @@ export default {
     },
     created() {
         if (!this.$route.query.email || !this.$route.query.code) {
-            this.success = true
+            this.success = false
             this.loaded = true
         }
         else {

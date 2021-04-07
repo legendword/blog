@@ -172,8 +172,8 @@ export default {
         signIn: '用户登录',
         alreadyAccountPrompt: '已有账号？',
         alreadyAccountSignIn: '登录',
-        noAccountPrompt: '没有账号？',
-        noAccountSignUp: '注册',
+        noAccountSignUp: '注册账号',
+        passwordRecover: '找回密码',
         incorrect: '邮箱或密码错误',
         signOutSuccessMsg: '退出登录成功',
         rememberMe: '记住我'
@@ -232,5 +232,25 @@ export default {
         },
         failedTitle: '邮箱验证失败',
         failedMsg: '验证链接可能已经失效，请重新注册。'
+    },
+    passwordRecovery: {
+        prompt: {
+            title: '找回密码',
+            msg: '请输入您的邮箱',
+            successMsg: '密码重置链接已发至您的邮箱，请及时查看。'
+        },
+        title: '重置密码',
+        msg: {
+            before: '为',
+            after: '设置一个新密码'
+        },
+        input: {
+            password: '新密码',
+            passwordConfirm: '确认密码'
+        },
+        passwordsDontMatch: '两个密码不一致',
+        finishedMsg: '您的密码已更新',
+        failedTitle: '邮箱链接失效',
+        failedMsg: '密码重置链接可能已经过期，请重试。'
     }
 }

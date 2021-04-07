@@ -157,8 +157,7 @@ export default {
       this.leftDrawer = !this.leftDrawer
     },
     callAlive() {
-      return
-      api('alive').then(res => {
+      api.get('/alive').then(res => {
         let r = res.data
         console.log(r)
         if (r.success) {
@@ -167,7 +166,7 @@ export default {
             if (this.$q.localStorage.has('identifier') && this.$q.localStorage.has('token')) {
               let identifier = this.$q.localStorage.getItem('identifier')
               let token = this.$q.localStorage.getItem('token')
-              api('signinwithtoken', {
+              api.post('/user/tokenSignIn', {
                 identifier,
                 token
               }).then(res => {

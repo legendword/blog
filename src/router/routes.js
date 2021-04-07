@@ -12,6 +12,7 @@ const routes = [
       { path: 'compose', component: () => import('pages/Compose.vue'), meta: { hideDrawer: true, customBarTitle: true } },
       { path: 'newAccount', component: () => import('pages/NewAccount.vue') },
       { path: 'emailVerification', component: () => import('pages/EmailVerification.vue') },
+      { path: 'passwordRecovery', component: () => import('pages/PasswordRecovery.vue') },
       { path: 'me', component: () => import('pages/Me.vue') },
       { path: 'user/:id', redirect: 'user/:id/profile' },
       { path: 'user/:id/:tab', component: () => import('pages/UserProfile.vue'), meta: { customBarTitle: true } },

@@ -491,21 +491,7 @@ export default {
             })
         },
         setData(r) {
-            if (r.error) {
-                if (r.errorType && r.errorType == 'PostNotFound') {
-                    this.postNotFound = true
-                }
-                else {
-                    this.$q.notify({
-                        color: 'negative',
-                        message: r.msg,
-                        position: 'top',
-                        timeout: 2000
-                    })
-                }
-                this.$store.commit('setBarTitle')
-            }
-            else if (r.success) {
+            if (r.success) {
                 console.log(r.post)
                 if (r.post.likedComments) {
                     r.post.likedComments = r.post.likedComments.map(v => v.id)
@@ -517,6 +503,20 @@ export default {
                 this.$store.commit('setBarTitle', r.post.title)
                 
                 this.parseComments()
+            }
+            else {
+                if (r.errorType && r.errorType == 'NotFound') {
+                    this.postNotFound = true
+                }
+                else {
+                    this.$q.notify({
+                        color: 'negative',
+                        message: r.msg,
+                        position: 'top',
+                        timeout: 2000
+                    })
+                }
+                this.$store.commit('setBarTitle')
             }
         }
     },
@@ -535,16 +535,12 @@ export default {
         */
     },
     beforeRouteEnter (to, from, next) {
-        api('getpost', {
-            id: to.params.id
-        }).then(res => {
+        api.get('/posts/read/' + to.params.id).then(res => {
             next(vm => vm.setData(res.data))
         })
     },
     beforeRouteUpdate (to, from, next) {
-        api('getpost', {
-            id: to.params.id
-        }).then(res => {
+        api.get('/posts/read/' + to.params.id).then(res => {
             this.setData(res.data)
             next()
         })

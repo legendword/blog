@@ -22,7 +22,8 @@ export default {
             timeAsc: 'Date Published (Oldest)',
             viewsDesc: 'Most Views',
             likesDesc: 'Most Likes'
-        }
+        },
+        loading: 'Loading...'
     },
     computed: {
         followers: 'Follower | Followers',
@@ -92,7 +93,8 @@ export default {
         experience: 'Experience',
         knowledge: 'Skill/Knowledge',
         guideline: 'Guideline',
-        changelog: 'ChangeLog'
+        changelog: 'ChangeLog',
+        support: 'Support'
     },
     category: {
         title: 'Category',
@@ -172,8 +174,8 @@ export default {
         signIn: 'Sign In',
         alreadyAccountPrompt: 'Already have an account?',
         alreadyAccountSignIn: 'Sign In',
-        noAccountPrompt: 'Don\'t have an account?',
-        noAccountSignUp: 'Create One',
+        noAccountSignUp: 'Create Account',
+        passwordRecover: 'Forgot Password',
         incorrect: 'Email or Password Incorrect',
         signOutSuccessMsg: 'You are now signed out.',
         rememberMe: 'Remember Me'
@@ -232,5 +234,25 @@ export default {
         },
         failedTitle: 'Email Verification Failed',
         failedMsg: 'The verification link might have expired. Please try signing up again.'
+    },
+    passwordRecovery: {
+        prompt: {
+            title: 'Password Recovery',
+            msg: 'What is your email?',
+            successMsg: 'The password reset link is sent to your email.'
+        },
+        title: 'Reset Password',
+        msg: {
+            before: 'Set a new password for ',
+            after: ''
+        },
+        input: {
+            password: 'New Password',
+            passwordConfirm: 'Confirm New Password'
+        },
+        passwordsDontMatch: 'Passwords do not match.',
+        finishedMsg: 'Your password has been set.',
+        failedTitle: 'Email Verification Failed',
+        failedMsg: 'The password recovery link might have expired. Please try again.'
     }
 }

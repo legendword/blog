@@ -69,7 +69,7 @@
                                 <q-btn flat color="primary" :label="$t('compose.becomeAuthor')" @click="becomeAnAuthor" />
                             </template>
                         </q-banner>
-                        <upcoming-feature version="0.2"></upcoming-feature>
+                        <upcoming-feature version="0.4"></upcoming-feature>
                     </q-tab-panel>
                     <q-tab-panel name="collections">
                         <div class="text-h6 q-my-md">
@@ -151,19 +151,14 @@ export default {
     },
     methods: {
         followUser() {
-            api('performaction', {
-                type: 'followUser',
-                to: this.user.id
-            }).then(res => {
+            api.post('/users/'+this.user.id+'/follow').then(res => {
                 let r = res.data
                 console.log(r)
-                if (r.error) {
-                    this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
-                }
-                else if (r.success) {
-                    this.user.followerCount = parseInt(this.user.followerCount) + parseInt(r.followerDelta)
+                if (r.success) {
+                    this.user.followerCount = parseInt(this.user.followerCount) + parseInt(r.delta)
                     this.user.isFollowing = !this.user.isFollowing
                 }
+                else this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
             })
         },
         goToAuthorPage() {
@@ -173,17 +168,9 @@ export default {
         },
         becomeAnAuthor() {
             //click becomeAnAuthor
-            api('authorapplication').then(res => {
+            api.post('/user/becomeAuthor').then(res => {
                 let r = res.data
-                if (r.error) {
-                    this.$q.notify({
-                        color: 'negative',
-                        message: r.msg,
-                        position: 'top',
-                        timeout: 2000
-                    })
-                }
-                else if (r.success) {
+                if (r.success) {
                     this.$q.notify({
                         color: 'positive',
                         message: this.$t('compose.authorApplicationApproved'),
@@ -194,6 +181,14 @@ export default {
                     this.user.authorId = r.authorId
                     this.$store.commit('userDataChange', {
                         isAuthor: '1'
+                    })
+                }
+                else {
+                    this.$q.notify({
+                        color: 'negative',
+                        message: r.msg,
+                        position: 'top',
+                        timeout: 2000
                     })
                 }
             })
@@ -208,10 +203,7 @@ export default {
             }
             if (val == 'collections') {
                 this.collectionsLoading = true
-                api('listcollections', {
-                    type: 'user',
-                    id: this.userId
-                }).then(res => {
+                api.get('/collections/user/'+this.userId).then(res => {
                     let r = res.data
                     if (r.success) {
                         this.collections = r.collections
@@ -224,16 +216,23 @@ export default {
             }
         },
         loadInfo() {
-            api('userinfo', {
-                id: this.$route.params.id
-            }).then(res => {
+            api.get('/users/'+this.$route.params.id).then(res => {
                 let r = res.data
                 this.user = {}
                 this.isCurrentUser = false
                 this.userNotFound = false
-                if (r.error) {
+                if (r.success) {
+                    console.log(r)
+                    this.user = r.user
+                    this.user.isAuthor = this.user.isAuthor == '1'
+                    this.isCurrentUser = r.isCurrentUser
+                    this.$store.commit('setBarTitle', this.$t('barTitle.user') + ' / ' + this.user.username)
+                    this.tabChange(this.tab)
+                    this.loaded = true
+                }
+                else {
                     if (r.errorType) {
-                        if (r.errorType == 'UserNotFound') {
+                        if (r.errorType == 'NotFound') {
                             this.userNotFound = true;
                         }
                     }
@@ -246,15 +245,6 @@ export default {
                         })
                     }
                     this.$store.commit('setBarTitle')
-                }
-                else {
-                    console.log(r)
-                    this.user = r.user
-                    this.user.isAuthor = this.user.isAuthor == '1'
-                    this.isCurrentUser = r.isCurrentUser
-                    this.$store.commit('setBarTitle', this.$t('barTitle.user') + ' / ' + this.user.username)
-                    this.tabChange(this.tab)
-                    this.loaded = true
                 }
             })
         }

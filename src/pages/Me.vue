@@ -211,7 +211,7 @@ export default {
         },
         fetchCreatorTab(val) {
             if (val == 'overview') {
-                api('authorstats').then(res => {
+                api.get('/authors/stats').then(res => {
                     let r = res.data
                     console.log(r)
                     if (r.success) {
@@ -237,38 +237,18 @@ export default {
             }
             else if (val == 'posts') {
                 this.creatorPostLoading = true
-                api('listpost', {
-                    type: 'author',
-                    id: this.author.id,
+                api.get('/posts/author/'+this.author.id, {
                     page: this.creatorPagination.posts.current
                 }).then(res => {
                     let r = res.data
-                    if (r.error) {
-                        this.$q.notify({
-                            color: 'negative',
-                            message: r.msg,
-                            position: 'top',
-                            timeout: 2000
-                        })
-                    }
-                    else if (r.success) {
+                    if (r.success) {
                         this.creator.posts = r.posts
                         if (r.postCount) {
                             let postCount = parseInt(r.postCount)
                             this.creatorPagination.posts.max = Math.floor(postCount / 10) + (postCount % 10 == 0 ? 0 : 1)
                         }
                     }
-                    this.creatorPostLoading = false
-                })
-            }
-            else if (val == 'comments') {
-                this.creatorCommentLoading = true
-                api('authorcomments', {
-                    page: this.creatorPagination.comments.current
-                }).then(res => {
-                    let r = res.data
-                    console.log(r)  
-                    if (r.error) {
+                    else {
                         this.$q.notify({
                             color: 'negative',
                             message: r.msg,
@@ -276,12 +256,30 @@ export default {
                             timeout: 2000
                         })
                     }
-                    else if (r.success) {
+                    this.creatorPostLoading = false
+                })
+            }
+            else if (val == 'comments') {
+                this.creatorCommentLoading = true
+                api.get('/comments/author', {
+                    page: this.creatorPagination.comments.current
+                }).then(res => {
+                    let r = res.data
+                    console.log(r)
+                    if (r.success) {
                         this.creator.comments = r.comments
                         if (r.commentCount) {
                             let commentCount = parseInt(r.commentCount)
                             this.creatorPagination.comments.max = Math.floor(commentCount / 10) + (commentCount % 10 == 0 ? 0 : 1)
                         }
+                    }
+                    else {
+                        this.$q.notify({
+                            color: 'negative',
+                            message: r.msg,
+                            position: 'top',
+                            timeout: 2000
+                        })
                     }
                     this.creatorCommentLoading = false
                 })
@@ -293,10 +291,7 @@ export default {
         },
         setData(r) {
             console.log(r)
-            if (r.error) {
-                this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
-            }
-            else if (r.isLoggedIn) {
+            if (r.isLoggedIn) {
                 this.user = r.user
                 this.user.isAuthor = this.user.isAuthor == '1'
                 if (this.user.isAuthor) {
@@ -304,17 +299,20 @@ export default {
                     this.fetchCreatorTab(this.creatorTab)
                 }
             }
+            else {
+                this.$q.notify({ color: 'negative', message: 'Not Logged In', position: 'top', timeout: 2000 });
+            }
         }
     },
     beforeRouteEnter (to, from, next) {
-        api('userinfo', {
+        api.get('/user/info', {
             detailed: true
         }).then(res => {
             next(vm => vm.setData(res.data))
         })
     },
     beforeRouteUpdate (to, from, next) {
-        api('userinfo', {
+        api.get('/user/info', {
             detailed: true
         }).then(res => {
             this.setData(res.data)

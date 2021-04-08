@@ -22,11 +22,11 @@
         <q-tab-panels v-model="currentMenu" animated>
             <q-tab-panel name="browse">
                 <div class="text-h5">{{$t('collections.title.browse')}}</div>
-                <upcoming-feature class="q-ma-md" version="0.1.2" />
+                <upcoming-feature class="q-ma-md" version="0.5" />
             </q-tab-panel>
             <q-tab-panel name="favorites">
                 <div class="text-h5">{{$t('collections.title.favorites')}}</div>
-                <upcoming-feature class="q-ma-md" version="0.2" />
+                <upcoming-feature class="q-ma-md" version="0.5.x" />
             </q-tab-panel>
             <q-tab-panel name="mine">
                 <div class="q-my-md flex justify-between q-mx-md">
@@ -99,7 +99,7 @@ export default {
                 persistent: true
             }).onOk(val => {
                 console.log(val)
-                api('newcollection', {
+                api.post('/collections', {
                     title: val
                 }).then(res => {
                     let r = res.data
@@ -126,9 +126,7 @@ export default {
                     cancel: true,
                     persistent: true
                 }).onOk(() => {
-                    api('deletecollection', {
-                        id: id
-                    }).then(res => {
+                    api.delete('/collections/'+id).then(res => {
                         let r = res.data
                         if (r.success) {
                             reset()
@@ -161,9 +159,7 @@ export default {
             }
             else if (menu == 'mine') {
                 //todo not logged in
-                api('listcollections', {
-                    type: 'mine'
-                }).then(res => {
+                api.get('/collections/mine').then(res => {
                     let r = res.data
                     if (r.success) {
                         console.log(r)

@@ -70,9 +70,8 @@ export default {
     methods: {
         checkUsername() {
             return new Promise((resolve, reject) => {
-                api("checkname", {
-                    name: this.username,
-                    type: 'user'
+                api.get("/util/name/user", {
+                    name: this.username
                 }).then(res => {
                     let r = res.data
                     if (r.success) {
@@ -91,9 +90,8 @@ export default {
         },
         checkDisplayName() {
             return new Promise((resolve, reject) => {
-                api("checkname", {
-                    name: this.displayName,
-                    type: 'author'
+                api.get("/util/name/author", {
+                    name: this.displayName
                 }).then(res => {
                     let r = res.data
                     if (r.success) {
@@ -130,7 +128,7 @@ export default {
         },
         submitRealEdit() {
             if (this.profileMode == 'user') {
-                api('edituserprofile', {
+                api.put('/user/info', {
                     username: this.username
                 }).then(res => {
                     let r = res.data
@@ -157,24 +155,24 @@ export default {
                 })
             }
             else {
-                api('editauthorprofile', {
+                api.put('/user/authorInfo', {
                     displayName: this.displayName
                 }).then(res => {
                     let r = res.data
-                    if (r.error) {
-                        this.$q.notify({
-                            color: 'negative',
-                            message: r.msg,
-                            position: 'top',
-                            timeout: 2000
-                        })
-                    }
-                    else if (r.success) {
+                    if (r.success) {
                         this.$emit('closed')
                         this.$q.notify({
                             color: 'positive',
                             message: this.$t('authorProfile.profileUpdated'),
                             caption: this.$t('authorProfile.profileUpdatedCaption'),
+                            position: 'top',
+                            timeout: 2000
+                        })
+                    }
+                    else {
+                        this.$q.notify({
+                            color: 'negative',
+                            message: r.msg,
                             position: 'top',
                             timeout: 2000
                         })

@@ -101,26 +101,25 @@ export default {
     },
     getPosts() {
       this.postLoading = true
-      api('listpost', {
-        type: 'all',
+      api.get('/posts', {
         count: this.postPerPage,
         page: this.postPage
       }).then(res => {
         let r = res.data
-        if (r.error) {
+        if (r.success) {
+          console.log(r)
+          this.postList = r.posts
+          if (r.postCount !== undefined) {
+            this.postCount = parseInt(r.postCount)
+          }
+        }
+        else {
           this.$q.notify({
             color: 'negative',
             message: r.msg,
             position: 'top',
             timeout: 2000
           })
-        }
-        else if (r.success) {
-          console.log(r)
-          this.postList = r.posts
-          if (r.postCount !== undefined) {
-            this.postCount = parseInt(r.postCount)
-          }
         }
         this.postLoading = false
       })

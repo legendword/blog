@@ -126,27 +126,26 @@ export default {
             let currentTab = this.tab
             console.log(currentTab)
             this.isLoading = true
-            api('search', {
-                type: currentTab,
+            api.get('/search/'+currentTab, {
                 query: val,
                 page: this.pagination[currentTab].page
             }).then(res => {
                 let r = res.data
                 console.log(r)
-                if (r.error) {
+                if (r.success) {
+                    this.resultList[currentTab] = r.result
+                    if (r.resultCount) {
+                        let resultCount = parseInt(r.resultCount)
+                        this.pagination[currentTab].maxPages = Math.floor(resultCount / this.resultPerPage) + (resultCount % this.resultPerPage == 0 ? 0 : 1)
+                    }
+                }
+                else {
                     this.$q.notify({
                         color: 'negative',
                         message: r.msg,
                         position: 'top',
                         timeout: 2000
                     })
-                }
-                else if (r.success) {
-                    this.resultList[currentTab] = r.result
-                    if (r.resultCount) {
-                        let resultCount = parseInt(r.resultCount)
-                        this.pagination[currentTab].maxPages = Math.floor(resultCount / this.resultPerPage) + (resultCount % this.resultPerPage == 0 ? 0 : 1)
-                    }
                 }
                 this.isLoading = false
             })

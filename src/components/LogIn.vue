@@ -17,15 +17,27 @@
             </q-card-actions>
         </q-card>
         <q-card class="loginDialog" v-else>
+            <q-banner rounded :inline-actions="$q.screen.gt.sm" class="bg-secondary text-white text-weight-medium">
+                <template v-slot:avatar>
+                    <q-icon name="announcement" color="white" />
+                </template>
+                Users registered before v0.2 have to reset their passwords due to back-end platform change.
+                <template v-slot:action>
+                    <q-btn flat label="Read the ChangeLog" @click="readChangeLog"></q-btn>
+                </template>
+            </q-banner>
             <q-card-section>
                 <div class="text-h6">{{ $t('logIn.signIn') }}</div>
             </q-card-section>
             <q-card-section>
                 <q-form class="q-gutter-md q-px-md">
                     <q-input v-model="email" lazy-rules :rules="emailRules" :label="$t('general.email')"></q-input>
-                    <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" :label="$t('general.password')"></q-input>
+                    <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" :label="$t('general.password')" @keypress.enter="submitLogIn"></q-input>
                     <q-checkbox v-model="rememberme" :label="$t('logIn.rememberMe')" />
-                    <p><span style="line-height: 36px;padding-right: 5px;">{{ $t('logIn.noAccountPrompt') }}</span> <q-btn :label="$t('logIn.noAccountSignUp')" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
+                    <p>
+                        <q-btn :label="$t('logIn.noAccountSignUp')" color="primary" flat @click="toggleSignUp" />
+                        <q-btn :label="$t('logIn.passwordRecover')" color="primary" flat @click="forgotPass" />
+                    </p>
                 </q-form>
             </q-card-section>
             <q-card-actions align="right" class="q-pa-lg">
@@ -64,6 +76,42 @@ export default {
         }
     },
     methods: {
+        readChangeLog() {
+            location.href = 'https://github.com/legendword/blog/releases/tag/v0.2'
+        },
+        forgotPass() {
+            this.$q.dialog({
+                title: this.$t('passwordRecovery.prompt.title'),
+                message: this.$t('passwordRecovery.prompt.msg'),
+                prompt: {
+                    model: this.email,
+                    type: 'text'
+                },
+                cancel: true,
+                persistent: true
+            }).onOk(data => {
+                api.post('/user/recoverPassword', {
+                    email: data
+                }).then(res => {
+                    let r = res.data
+                    console.log(r)
+                    if (r.success) {
+                        this.$q.dialog({
+                            title: this.$t('passwordRecovery.prompt.title'),
+                            message: this.$t('passwordRecovery.prompt.successMsg')
+                        })
+                    }
+                    else {
+                        this.$q.notify({
+                            color: 'negative',
+                            message: r.msg,
+                            position: 'top',
+                            timeout: 2000
+                        })
+                    }
+                })
+            })
+        },
         toggleSignUp() {
             this.signUp = !this.signUp
         },
@@ -82,7 +130,7 @@ export default {
             }
         },
         submitSignUp() {
-            api('signup', {
+            api.post('/user/signUp', {
                 email: this.email,
                 password: this.password
             }).then(res => {
@@ -104,7 +152,7 @@ export default {
             })
         },
         submitLogIn() {
-            api('signin', {
+            api.post('/user/signIn', {
                 email: this.email,
                 password: this.password,
                 rememberme: this.rememberme

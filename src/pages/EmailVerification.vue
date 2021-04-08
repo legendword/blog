@@ -30,11 +30,11 @@ export default {
     },
     created() {
         if (!this.$route.query.email || !this.$route.query.code) {
-            this.success = true
+            this.success = false
             this.loaded = true
         }
         else {
-            api('signupverify', {
+            api.post('/user/verifyEmail', {
                 email: this.$route.query.email,
                 code: this.$route.query.code
             }).then(res => {

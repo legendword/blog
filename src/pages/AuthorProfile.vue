@@ -42,7 +42,7 @@
                                 <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">{{ $t('authorProfile.editProfile') }}</q-btn>
                             </div>
                         </div>
-                        <upcoming-feature version="0.2"></upcoming-feature>
+                        <upcoming-feature version="0.4"></upcoming-feature>
                     </q-tab-panel>
                     <q-tab-panel name="posts">
                         <div class="text-h6 q-my-md">
@@ -106,19 +106,14 @@ export default {
             this.tabChange(this.tab)
         },
         followAuthor() {
-            api('performaction', {
-                type: 'followAuthor',
-                to: this.author.id
-            }).then(res => {
+            api.post('/authors/'+this.author.id+'/follow').then(res => {
                 let r = res.data
                 console.log(r)
-                if (r.error) {
-                    this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
-                }
-                else if (r.success) {
-                    this.author.followerCount = parseInt(this.author.followerCount) + parseInt(r.followerDelta)
+                if (r.success) {
+                    this.author.followerCount = parseInt(this.author.followerCount) + parseInt(r.delta)
                     this.author.isFollowing = !this.author.isFollowing
                 }
+                else this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
             })
         },
         tabChange(val) {
@@ -127,9 +122,7 @@ export default {
                 this.$router.replace(newPath)
             }
             if (val == 'posts') {
-                api('listpost', {
-                    type: 'author',
-                    id: this.author.id,
+                api.get('/posts/author/'+this.author.id, {
                     page: this.postPage
                 }).then(res => {
                     let r = res.data
@@ -160,16 +153,22 @@ export default {
             this.openProfileEdit = true
         },
         loadInfo() {
-            api('authorinfo', {
-                id: this.$route.params.id
-            }).then(res => {
+            api.get('/authors/'+this.$route.params.id).then(res => {
                 let r = res.data
                 this.author = {}
                 this.isCurrentUser = false
                 this.authorNotFound = false
-                if (r.error) {
+                if (r.success) {
+                    console.log(r.author)
+                    this.author = r.author
+                    this.isCurrentUser = this.$store.state.isLoggedIn && r.author.userId == this.$store.state.user.id
+                    this.$store.commit('setBarTitle', this.$t('barTitle.author') + ' / ' + this.author.displayName)
+                    this.tabChange(this.tab)
+                    this.loaded = true
+                }
+                else {
                     if (r.errorType) {
-                        if (r.errorType == 'AuthorNotFound') {
+                        if (r.errorType == 'NotFound') {
                             this.authorNotFound = true;
                         }
                     }
@@ -182,14 +181,6 @@ export default {
                         })
                     }
                     this.$store.commit('setBarTitle')
-                }
-                else {
-                    console.log(r.author)
-                    this.author = r.author
-                    this.isCurrentUser = this.$store.state.isLoggedIn && r.author.userId == this.$store.state.user.id
-                    this.$store.commit('setBarTitle', this.$t('barTitle.author') + ' / ' + this.author.displayName)
-                    this.tabChange(this.tab)
-                    this.loaded = true
                 }
             })
         }

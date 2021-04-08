@@ -1,15 +1,18 @@
 import axios from 'axios'
 
 axios.defaults.withCredentials = true
+const axiosInstance = axios.create({
+    withCredentials: true,
+    baseURL: 'https://analycube.com:8001'
+})
 
 //const base = 'https://legendword.com/wordblog'
-const base = 'https://analycube.com:8001'
-//const base = 'http://192.168.0.14/legendword_blog'
 
 const api = {
-    get: (path, params) => axios.get(`${base}${path}`, { params: params }),
-    post: (path, params) => axios.post(`${base}${path}`, params),
-    put: (path, params) => axios.put(`${base}${path}`, params),
-    delete: (path, params) => axios.delete(`${base}${path}`, params)
+    //get: (path, params) => axiosInstance.get(`${path}`, { params: params, headers: {'X-Client-Version': '0.2'} }),
+    get: (path, params) => axiosInstance.get(`${path}`, { params: params }),
+    post: (path, params) => axiosInstance.post(`${path}`, params),
+    put: (path, params) => axiosInstance.put(`${path}`, params),
+    delete: (path, params) => axiosInstance.delete(`${path}`, params)
 }
 export default api;

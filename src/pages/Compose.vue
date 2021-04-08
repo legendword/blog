@@ -319,7 +319,7 @@ export default {
                 })
                 return
             }
-            api('newpost', {
+            api.post('/posts', {
                 title: this.newPost.title,
                 description: this.newPost.description,
                 content: this.newPost.content,
@@ -328,15 +328,7 @@ export default {
             }).then(res => {
                 let r = res.data
                 console.log(r)
-                if (r.error) {
-                    this.$q.notify({
-                        color: 'negative',
-                        message: r.msg,
-                        position: 'top',
-                        timeout: 2000
-                    })
-                }
-                else if (r.success) {
+                if (r.success) {
                     this.$q.notify({
                         color: 'positive',
                         message: this.$t('compose.postIsPublished'),
@@ -346,12 +338,20 @@ export default {
                     //after post publish
                     this.$router.push('/me')
                 }
+                else {
+                    this.$q.notify({
+                        color: 'negative',
+                        message: r.msg,
+                        position: 'top',
+                        timeout: 2000
+                    })
+                }
             })
         }
     },
     created() {
         this.$store.commit('setBarTitle', this.$t('compose.barTitle'))
-        api('listcategories', {
+        api.get('/categories', {
             newpost: true
         }).then(res => {
             let r = res.data

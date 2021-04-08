@@ -233,8 +233,7 @@ export default {
     },
     methods: {
         addToCollection(cid) {
-            api('collectionaddpost', {
-                collectionId: cid,
+            api.put('/collections/'+cid+'/posts', {
                 postId: this.postId
             }).then(res => {
                 let r = res.data
@@ -270,7 +269,7 @@ export default {
                 persistent: true
             }).onOk(val => {
                 console.log(val)
-                api('newcollection', {
+                api.post('/collections', {
                     title: val
                 }).then(res => {
                     let r = res.data
@@ -289,9 +288,7 @@ export default {
             })
         },
         loadUserCollections() {
-            api('listcollections', {
-                type: 'mine'
-            }).then(res => {
+            api.get('/collections/mine').then(res => {
                 let r = res.data
                 if (r.success) {
                     this.userCollections = r.collections
@@ -316,10 +313,7 @@ export default {
             this.addReplyId = this.addReplyId == 0 ? id : 0
         },
         likeComment(id) {
-            api('performaction', {
-                type: 'likeComment',
-                to: id
-            }).then(res => {
+            api.post('/comments/'+id+'/like').then(res => {
                 let r = res.data
                 if (r.success) {
                     for (let i of this.comments) {
@@ -411,9 +405,7 @@ export default {
             return formatTimeElapsed(tm)
         },
         getPost() {
-            api('getpost', {
-                id: this.postId
-            }).then(res => {
+            api.get('/posts/'+this.postId).then(res => {
                 this.setData(res.data)
             })
         },
@@ -425,21 +417,21 @@ export default {
                 this.$q.notify({ color: 'warning', message: this.$t('post.emptyCommentMsg'), position: 'top', timeout: 2000 });
             }
             else {
-                api('newcomment', {
+                api.post('/comments', {
                     postId: this.postId,
                     content: this.newReply,
                     parentId: this.addReplyId
                 }).then(res => {
                     let r = res.data
                     console.log(r)
-                    if (r.error) {
-                        this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
-                    }
-                    else if (r.success) {
+                    if (r.success) {
                         this.$q.notify({ color: 'positive', message: this.$t('post.commentSuccess'), position: 'top', timeout: 2000 });
                         this.newReply = ''
                         this.addReplyId = 0
                         this.getPost()
+                    }
+                    else {
+                        this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
                     }
                 })
             }
@@ -449,20 +441,18 @@ export default {
                 this.$q.notify({ color: 'warning', message: this.$t('post.emptyCommentMsg'), position: 'top', timeout: 2000 });
             }
             else {
-                api('newcomment', {
+                api.post('/comments', {
                     postId: this.postId,
                     content: this.newComment
                 }).then(res => {
                     let r = res.data
                     console.log(r)
-                    if (r.error) {
-                        this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
-                    }
-                    else if (r.success) {
+                    if (r.success) {
                         this.$q.notify({ color: 'positive', message: this.$t('post.commentSuccess'), position: 'top', timeout: 2000 });
                         this.newComment = ''
                         this.getPost()
                     }
+                    else this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
                 })
             }
         },
@@ -475,18 +465,15 @@ export default {
             this.$router.push('/tag/'+tagName)
         },
         followAuthor() {
-            api('performaction', {
-                type: 'followAuthor',
-                to: this.post.authorId
-            }).then(res => {
+            api.post('/authors/'+this.post.authorId+'/follow').then(res => {
                 let r = res.data
                 console.log(r)
-                if (r.error) {
-                    this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
-                }
-                else if (r.success) {
-                    this.post.followerCount = parseInt(this.post.followerCount) + parseInt(r.followerDelta)
+                if (r.success) {
+                    this.post.followerCount = parseInt(this.post.followerCount) + parseInt(r.delta)
                     this.post.isFollowing = !this.post.isFollowing
+                }
+                else {
+                    this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });
                 }
             })
         },
@@ -535,12 +522,12 @@ export default {
         */
     },
     beforeRouteEnter (to, from, next) {
-        api.get('/posts/read/' + to.params.id).then(res => {
+        api.get('/posts/' + to.params.id).then(res => {
             next(vm => vm.setData(res.data))
         })
     },
     beforeRouteUpdate (to, from, next) {
-        api.get('/posts/read/' + to.params.id).then(res => {
+        api.get('/posts/' + to.params.id).then(res => {
             this.setData(res.data)
             next()
         })

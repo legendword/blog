@@ -46,24 +46,23 @@ export default {
             this.getPosts()
         },
         getPosts() {
-            api('listpost', {
-                type: 'following',
+            api.get('/posts/following', {
                 page: this.postPage
             }).then(res => {
                 let r = res.data
-                if (r.error) {
+                if (r.success) {
+                    this.postList = r.posts
+                    if (this.postPage == 1) {
+                        this.postCount = parseInt(r.postCount)
+                    }
+                }
+                else {
                     this.$q.notify({
                         color: 'negative',
                         message: r.msg,
                         position: 'top',
                         timeout: 2000
                     })
-                }
-                else if (r.success) {
-                    this.postList = r.posts
-                    if (this.postPage == 1) {
-                        this.postCount = parseInt(r.postCount)
-                    }
                 }
             })
         }

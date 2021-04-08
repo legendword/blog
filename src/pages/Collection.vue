@@ -86,8 +86,7 @@ export default {
         deletePost(pid) {
             let index = this.collection.posts.findIndex(v => v.postId == pid)
             if (index == -1) return
-            api('collectiondeletepost', {
-                collectionId: this.collection.id,
+            api.delete('/collections/'+this.collection.id+'/posts', {
                 postId: pid
             }).then(res => {
                 let r = res.data
@@ -114,11 +113,10 @@ export default {
                     timeout: 2000
                 })
             }
-            api('editcollectioninfo', {
-                id: this.collection.id,
+            api.put('/collections/'+this.collection.id, {
                 title: this.editInfo.title,
                 description: this.editInfo.description ? this.editInfo.description : '',
-                isPublic: this.editInfo.isPublic ? '1' : '0'
+                isPublic: this.editInfo.isPublic ? 1 : 0
             }).then(res => {
                 let r = res.data
                 if (r.success) {
@@ -181,16 +179,12 @@ export default {
         }
     },
     beforeRouteEnter (to, from, next) {
-        api('getcollection', {
-            id: to.params.id
-        }).then(res => {
+        api.get('/collections/'+to.params.id).then(res => {
             next(vm => vm.setData(res.data))
         })
     },
     beforeRouteUpdate (to, from, next) {
-        api('getcollection', {
-            id: to.params.id
-        }).then(res => {
+        api.get('/collections/'+to.params.id).then(res => {
             this.setData(res.data)
             next()
         })

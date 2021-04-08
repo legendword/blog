@@ -51,21 +51,21 @@ export default {
         language(lang) {
             this.$root.$i18n.locale = lang
             if (this.isLoggedIn) {
-                api('editusersetting', {
+                api.put('/user/settings', {
                     column: 'locale',
                     value: lang
                 }).then(res => {
                     let r = res.data
-                    if (r.error) {
+                    if (r.success) {
+                        //do nothing
+                    }
+                    else {
                         this.$q.notify({
                             color: 'negative',
                             message: r.msg,
                             position: 'top',
                             timeout: 2000
                         })
-                    }
-                    else if (r.success) {
-                        //do nothing
                     }
                 })
             }

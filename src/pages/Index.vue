@@ -101,7 +101,7 @@ export default {
     },
     getPosts() {
       this.postLoading = true
-      api.get('/posts/list/all', {
+      api.get('/posts', {
         count: this.postPerPage,
         page: this.postPage
       }).then(res => {

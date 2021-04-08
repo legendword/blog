@@ -99,7 +99,7 @@ export default {
                 persistent: true
             }).onOk(val => {
                 console.log(val)
-                api('newcollection', {
+                api.post('/collections', {
                     title: val
                 }).then(res => {
                     let r = res.data
@@ -126,9 +126,7 @@ export default {
                     cancel: true,
                     persistent: true
                 }).onOk(() => {
-                    api('deletecollection', {
-                        id: id
-                    }).then(res => {
+                    api.delete('/collections/'+id).then(res => {
                         let r = res.data
                         if (r.success) {
                             reset()
@@ -161,9 +159,7 @@ export default {
             }
             else if (menu == 'mine') {
                 //todo not logged in
-                api('listcollections', {
-                    type: 'mine'
-                }).then(res => {
+                api.get('/collections/mine').then(res => {
                     let r = res.data
                     if (r.success) {
                         console.log(r)

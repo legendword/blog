@@ -16,16 +16,28 @@
         <q-list padding class="menu-list">
           <q-item v-for="item in menuItems" :key="item.link" clickable v-ripple :to="item.link" :exact="item.exact ? true : false">
             <q-item-section avatar>
-              <q-icon :name="item.icon" />
+              <q-icon :name="item.icon" class="margin-auto" />
             </q-item-section>
 
             <q-item-section>
               {{ $t(item.name) }}
             </q-item-section>
+            
+            <q-item-section side v-if="item.badge && menuBadges[item.badge] != 0">
+              <q-badge>{{ menuBadges[item.badge] }}</q-badge>
+            </q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>
       <div class="absolute-bottom userDrawer q-pb-sm">
+        <q-item clickable v-ripple v-if="isLoggedIn && user.isAuthor == 1" to="/compose" exact>
+          <q-item-section avatar>
+            <q-icon name="create" class="margin-auto" />
+          </q-item-section>
+          <q-item-section>
+            Compose
+          </q-item-section>
+        </q-item>
         <q-item clickable v-ripple>
           <q-item-section avatar>
             <q-avatar color="primary" text-color="white">{{ isLoggedIn ? user.username[0]:'' }}</q-avatar>
@@ -91,7 +103,10 @@ export default {
       tab: 'tab1',
       logInDialog: false,
       menuItems: mainMenuItems,
-      menuLinks: []
+      menuLinks: [],
+      menuBadges: {
+        following: 0
+      }
     }
   },
   computed: {
@@ -215,6 +230,17 @@ export default {
       this.$store.commit('setHistoryLength', window.history.length)
     }
     this.menuLinks = mainMenuItems.map(v => v.link)
+    api.get('/badges').then(res => {
+      let r = res.data
+      if (r.success) {
+        this.menuBadges = r.badges
+        //clear badge of current path
+        let itm = this.menuItems.find(v => v.link == this.$route.path)
+        if (itm && itm.badge) {
+          this.menuBadges[itm.badge] = 0
+        }
+      }
+    })
   },
   beforeRouteEnter (to, from, next) {
     api.get('/user/info', {
@@ -225,6 +251,10 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     this.callAlive()
+    let itm = this.menuItems.find(v => v.link == to.path)
+    if (itm && itm.badge) {
+      this.menuBadges[itm.badge] = 0
+    }
     next()
   }
 }

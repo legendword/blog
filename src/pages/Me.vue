@@ -2,36 +2,26 @@
     <q-page class="q-pb-lg">
         <need-to-log-in v-if="!isLoggedIn" />
         <div v-else>
-            <div class="row">
-                <div class="col-12 col-sm-8 col-md-6">
-                    <router-link :to="'/user/'+user.id" class="noLinkStyle">
-                        <q-card class="q-ma-lg">
-                            <q-card-section>
-                                <div class="row">
-                                    <div class="col-auto q-pr-md">
-                                        <q-avatar color="primary" text-color="white">{{ user.username ? user.username[0]:'' }}</q-avatar>
-                                    </div>
-                                    <div class="col q-my-auto">
-                                        <div><strong>{{ user.username }}</strong></div>
-                                        <div class="row">
-                                            <div class="col text-caption">{{ user.followingCount }} {{ $t('general.following') }}</div>
-                                            <div class="col text-caption">{{ user.followerCount }} {{ $tc('computed.followers', user.followerCount) }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </q-card-section>
-                        </q-card>
-                    </router-link>
+            <div class="row" v-if="user.isAuthor">
+                <div class="col-12 col-sm-6">
+                    <user-card :user="user"></user-card>
                 </div>
-                <div class="col-12 col-sm-4 col-md-6" v-show="user.isAuthor">
+                <div class="col-12 col-sm-6">
                     <author-card :author="author"></author-card>
                 </div>
             </div>
-            <div class="q-px-md q-px-sm-lg" v-show="user.isAuthor">
+            <div class="row" v-else>
+                <div class="col-12">
+                    <user-card :user="user"></user-card>
+                </div>
+            </div>
+            <div class="q-px-md q-px-sm-lg" v-if="user.isAuthor">
                 <h5 class="q-mb-sm">{{ $t('me.creator') }}</h5>
                 <div class="xs">
                     <q-tabs v-model="creatorTab" active-color="primary" align="justify">
-                        <q-tab v-for="item in creatorTabs" :key="item" :name="item" :label="$t('general.'+item)" />
+                        <q-tab v-for="item in creatorTabs" :key="item" :name="item" :label="$t('general.'+item)">
+                            <q-badge floating v-if="creatorBadges[item]">{{creatorBadges[item]}}</q-badge>
+                        </q-tab>
                     </q-tabs>
                 </div>
                 <div class="row">
@@ -39,6 +29,9 @@
                         <q-list bordered separator class="creatorTabs text-weight-medium">
                             <q-item v-for="item in creatorTabs" :key="item" clickable v-ripple :active="creatorTab == item" @click="creatorTab = item">
                                 <q-item-section>{{ $t('general.'+item) }}</q-item-section>
+                                <q-item-section side v-if="creatorBadges[item]">
+                                    <q-badge>{{creatorBadges[item]}}</q-badge>
+                                </q-item-section>
                             </q-item>
                         </q-list>
                     </div>
@@ -157,6 +150,7 @@
 
 <script>
 import AuthorCard from '../components/AuthorCard.vue'
+import UserCard from '../components/UserCard.vue'
 import { mapState } from 'vuex'
 import api from '../api'
 import NeedToLogIn from '../components/NeedToLogIn.vue'
@@ -167,6 +161,7 @@ export default {
     components: {
         NeedToLogIn,
         AuthorCard,
+        UserCard,
         UpcomingFeature
     },
     data() {
@@ -175,6 +170,9 @@ export default {
             user: {},
             creatorTab: 'overview',
             creatorTabs: ['overview', 'posts', 'comments'],
+            creatorBadges: {
+                comments: 0
+            },
             creator: {
                 stats: [],
                 posts: [],
@@ -210,6 +208,9 @@ export default {
             this.fetchCreatorTab(this.creatorTab)
         },
         fetchCreatorTab(val) {
+            if (this.creatorBadges[val]) {
+                this.creatorBadges[val] = 0
+            }
             if (val == 'overview') {
                 api.get('/authors/stats').then(res => {
                     let r = res.data
@@ -297,6 +298,14 @@ export default {
                 if (this.user.isAuthor) {
                     this.author = r.author
                     this.fetchCreatorTab(this.creatorTab)
+
+                    api.get('/badges').then(res => {
+                        let r = res.data
+                        if (r.success) {
+                            this.creatorBadges.comments = r.badges.comments
+                            console.log(this.creatorBadges['comments'])
+                        }
+                    })
                 }
             }
             else {

@@ -8,17 +8,19 @@ const mainMenuItems = [
     {
         name: 'layoutDrawer.collections',
         link: '/collections',
-        icon: 'ion-bookmarks'  
+        icon: 'ion-bookmarks'
     },
     {
         name: 'layoutDrawer.following',
         link: '/following',
-        icon: 'ion-today'
+        icon: 'ion-today',
+        badge: 'following'
     },
     {
         name: 'layoutDrawer.me',
         link: '/me',
-        icon: 'ion-home'
+        icon: 'ion-home',
+        badge: 'comments'
     }
 ];
 export default mainMenuItems;

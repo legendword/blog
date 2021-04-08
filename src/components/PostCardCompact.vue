@@ -6,7 +6,7 @@
             </q-card-section>
 
             <q-card-section class="q-pt-none">
-                <div class="ellipsis">{{ post.description }}</div>
+                <div class="ellipsis" :title="post.description">{{ post.description }}</div>
             </q-card-section>
 
             <q-card-section class="q-pt-none">

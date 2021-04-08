@@ -1,191 +1,196 @@
 <template>
     <q-page class="q-pa-md q-pa-sm-lg">
-        <div v-if="postNotFound">
-            <h5>{{ $t('post.notFoundTitle') }}</h5>
-            <h6>{{ $t('post.notFoundMsg') }}</h6>
-        </div>
-        <div v-else class="post-layout">
-            <!-- title and add to collection btn -->
-            <div class="row q-mt-lg q-mb-xl">
-                <div class="col">
-                    <div class="text-h4 word-break">{{ post.title }}</div>
-                </div>
-                <div class="col-auto" v-show="isLoggedIn">
-                    <q-btn round flat color="primary" size="28" icon="o_bookmark_add" @click="loadUserCollections">
-                        <q-popup-proxy :breakpoint="500" anchor="bottom end" self="top right">
-                            <q-card style="width: 300px; max-width: 80vw;">
-                                <q-card-section>
-                                    <div class="text-h6 q-mb-md">{{$t('post.addToCollection')}}</div>
-                                    <q-list bordered separator>
-                                        <q-item clickable v-ripple>
-                                            <q-item-section class="text-primary word-break" @click="newCollection">+ {{$t('post.newCollection')}}</q-item-section>
-                                        </q-item>
-                                        <q-item v-for="item in userCollections" :key="item.id" clickable v-ripple v-close-popup @click="addToCollection(item.id)">
-                                            <q-item-section class="word-break">{{ item.title }}</q-item-section>
-                                        </q-item>
-                                    </q-list>
-                                </q-card-section>
-                            </q-card>
-                        </q-popup-proxy>
-                    </q-btn>
-                </div>
+        <div v-if="loaded">
+            <div v-if="postNotFound">
+                <h5>{{ $t('post.notFoundTitle') }}</h5>
+                <h6>{{ $t('post.notFoundMsg') }}</h6>
             </div>
-            <!-- post info and author info -->
-            <div class="row q-mb-lg justify-between">
-                <div class="col-12 col-md">
-                    <div class="q-mt-md text-subtitle1 post-infoLine row inline wrap items-center">
+            <div v-else class="post-layout">
+                <!-- title and add to collection btn -->
+                <div class="row q-mt-lg q-mb-xl">
+                    <div class="col">
+                        <div class="text-h4 word-break">{{ post.title }}</div>
+                    </div>
+                    <div class="col-auto" v-show="isLoggedIn">
+                        <q-btn round flat color="primary" size="28" icon="o_bookmark_add" @click="loadUserCollections">
+                            <q-popup-proxy :breakpoint="500" anchor="bottom end" self="top right">
+                                <q-card style="width: 300px; max-width: 80vw;">
+                                    <q-card-section>
+                                        <div class="text-h6 q-mb-md">{{$t('post.addToCollection')}}</div>
+                                        <q-list bordered separator>
+                                            <q-item clickable v-ripple>
+                                                <q-item-section class="text-primary word-break" @click="newCollection">+ {{$t('post.newCollection')}}</q-item-section>
+                                            </q-item>
+                                            <q-item v-for="item in userCollections" :key="item.id" clickable v-ripple v-close-popup @click="addToCollection(item.id)">
+                                                <q-item-section class="word-break">{{ item.title }}</q-item-section>
+                                            </q-item>
+                                        </q-list>
+                                    </q-card-section>
+                                </q-card>
+                            </q-popup-proxy>
+                        </q-btn>
+                    </div>
+                </div>
+                <!-- post info and author info -->
+                <div class="row q-mb-lg justify-between">
+                    <div class="col-12 col-md">
+                        <div class="q-mt-md text-subtitle1 post-infoLine row inline wrap items-center">
+                            <div>
+                                {{ $t('post.publishedOn.before') }} <span class="text-weight-medium gt-xs">{{ post.publishTimeStr }}</span><span class="text-weight-medium xs">{{ post.publishTimeStr ? post.publishTimeStr.substring(0, 10) : '' }}</span> {{ $t('post.publishedOn.after') }}
+                            </div>
+                            <div class="q-pl-md q-pl-sm-lg">
+                                {{ $t('post.views.before') }} <span class="text-weight-medium">{{ post.views }}</span> {{ $t('post.views.after') }}
+                            </div>
+                        </div>
                         <div>
-                            {{ $t('post.publishedOn.before') }} <span class="text-weight-medium gt-xs">{{ post.publishTimeStr }}</span><span class="text-weight-medium xs">{{ post.publishTimeStr ? post.publishTimeStr.substring(0, 10) : '' }}</span> {{ $t('post.publishedOn.after') }}
-                        </div>
-                        <div class="q-pl-md q-pl-sm-lg">
-                            {{ $t('post.views.before') }} <span class="text-weight-medium">{{ post.views }}</span> {{ $t('post.views.after') }}
+                            <q-chip class="text-weight-medium" clickable outline color="primary" @click="goToCategory">{{post.category ? $t('categories.'+post.category) : ''}}</q-chip>
+                            <q-chip v-for="tag in post.tags" :key="tag.id" clickable color="primary" text-color="white" @click="goToTag(tag.name)">{{tag.name}}</q-chip>
                         </div>
                     </div>
-                    <div>
-                        <q-chip class="text-weight-medium" clickable outline color="primary" @click="goToCategory">{{post.category ? $t('categories.'+post.category) : ''}}</q-chip>
-                        <q-chip v-for="tag in post.tags" :key="tag.id" clickable color="primary" text-color="white" @click="goToTag(tag.name)">{{tag.name}}</q-chip>
+                    <div class="col-12 col-md-auto q-pt-md q-pt-md-none text-subtitle1">
+                        <q-card flat bordered>
+                            <q-card-section>
+                                <div class="row">
+                                    <div class="col-auto q-pr-md">
+                                        <router-link :to="'/author/'+post.authorId" class="noLinkStyle">
+                                            <q-avatar color="primary" text-color="white">{{ post.authorName ? post.authorName[0]:'' }}</q-avatar>
+                                        </router-link>
+                                    </div>
+                                    <div class="col q-my-auto">
+                                        <router-link :to="'/author/'+post.authorId" class="noLinkStyle"><strong>{{ post.authorName }}</strong></router-link>
+                                        <div class="text-caption">{{ post.followerCount }} {{ $tc('computed.followers', post.followerCount) }}</div>
+                                    </div>
+                                    <div class="col-auto q-my-auto" v-show="isLoggedIn">
+                                        <q-btn flat :color="hoverUnfollow ? 'negative' : 'grey'" :label="hoverUnfollow ? $t('userAction.unfollow') : $t('userAction.following')" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followAuthor" v-if="post.isFollowing"></q-btn>
+                                        <q-btn flat color="primary" :label="$t('userAction.follow')" @click="followAuthor" v-else></q-btn>
+                                    </div>
+                                </div>
+                            </q-card-section>
+                        </q-card>
                     </div>
                 </div>
-                <div class="col-12 col-md-auto q-pt-md q-pt-md-none text-subtitle1">
-                    <q-card flat bordered>
-                        <q-card-section>
-                            <div class="row">
-                                <div class="col-auto q-pr-md">
-                                    <router-link :to="'/author/'+post.authorId" class="noLinkStyle">
-                                        <q-avatar color="primary" text-color="white">{{ post.authorName ? post.authorName[0]:'' }}</q-avatar>
-                                    </router-link>
-                                </div>
-                                <div class="col q-my-auto">
-                                    <router-link :to="'/author/'+post.authorId" class="noLinkStyle"><strong>{{ post.authorName }}</strong></router-link>
-                                    <div class="text-caption">{{ post.followerCount }} {{ $tc('computed.followers', post.followerCount) }}</div>
-                                </div>
-                                <div class="col-auto q-my-auto" v-show="isLoggedIn">
-                                    <q-btn flat :color="hoverUnfollow ? 'negative' : 'grey'" :label="hoverUnfollow ? $t('userAction.unfollow') : $t('userAction.following')" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followAuthor" v-if="post.isFollowing"></q-btn>
-                                    <q-btn flat color="primary" :label="$t('userAction.follow')" @click="followAuthor" v-else></q-btn>
-                                </div>
-                            </div>
-                        </q-card-section>
-                    </q-card>
-                </div>
-            </div>
-            <!-- post content -->
-            <MarkDownItVue class="post-content q-pt-lg q-pb-md col-12 col-md-8" :content="post.content ? post.content : ''" :options="markdownItVueOptions"></MarkDownItVue>
-            <!-- comments -->
-            <div class="q-mt-xl">
-                <q-separator />
-                <div class="q-mt-lg row justify-between">
-                    <div ref="comments">
-                        <span class="text-h5">Comments</span>
-                        <span class="q-ml-sm text-subtitle1 post-infoLine">{{commentCount === '' ? '' : '('+commentCount+')'}}</span>
-                    </div>
-                    <div>
-                        <q-btn-dropdown icon="sort" flat color="primary" :label="$t('general.sortBy')">
-                            <q-list>
-                                <q-item v-for="item in sortOptions" :key="item.value" clickable v-close-popup @click="changeSortBy(item.value)" :active="commentSortBy == item.value">
-                                    <q-item-section>
-                                        <q-item-label>{{ item.label }}</q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                            </q-list>
-                        </q-btn-dropdown>
-                    </div>
-                </div>
-                <div class="q-my-md">
-                    <div v-if="isLoggedIn">
-                        <div class="row">
-                            <div class="col">
-                                <q-input dense outlined autogrow v-model="newComment" maxlength="1000" label="Add Comment" />
-                            </div>
-                            <div class="col-auto q-px-sm">
-                                <q-btn color="primary" label="Post" @click="addComment" />
-                            </div>
+                <!-- post content -->
+                <MarkDownItVue class="post-content q-pt-lg q-pb-md col-12 col-md-8" :content="post.content ? post.content : ''" :options="markdownItVueOptions"></MarkDownItVue>
+                <!-- comments -->
+                <div class="q-mt-xl">
+                    <q-separator />
+                    <div class="q-mt-lg row justify-between">
+                        <div ref="comments">
+                            <span class="text-h5">Comments</span>
+                            <span class="q-ml-sm text-subtitle1 post-infoLine">{{commentCount === '' ? '' : '('+commentCount+')'}}</span>
                         </div>
-                    </div>
-                    <div v-else>
-                        <div class="post-infoLine text-italic text-center">Log in to add a comment</div>
-                    </div>
-                </div>
-                <div class="q-mb-md">
-                    <div v-for="comment in comments" :key="comment.id" class="q-mt-md">
-                        <q-separator class="q-my-md" />
                         <div>
-                            <span class="text-weight-medium commentUsername" @click="$router.push('/user/'+comment.userId)">
-                                {{comment.username}}
-                                <span v-show="comment.userIsAuthor == '1'">
-                                    <q-badge rounded outline color="primary" class="q-mx-xs" v-if="comment.userId == post.authorUserId">
-                                        <q-icon name="create" color="primary" />
-                                        Author
-                                    </q-badge>
-                                    <q-badge rounded color="accent" class="q-mx-xs" v-else>
-                                        <q-icon name="done" color="white" />
-                                    </q-badge>
-                                </span>
-                            </span>
-                            <span class="q-ml-sm post-infoLine">{{formatTime(comment.publishTime)}}</span>
+                            <q-btn-dropdown icon="sort" flat color="primary" :label="$t('general.sortBy')">
+                                <q-list>
+                                    <q-item v-for="item in sortOptions" :key="item.value" clickable v-close-popup @click="changeSortBy(item.value)" :active="commentSortBy == item.value">
+                                        <q-item-section>
+                                            <q-item-label>{{ item.label }}</q-item-label>
+                                        </q-item-section>
+                                    </q-item>
+                                </q-list>
+                            </q-btn-dropdown>
                         </div>
-                        <div class="commentContent q-pl-md q-my-sm">{{comment.content}}</div>
-                        <div class="commentStats text-dimmed q-mb-sm">
-                            <span class="q-mr-sm statsActive" v-if="comment.userLiked" @click="likeComment(comment.id)">
-                                <q-icon name="thumb_up" />
-                                {{comment.likes}}
-                            </span>
-                            <span class="q-mr-sm statsInactive" v-else @click="likeComment(comment.id)">
-                                <q-icon name="thumb_up_off_alt" />
-                                {{comment.likes}}
-                            </span>
-                            <span class="statsActive" v-if="addReplyId == comment.id" @click="addReplyToggle(comment.id)">
-                                <q-icon name="chat_bubble" />
-                                {{comment.replies.length}}
-                            </span>
-                            <span class="statsInactive" v-else @click="addReplyToggle(comment.id)">
-                                <q-icon name="chat_bubble_outline" />
-                                {{comment.replies.length}}
-                            </span>
-                        </div>
-                        <div v-if="addReplyId == comment.id" class="replyBlock">
+                    </div>
+                    <div class="q-my-md">
+                        <div v-if="isLoggedIn">
                             <div class="row">
                                 <div class="col">
-                                    <q-input dense outlined autogrow v-model="newReply" maxlength="1000" label="Reply" />
+                                    <q-input dense outlined autogrow v-model="newComment" maxlength="1000" label="Add Comment" />
                                 </div>
                                 <div class="col-auto q-px-sm">
-                                    <q-btn color="primary" label="Post" @click="addReply" />
+                                    <q-btn color="primary" label="Post" @click="addComment" />
                                 </div>
                             </div>
                         </div>
-                        <div v-if="comment.replies.length > 0" class="q-mt-md">
-                            <div v-for="childComment in comment.replies" :key="childComment.id" class="q-mt-md replyBlock">
-                                <div>
-                                    <span class="text-weight-medium commentUsername" @click="$router.push('/user/'+childComment.userId)">
-                                        {{childComment.username}}
-                                        <span v-show="childComment.userIsAuthor == '1'">
-                                            <q-badge rounded outline color="primary" class="q-mx-xs" v-if="childComment.userId == post.authorUserId">
-                                                <q-icon name="create" color="primary" />
-                                                Author
-                                            </q-badge>
-                                            <q-badge rounded color="accent" class="q-mx-xs" v-else>
-                                                <q-icon name="done" color="white" />
-                                            </q-badge>
-                                        </span>
+                        <div v-else>
+                            <div class="post-infoLine text-italic text-center">Log in to add a comment</div>
+                        </div>
+                    </div>
+                    <div class="q-mb-md">
+                        <div v-for="comment in comments" :key="comment.id" class="q-mt-md">
+                            <q-separator class="q-my-md" />
+                            <div>
+                                <span class="text-weight-medium commentUsername" @click="$router.push('/user/'+comment.userId)">
+                                    {{comment.username}}
+                                    <span v-show="comment.userIsAuthor == '1'">
+                                        <q-badge rounded outline color="primary" class="q-mx-xs" v-if="comment.userId == post.authorUserId">
+                                            <q-icon name="create" color="primary" />
+                                            Author
+                                        </q-badge>
+                                        <q-badge rounded color="accent" class="q-mx-xs" v-else>
+                                            <q-icon name="done" color="white" />
+                                        </q-badge>
                                     </span>
-                                    <span class="q-ml-sm post-infoLine">{{formatTime(childComment.publishTime)}}</span>
+                                </span>
+                                <span class="q-ml-sm post-infoLine">{{formatTime(comment.publishTime)}}</span>
+                            </div>
+                            <div class="commentContent q-pl-md q-my-sm">{{comment.content}}</div>
+                            <div class="commentStats text-dimmed q-mb-sm">
+                                <span class="q-mr-sm statsActive" v-if="comment.userLiked" @click="likeComment(comment.id)">
+                                    <q-icon name="thumb_up" />
+                                    {{comment.likes}}
+                                </span>
+                                <span class="q-mr-sm statsInactive" v-else @click="likeComment(comment.id)">
+                                    <q-icon name="thumb_up_off_alt" />
+                                    {{comment.likes}}
+                                </span>
+                                <span class="statsActive" v-if="addReplyId == comment.id" @click="addReplyToggle(comment.id)">
+                                    <q-icon name="chat_bubble" />
+                                    {{comment.replies.length}}
+                                </span>
+                                <span class="statsInactive" v-else @click="addReplyToggle(comment.id)">
+                                    <q-icon name="chat_bubble_outline" />
+                                    {{comment.replies.length}}
+                                </span>
+                            </div>
+                            <div v-if="addReplyId == comment.id" class="replyBlock">
+                                <div class="row">
+                                    <div class="col">
+                                        <q-input dense outlined autogrow v-model="newReply" maxlength="1000" label="Reply" />
+                                    </div>
+                                    <div class="col-auto q-px-sm">
+                                        <q-btn color="primary" label="Post" @click="addReply" />
+                                    </div>
                                 </div>
-                                <div class="commentContent q-pl-md q-my-sm">{{childComment.content}}</div>
-                                <div class="commentStats text-dimmed q-mb-sm">
-                                    <span class="q-mr-sm statsActive" v-if="childComment.userLiked" @click="likeComment(childComment.id)">
-                                        <q-icon name="thumb_up" />
-                                        {{childComment.likes}}
-                                    </span>
-                                    <span class="q-mr-sm statsInactive" v-else @click="likeComment(childComment.id)">
-                                        <q-icon name="thumb_up_off_alt" />
-                                        {{childComment.likes}}
-                                    </span>
-                                    <!-- todo: reply to child comments -->
+                            </div>
+                            <div v-if="comment.replies.length > 0" class="q-mt-md">
+                                <div v-for="childComment in comment.replies" :key="childComment.id" class="q-mt-md replyBlock">
+                                    <div>
+                                        <span class="text-weight-medium commentUsername" @click="$router.push('/user/'+childComment.userId)">
+                                            {{childComment.username}}
+                                            <span v-show="childComment.userIsAuthor == '1'">
+                                                <q-badge rounded outline color="primary" class="q-mx-xs" v-if="childComment.userId == post.authorUserId">
+                                                    <q-icon name="create" color="primary" />
+                                                    Author
+                                                </q-badge>
+                                                <q-badge rounded color="accent" class="q-mx-xs" v-else>
+                                                    <q-icon name="done" color="white" />
+                                                </q-badge>
+                                            </span>
+                                        </span>
+                                        <span class="q-ml-sm post-infoLine">{{formatTime(childComment.publishTime)}}</span>
+                                    </div>
+                                    <div class="commentContent q-pl-md q-my-sm">{{childComment.content}}</div>
+                                    <div class="commentStats text-dimmed q-mb-sm">
+                                        <span class="q-mr-sm statsActive" v-if="childComment.userLiked" @click="likeComment(childComment.id)">
+                                            <q-icon name="thumb_up" />
+                                            {{childComment.likes}}
+                                        </span>
+                                        <span class="q-mr-sm statsInactive" v-else @click="likeComment(childComment.id)">
+                                            <q-icon name="thumb_up_off_alt" />
+                                            {{childComment.likes}}
+                                        </span>
+                                        <!-- todo: reply to child comments -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div v-else>
+            <loading-message />
         </div>
     </q-page>
 </template>
@@ -198,14 +203,17 @@ import api from '../api'
 import { mapState } from 'vuex'
 import { formatTimeElapsed } from '../util'
 import { scroll } from 'quasar'
+import LoadingMessage from 'src/components/LoadingMessage.vue'
 const { getScrollTarget, setScrollPosition } = scroll
 export default {
     name: 'Post',
     components: {
-        MarkDownItVue
+        MarkDownItVue,
+        LoadingMessage
     },
     data() {
         return {
+            loaded: false,
             markdownItVueOptions: markdownItVueOptions,
             post: {},
             comments: [],
@@ -521,15 +529,10 @@ export default {
         }
         */
     },
-    beforeRouteEnter (to, from, next) {
-        api.get('/posts/' + to.params.id).then(res => {
-            next(vm => vm.setData(res.data))
-        })
-    },
-    beforeRouteUpdate (to, from, next) {
-        api.get('/posts/' + to.params.id).then(res => {
+    created() { //v0.2: using created() to load content after route for better user experience
+        api.get('/posts/' + this.$route.params.id).then(res => {
             this.setData(res.data)
-            next()
+            this.loaded = true
         })
     }
 }

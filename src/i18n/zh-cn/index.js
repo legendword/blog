@@ -22,7 +22,8 @@ export default {
             timeAsc: '最早发布',
             viewsDesc: '最多阅读',
             likesDesc: '最多点赞'
-        }
+        },
+        loading: '加载中...'
     },
     computed: {
         followers: '粉丝',
@@ -92,7 +93,8 @@ export default {
         experience: '经历',
         knowledge: '技术/知识',
         guideline: '规则',
-        changelog: '更新日志'
+        changelog: '更新日志',
+        support: '帮助'
     },
     category: {
         title: '分类',

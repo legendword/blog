@@ -22,7 +22,8 @@ export default {
             timeAsc: 'Date Published (Oldest)',
             viewsDesc: 'Most Views',
             likesDesc: 'Most Likes'
-        }
+        },
+        loading: 'Loading...'
     },
     computed: {
         followers: 'Follower | Followers',
@@ -92,7 +93,8 @@ export default {
         experience: 'Experience',
         knowledge: 'Skill/Knowledge',
         guideline: 'Guideline',
-        changelog: 'ChangeLog'
+        changelog: 'ChangeLog',
+        support: 'Support'
     },
     category: {
         title: 'Category',

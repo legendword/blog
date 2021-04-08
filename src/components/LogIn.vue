@@ -17,13 +17,22 @@
             </q-card-actions>
         </q-card>
         <q-card class="loginDialog" v-else>
+            <q-banner rounded :inline-actions="$q.screen.gt.sm" class="bg-secondary text-white text-weight-medium">
+                <template v-slot:avatar>
+                    <q-icon name="announcement" color="white" />
+                </template>
+                Users registered before v0.2 have to reset their passwords due to back-end platform change.
+                <template v-slot:action>
+                    <q-btn flat label="Read the ChangeLog" @click="readChangeLog"></q-btn>
+                </template>
+            </q-banner>
             <q-card-section>
                 <div class="text-h6">{{ $t('logIn.signIn') }}</div>
             </q-card-section>
             <q-card-section>
                 <q-form class="q-gutter-md q-px-md">
                     <q-input v-model="email" lazy-rules :rules="emailRules" :label="$t('general.email')"></q-input>
-                    <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" :label="$t('general.password')"></q-input>
+                    <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" :label="$t('general.password')" @keypress.enter="submitLogIn"></q-input>
                     <q-checkbox v-model="rememberme" :label="$t('logIn.rememberMe')" />
                     <p>
                         <q-btn :label="$t('logIn.noAccountSignUp')" color="primary" flat @click="toggleSignUp" />
@@ -67,6 +76,9 @@ export default {
         }
     },
     methods: {
+        readChangeLog() {
+            location.href = 'https://github.com/legendword/blog/releases/tag/v0.2'
+        },
         forgotPass() {
             this.$q.dialog({
                 title: this.$t('passwordRecovery.prompt.title'),

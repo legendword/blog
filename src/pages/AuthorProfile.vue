@@ -42,7 +42,7 @@
                                 <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">{{ $t('authorProfile.editProfile') }}</q-btn>
                             </div>
                         </div>
-                        <upcoming-feature version="0.2"></upcoming-feature>
+                        <upcoming-feature version="0.4"></upcoming-feature>
                     </q-tab-panel>
                     <q-tab-panel name="posts">
                         <div class="text-h6 q-my-md">
@@ -110,7 +110,7 @@ export default {
                 let r = res.data
                 console.log(r)
                 if (r.success) {
-                    this.author.followerCount = parseInt(this.author.followerCount) + parseInt(r.followerDelta)
+                    this.author.followerCount = parseInt(this.author.followerCount) + parseInt(r.delta)
                     this.author.isFollowing = !this.author.isFollowing
                 }
                 else this.$q.notify({ color: 'negative', message: r.msg, position: 'top', timeout: 2000 });

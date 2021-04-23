@@ -1,6 +1,6 @@
 {
   "name": "blog",
-  "version": "0.1",
+  "version": "0.2.1",
   "description": "An elegant blog system by Legendword, built with Quasar.",
   "productName": "Legendword Blog",
   "author": "Legendword <zwh@legendword.com>",

@@ -1,5 +1,5 @@
 {
-  "appId": "com.legendword.blog",
+  "appId": "com.legendword.wordblog",
   "appName": "WordBlog",
   "bundledWebRuntime": false,
   "npmClient": "npm",

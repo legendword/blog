@@ -1,6 +1,6 @@
 {
   "name": "WordBlog",
-  "version": "0.1",
+  "version": "0.2.1",
   "description": "An elegant blog system by Legendword, built with Quasar.",
   "author": "Legendword <zwh@legendword.com>",
   "private": true,

@@ -163,6 +163,14 @@ export default {
             before: '',
             after: 'Views'
         },
+        commentLogIn: 'Log in to add a comment',
+        commentIsDeleted: 'This comment has been deleted.',
+        deleteComment: {
+            btn: 'Delete',
+            title: 'Delete Comment',
+            msg: 'Are you sure you want to delete this comment? All replies to the comment will be lost as well.',
+            success: 'Comment Deleted'
+        },
         emptyCommentMsg: 'Comment cannot be empty!',
         commentSuccess: 'Comment added',
         addToCollection: 'Add To Collection',
@@ -195,6 +203,11 @@ export default {
         newPost: 'New Post',
         viewPost: 'View',
         removePost: 'Remove',
+        removePostDialog: {
+            title: 'Remove Post',
+            msg: 'Are you sure you want to permanently delete the following post and all of its content and replies? This action is not reversible: ',
+            success: 'Post Deleted'
+        },
         stats: {
             totalViews: 'Views',
             totalComments: 'Comments',

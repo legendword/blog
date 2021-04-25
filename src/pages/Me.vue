@@ -94,7 +94,7 @@
                                                                     <q-item-label>{{$t('me.viewPost')}}</q-item-label>
                                                                 </q-item-section>
                                                             </q-item>
-                                                            <q-item clickable v-close-popup @click="removePost(post.postId)">
+                                                            <q-item clickable v-close-popup @click="removePost(post.postId, post.title)">
                                                                 <q-item-section>
                                                                     <q-item-label>{{$t('me.removePost')}}</q-item-label>
                                                                 </q-item-section>
@@ -103,7 +103,7 @@
                                                     </q-btn-dropdown>
                                                     <q-btn-group class="gt-xs">
                                                         <q-btn color="primary" :label="$t('me.viewPost')" :to="'/post/'+post.postId"></q-btn>
-                                                        <q-btn color="grey" :label="$t('me.removePost')" @click="removePost(post.postId)"></q-btn>
+                                                        <q-btn color="grey" :label="$t('me.removePost')" @click="removePost(post.postId, post.title)"></q-btn>
                                                     </q-btn-group>
                                                 </div>
                                             </div>
@@ -286,9 +286,34 @@ export default {
                 })
             }
         },
-        removePost(postId) {
-            console.log(postId)
-            this.$q.notify({ color: 'negative', message: 'Removing post is an upcoming feature.', position: 'top', timeout: 2000 });
+        removePost(postId, postTitle) {
+            this.$q.dialog({
+                title: this.$t('me.removePostDialog.title'),
+                message: this.$t('me.removePostDialog.msg') + postTitle,
+                cancel: true,
+                persistent: true
+            }).onOk(() => {
+                api.delete('/posts/'+postId).then(res => {
+                    let r = res.data
+                    if (r.success) {
+                        this.$q.notify({
+                            color: 'positive',
+                            message: this.$t('me.removePostDialog.success'),
+                            position: 'top',
+                            timeout: 2000
+                        })
+                        this.fetchCreatorTab('posts')
+                    }
+                    else {
+                        this.$q.notify({
+                            color: 'negative',
+                            message: r.msg,
+                            position: 'top',
+                            timeout: 2000
+                        })
+                    }
+                })
+            })
         },
         setData(r) {
             console.log(r)

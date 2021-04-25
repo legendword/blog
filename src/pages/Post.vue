@@ -103,26 +103,39 @@
                             </div>
                         </div>
                         <div v-else>
-                            <div class="post-infoLine text-italic text-center">Log in to add a comment</div>
+                            <div class="post-infoLine text-italic text-center">{{$t('post.commentLogIn')}}</div>
                         </div>
                     </div>
                     <div class="q-mb-md">
-                        <div v-for="comment in comments" :key="comment.id" class="q-mt-md">
+                        <div v-for="comment in comments" :key="comment.id" class="q-mt-md commentBlock">
                             <q-separator class="q-my-md" />
-                            <div>
-                                <span class="text-weight-medium commentUsername" @click="$router.push('/user/'+comment.userId)">
+                            <div class="row">
+                                <div class="col">
+                                    <span class="text-weight-medium commentUsername" @click="$router.push('/user/'+comment.userId)">
                                     {{comment.username}}
-                                    <span v-show="comment.userIsAuthor == '1'">
-                                        <q-badge rounded outline color="primary" class="q-mx-xs" v-if="comment.userId == post.authorUserId">
-                                            <q-icon name="create" color="primary" />
-                                            Author
-                                        </q-badge>
-                                        <q-badge rounded color="accent" class="q-mx-xs" v-else>
-                                            <q-icon name="done" color="white" />
-                                        </q-badge>
+                                        <span v-show="comment.userIsAuthor == '1'">
+                                            <q-badge rounded outline color="primary" class="q-mx-xs" v-if="comment.userId == post.authorUserId">
+                                                <q-icon name="create" color="primary" />
+                                                Author
+                                            </q-badge>
+                                            <q-badge rounded color="accent" class="q-mx-xs" v-else>
+                                                <q-icon name="done" color="white" />
+                                            </q-badge>
+                                        </span>
                                     </span>
-                                </span>
-                                <span class="q-ml-sm post-infoLine">{{formatTime(comment.publishTime)}}</span>
+                                    <span class="q-ml-sm post-infoLine">{{formatTime(comment.publishTime)}}</span>
+                                </div>
+                                <div class="col-auto" v-if="isLoggedIn && user.id == comment.userId">
+                                    <q-btn round dense flat size="sm" icon="more_vert" class="commentAction">
+                                        <q-menu>
+                                            <q-list style="min-width: 100px;">
+                                                <q-item clickable v-close-popup @click="deleteComment(comment.id)">
+                                                    <q-item-section>{{$t('post.deleteComment.btn')}}</q-item-section>
+                                                </q-item>
+                                            </q-list>
+                                        </q-menu>
+                                    </q-btn>
+                                </div>
                             </div>
                             <div class="commentContent q-pl-md q-my-sm">{{comment.content}}</div>
                             <div class="commentStats text-dimmed q-mb-sm">
@@ -155,20 +168,33 @@
                             </div>
                             <div v-if="comment.replies.length > 0" class="q-mt-md">
                                 <div v-for="childComment in comment.replies" :key="childComment.id" class="q-mt-md replyBlock">
-                                    <div>
-                                        <span class="text-weight-medium commentUsername" @click="$router.push('/user/'+childComment.userId)">
+                                    <div class="row">
+                                        <div class="col">
+                                            <span class="text-weight-medium commentUsername" @click="$router.push('/user/'+childComment.userId)">
                                             {{childComment.username}}
-                                            <span v-show="childComment.userIsAuthor == '1'">
-                                                <q-badge rounded outline color="primary" class="q-mx-xs" v-if="childComment.userId == post.authorUserId">
-                                                    <q-icon name="create" color="primary" />
-                                                    Author
-                                                </q-badge>
-                                                <q-badge rounded color="accent" class="q-mx-xs" v-else>
-                                                    <q-icon name="done" color="white" />
-                                                </q-badge>
+                                                <span v-show="childComment.userIsAuthor == '1'">
+                                                    <q-badge rounded outline color="primary" class="q-mx-xs" v-if="childComment.userId == post.authorUserId">
+                                                        <q-icon name="create" color="primary" />
+                                                        Author
+                                                    </q-badge>
+                                                    <q-badge rounded color="accent" class="q-mx-xs" v-else>
+                                                        <q-icon name="done" color="white" />
+                                                    </q-badge>
+                                                </span>
                                             </span>
-                                        </span>
-                                        <span class="q-ml-sm post-infoLine">{{formatTime(childComment.publishTime)}}</span>
+                                            <span class="q-ml-sm post-infoLine">{{formatTime(childComment.publishTime)}}</span>
+                                        </div>
+                                        <div class="col-auto" v-if="isLoggedIn && user.id == childComment.userId">
+                                            <q-btn round dense flat size="sm" icon="more_vert" class="replyAction">
+                                                <q-menu>
+                                                    <q-list style="min-width: 100px;">
+                                                        <q-item clickable dense v-close-popup @click="deleteComment(childComment.id)">
+                                                            <q-item-section>{{$t('post.deleteComment.btn')}}</q-item-section>
+                                                        </q-item>
+                                                    </q-list>
+                                                </q-menu>
+                                            </q-btn>
+                                        </div>
                                     </div>
                                     <div class="commentContent q-pl-md q-my-sm">{{childComment.content}}</div>
                                     <div class="commentStats text-dimmed q-mb-sm">
@@ -319,6 +345,36 @@ export default {
             if (!this.isLoggedIn) return;
             this.newReply = ''
             this.addReplyId = this.addReplyId == 0 ? id : 0
+        },
+        deleteComment(id) {
+            this.$q.dialog({
+                title: this.$t('post.deleteComment.title'),
+                message: this.$t('post.deleteComment.msg'),
+                persistent: true,
+                cancel: true
+            }).onOk(() => {
+                api.delete('/comments/'+id).then(res => {
+                    let r = res.data
+                    if (r.success) {
+                        this.$q.notify({
+                            color: 'positive',
+                            message: this.$t('post.deleteComment.success'),
+                            position: 'top',
+                            timeout: 2000
+                        })
+                        this.getPost()
+                    }
+                    else {
+                        console.log(r)
+                        this.$q.notify({
+                            color: 'negative',
+                            message: r.msg,
+                            position: 'top',
+                            timeout: 2000
+                        })
+                    }
+                })
+            })
         },
         likeComment(id) {
             api.post('/comments/'+id+'/like').then(res => {
@@ -566,5 +622,16 @@ export default {
 }
 .replyBlock {
     margin-left: 4rem;
+}
+.commentBlock .commentAction, .replyBlock .replyAction {
+    display: none;
+}
+.commentBlock:hover .commentAction, .replyBlock:hover .replyAction {
+    display: block;
+}
+body.screen--xs {
+    .commentAction, .replyAction {
+        display: block !important;
+    }
 }
 </style>

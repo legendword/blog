@@ -80,7 +80,10 @@ module.exports = function (/* ctx */) {
       iconSet: 'material-icons', // Quasar icon set
       lang: 'en-us', // Quasar language pack
       config: {
-        dark: false
+        dark: false,
+        screen: {
+          bodyClasses: true
+        }
       },
 
       // Possible values for "importStrategy":

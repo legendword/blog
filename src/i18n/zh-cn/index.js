@@ -163,6 +163,14 @@ export default {
             before: '阅读',
             after: ''
         },
+        commentLogIn: '登录以发表评论',
+        commentIsDeleted: '该评论已被删除',
+        deleteComment: {
+            btn: '删除',
+            title: '删除评论',
+            msg: '确认删除该评论？所有相关回复也将被删除。',
+            success: '评论已删除'
+        },
         emptyCommentMsg: '评论不能为空',
         commentSuccess: '评论发表成功',
         addToCollection: '添加至收藏夹',
@@ -195,6 +203,11 @@ export default {
         newPost: '创建新文章',
         viewPost: '查看',
         removePost: '删除',
+        removePostDialog: {
+            title: '删除文章',
+            msg: '确定删除以下文章？同时将会删除其评论等所有信息。此操作无法恢复：',
+            success: '文章已删除'
+        },
         stats: {
             totalViews: '阅读',
             totalComments: '评论',

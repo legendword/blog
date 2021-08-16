@@ -168,6 +168,9 @@ export default {
                     })
                 }
                 else if (r.success) {
+                    if (r.jwt) {
+                        api.instance.defaults.headers.common['Authorization'] = 'Bearer ' + r.jwt
+                    }
                     this.$store.commit('userLogIn', r.user)
                     if (r.identifier && r.token) {
                         this.$q.localStorage.set('token', r.token)

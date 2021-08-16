@@ -3,9 +3,10 @@ import { Platform } from 'quasar'
 import '@capacitor-community/http'
 import { Plugins } from '@capacitor/core'
 
-const baseURL = 'https://analycube.com:8001'
+const baseURL = 'https://analycube.com:8002' //8002 dev, 8001 prod
 
 var api;
+/*
 if (Platform.is.capacitor) {
     const { Http } = Plugins
     api = {
@@ -31,20 +32,22 @@ if (Platform.is.capacitor) {
         }))
     }
 }
-else {
-    axios.defaults.withCredentials = true
-    const axiosInstance = axios.create({
-        withCredentials: true,
-        baseURL: baseURL
-    })
+*/
+// else {
+axios.defaults.withCredentials = true
+const axiosInstance = axios.create({
+    withCredentials: true,
+    baseURL: baseURL
+})
 
-    api = {
-        //get: (path, params) => axiosInstance.get(`${path}`, { params: params, headers: {'X-Client-Version': '0.2'} }),
-        get: (path, params) => axiosInstance.get(`${path}`, { params: params }),
-        post: (path, params) => axiosInstance.post(`${path}`, params),
-        put: (path, params) => axiosInstance.put(`${path}`, params),
-        delete: (path, params) => axiosInstance.delete(`${path}`, params)
-    }
+api = {
+    //get: (path, params) => axiosInstance.get(`${path}`, { params: params, headers: {'X-Client-Version': '0.2'} }),
+    instance: axiosInstance,
+    get: (path, params) => axiosInstance.get(`${path}`, { params: params }),
+    post: (path, params) => axiosInstance.post(`${path}`, params),
+    put: (path, params) => axiosInstance.put(`${path}`, params),
+    delete: (path, params) => axiosInstance.delete(`${path}`, params)
 }
+// }
 
 export default api;

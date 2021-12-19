@@ -146,7 +146,8 @@ export default {
             position: 'top',
             timeout: 2000
           })
-          delete api.instance.defaults.headers.common['Authorization']
+          this.$store.commit('setAuthorization', null)
+          // delete api.instance.defaults.headers.common['Authorization']
           this.$store.commit('userLogOut')
         }
         else {
@@ -157,7 +158,8 @@ export default {
             timeout: 2000
           })
         }
-        delete api.instance.defaults.headers.common['Authorization']
+        this.$store.commit('setAuthorization', null)
+        // delete api.instance.defaults.headers.common['Authorization']
         this.$q.localStorage.remove('identifier')
         this.$q.localStorage.remove('token')
       })
@@ -194,7 +196,7 @@ export default {
                   console.log('signInWithToken Failed')
                   this.$q.localStorage.remove('identifier')
                   this.$q.localStorage.remove('token')
-                  delete api.instance.defaults.headers.common['Authorization']
+                  this.$store.commit('setAuthorization', null)
                   if (this.isLoggedIn) this.$store.commit('userLogOut')
                 }
                 else if (r.success) {
@@ -208,7 +210,8 @@ export default {
                 }
                 else {
                   console.error(r.msg)
-                  delete api.instance.defaults.headers.common['Authorization']
+                  // delete api.instance.defaults.headers.common['Authorization']
+                  this.$store.commit('setAuthorization', null)
                   if (this.isLoggedIn) this.$store.commit('userLogOut')
                 }
               })

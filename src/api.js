@@ -44,19 +44,19 @@ const axiosInstance = axios.create({
 api = {
     //get: (path, params) => axiosInstance.get(`${path}`, { params: params, headers: {'X-Client-Version': '0.2'} }),
     instance: axiosInstance,
-    get: (path, params) => axiosInstance.get(`${path}`, { params: params, headers: {
-        'Authorization': store.state.authorization
-    } }),
-    post: (path, params) => axiosInstance.post(`${path}`, {
-        ...params,
+    get: (path, params) => axiosInstance.get(`${path}`, {
+        params: params,
+        headers: {
+            'Authorization': store.state.authorization
+        }
+    }),
+    post: (path, params) => axiosInstance.post(`${path}`, params, {
         'Authorization': store.state.authorization
     }),
-    put: (path, params) => axiosInstance.put(`${path}`, {
-        ...params,
+    put: (path, params) => axiosInstance.put(`${path}`, params, {
         'Authorization': store.state.authorization
     }),
-    delete: (path, params) => axiosInstance.delete(`${path}`, {
-        ...params,
+    delete: (path, params) => axiosInstance.delete(`${path}`, params, {
         'Authorization': store.state.authorization
     })
 }

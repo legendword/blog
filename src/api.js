@@ -2,8 +2,9 @@ import axios from 'axios'
 import { Platform } from 'quasar'
 import '@capacitor-community/http'
 import { Plugins } from '@capacitor/core'
+import store from 'src/store'
 
-const baseURL = 'https://analycube.com:8002' //8002 dev, 8001 prod
+const baseURL = 'https://analycube.com:8001' //8002 dev, 8001 prod
 
 var api;
 /*
@@ -43,10 +44,21 @@ const axiosInstance = axios.create({
 api = {
     //get: (path, params) => axiosInstance.get(`${path}`, { params: params, headers: {'X-Client-Version': '0.2'} }),
     instance: axiosInstance,
-    get: (path, params) => axiosInstance.get(`${path}`, { params: params }),
-    post: (path, params) => axiosInstance.post(`${path}`, params),
-    put: (path, params) => axiosInstance.put(`${path}`, params),
-    delete: (path, params) => axiosInstance.delete(`${path}`, params)
+    get: (path, params) => axiosInstance.get(`${path}`, { params: params, headers: {
+        'Authorization': store.state.authorization
+    } }),
+    post: (path, params) => axiosInstance.post(`${path}`, {
+        ...params,
+        'Authorization': store.state.authorization
+    }),
+    put: (path, params) => axiosInstance.put(`${path}`, {
+        ...params,
+        'Authorization': store.state.authorization
+    }),
+    delete: (path, params) => axiosInstance.delete(`${path}`, {
+        ...params,
+        'Authorization': store.state.authorization
+    })
 }
 // }
 

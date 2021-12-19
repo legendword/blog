@@ -200,7 +200,8 @@ export default {
                 else if (r.success) {
                   console.log('signInWithToken Success')
                   if (r.jwt) {
-                    api.instance.defaults.headers.common['Authorization'] = 'Bearer ' + r.jwt
+                    // api.instance.defaults.headers.common['Authorization'] = 'Bearer ' + r.jwt
+                    this.$store.commit('setAuthorization', 'Bearer ' + r.jwt)
                   }
                   this.$q.localStorage.set('token', r.token)
                   this.$store.commit('userLogIn', r.user)

@@ -27,11 +27,15 @@ export default new Vuex.Store({
     isLoggedIn: false,
     newAccount: null,
     barTitle: 'Legendword Blog',
-    historyLength: 0
+    historyLength: 0,
+    authorization: null
   },
   getters: {
   },
   mutations: {
+    setAuthorization(state, val) {
+      state.authorization = val
+    },
     setHistoryLength(state, val) {
       state.historyLength = val
     },

@@ -175,65 +175,6 @@ export default {
     },
     toggleDrawer() {
       this.leftDrawer = !this.leftDrawer
-    },
-    callAlive() {
-      api.get('/alive').then(res => {
-        let r = res.data
-        console.log(r)
-        if (r.success) {
-          if (!r.isLoggedIn) {
-            //attempt token login if token is stored
-            if (this.$q.localStorage.has('identifier') && this.$q.localStorage.has('token')) {
-              let identifier = this.$q.localStorage.getItem('identifier')
-              let token = this.$q.localStorage.getItem('token')
-              api.post('/user/tokenSignIn', {
-                identifier,
-                token
-              }).then(res => {
-                let r = res.data
-                console.log('signInWithToken', r)
-                if (r.failed) {
-                  console.log('signInWithToken Failed')
-                  this.$q.localStorage.remove('identifier')
-                  this.$q.localStorage.remove('token')
-                  this.$store.commit('setAuthorization', null)
-                  if (this.isLoggedIn) this.$store.commit('userLogOut')
-                }
-                else if (r.success) {
-                  console.log('signInWithToken Success')
-                  if (r.jwt) {
-                    // api.instance.defaults.headers.common['Authorization'] = 'Bearer ' + r.jwt
-                    this.$store.commit('setAuthorization', 'Bearer ' + r.jwt)
-                  }
-                  this.$q.localStorage.set('token', r.token)
-                  this.$store.commit('userLogIn', r.user)
-                }
-                else {
-                  console.error(r.msg)
-                  // delete api.instance.defaults.headers.common['Authorization']
-                  this.$store.commit('setAuthorization', null)
-                  if (this.isLoggedIn) this.$store.commit('userLogOut')
-                }
-              })
-            }
-            else {
-              // delete api.instance.defaults.headers.common['Authorization']
-              this.$store.commit('setAuthorization', null)
-              if (this.isLoggedIn) this.$store.commit('userLogOut')
-            }
-          }
-        }
-      })
-    },
-    setData(r) {
-      console.log('userinfo', r)
-      if (r.isLoggedIn == true) {
-        this.$store.commit('userLogIn', r.user)
-        if (r.user.settings.locale != this.$i18n.locale) {
-          this.$root.$i18n.locale = r.user.settings.locale
-        }
-      }
-      this.callAlive()
     }
   },
   watch: {
@@ -257,6 +198,8 @@ export default {
     })
   },
   beforeRouteEnter (to, from, next) {
+    next()
+    /*
     api.get('/user/info', {
       detailed: true
     }).catch(err => {
@@ -265,9 +208,9 @@ export default {
     }).then(res => {
       next(vm => vm.setData(res.data))
     })
+    */
   },
   beforeRouteUpdate(to, from, next) {
-    this.callAlive()
     let itm = this.menuItems.find(v => v.link == to.path)
     if (itm && itm.badge) {
       this.menuBadges[itm.badge] = 0

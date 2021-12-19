@@ -60,7 +60,8 @@ api = {
             'Authorization': store.state.authorization
         }
     }),
-    delete: (path, params) => axiosInstance.delete(`${path}`, params, {
+    delete: (path, params) => axiosInstance.delete(`${path}`, {
+        params: params,
         headers: {
             'Authorization': store.state.authorization
         }

@@ -145,7 +145,7 @@ export default {
                     }
                     else if (r.success) {
                         this.$store.commit('userDataChange', {
-                            username: r.user.username
+                            username: this.username
                         })
                         this.$emit('closed')
                         this.$q.notify({

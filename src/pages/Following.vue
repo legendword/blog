@@ -19,6 +19,7 @@
 import NeedToLogIn from '../components/NeedToLogIn.vue'
 import api from '../api'
 import PostCard from '../components/PostCard'
+import { apiError } from 'src/apiError'
 export default {
     name: 'Following',
     components: {
@@ -48,6 +49,8 @@ export default {
         getPosts() {
             api.get('/posts/following', {
                 page: this.postPage
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 if (r.success) {

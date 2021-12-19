@@ -60,6 +60,7 @@ import { formatTimeElapsed } from '../util'
 import { mapState } from 'vuex'
 import PostListItem from '../components/PostListItem.vue'
 import PostListSlideItem from '../components/PostListSlideItem.vue'
+import { apiError } from 'src/apiError'
 export default {
     name: 'Collection',
     components: {
@@ -88,6 +89,8 @@ export default {
             if (index == -1) return
             api.delete('/collections/'+this.collection.id+'/posts', {
                 postId: pid
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 if (r.success) {
@@ -117,6 +120,8 @@ export default {
                 title: this.editInfo.title,
                 description: this.editInfo.description ? this.editInfo.description : '',
                 isPublic: this.editInfo.isPublic ? 1 : 0
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 if (r.success) {
@@ -179,12 +184,16 @@ export default {
         }
     },
     beforeRouteEnter (to, from, next) {
-        api.get('/collections/'+to.params.id).then(res => {
+        api.get('/collections/'+to.params.id).catch(err => {
+            apiError()
+        }).then(res => {
             next(vm => vm.setData(res.data))
         })
     },
     beforeRouteUpdate (to, from, next) {
-        api.get('/collections/'+to.params.id).then(res => {
+        api.get('/collections/'+to.params.id).catch(err => {
+            apiError()
+        }).then(res => {
             this.setData(res.data)
             next()
         })

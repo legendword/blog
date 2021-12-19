@@ -230,6 +230,7 @@ import { mapState } from 'vuex'
 import { formatTimeElapsed } from '../util'
 import { scroll } from 'quasar'
 import LoadingMessage from 'src/components/LoadingMessage.vue'
+import { apiError } from 'src/apiError'
 const { getScrollTarget, setScrollPosition } = scroll
 export default {
     name: 'Post',
@@ -269,6 +270,8 @@ export default {
         addToCollection(cid) {
             api.put('/collections/'+cid+'/posts', {
                 postId: this.postId
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 if (r.success) {
@@ -305,6 +308,8 @@ export default {
                 console.log(val)
                 api.post('/collections', {
                     title: val
+                }).catch(err => {
+                    apiError()
                 }).then(res => {
                     let r = res.data
                     if (r.success) {
@@ -322,7 +327,9 @@ export default {
             })
         },
         loadUserCollections() {
-            api.get('/collections/mine').then(res => {
+            api.get('/collections/mine').catch(err => {
+                apiError()
+            }).then(res => {
                 let r = res.data
                 if (r.success) {
                     this.userCollections = r.collections
@@ -353,7 +360,9 @@ export default {
                 persistent: true,
                 cancel: true
             }).onOk(() => {
-                api.delete('/comments/'+id).then(res => {
+                api.delete('/comments/'+id).catch(err => {
+                    apiError()
+                }).then(res => {
                     let r = res.data
                     if (r.success) {
                         this.$q.notify({
@@ -377,7 +386,9 @@ export default {
             })
         },
         likeComment(id) {
-            api.post('/comments/'+id+'/like').then(res => {
+            api.post('/comments/'+id+'/like').catch(err => {
+                apiError()
+            }).then(res => {
                 let r = res.data
                 if (r.success) {
                     for (let i of this.comments) {
@@ -469,7 +480,9 @@ export default {
             return formatTimeElapsed(tm)
         },
         getPost() {
-            api.get('/posts/'+this.postId).then(res => {
+            api.get('/posts/'+this.postId).catch(err => {
+                apiError()
+            }).then(res => {
                 this.setData(res.data)
             })
         },
@@ -485,6 +498,8 @@ export default {
                     postId: this.postId,
                     content: this.newReply,
                     parentId: this.addReplyId
+                }).catch(err => {
+                    apiError()
                 }).then(res => {
                     let r = res.data
                     console.log(r)
@@ -508,6 +523,8 @@ export default {
                 api.post('/comments', {
                     postId: this.postId,
                     content: this.newComment
+                }).catch(err => {
+                    apiError()
                 }).then(res => {
                     let r = res.data
                     console.log(r)
@@ -529,7 +546,9 @@ export default {
             this.$router.push('/tag/'+tagName)
         },
         followAuthor() {
-            api.post('/authors/'+this.post.authorId+'/follow').then(res => {
+            api.post('/authors/'+this.post.authorId+'/follow').catch(err => {
+                apiError()
+            }).then(res => {
                 let r = res.data
                 console.log(r)
                 if (r.success) {
@@ -586,7 +605,9 @@ export default {
         */
     },
     created() { //v0.2: using created() to load content after route for better user experience
-        api.get('/posts/' + this.$route.params.id).then(res => {
+        api.get('/posts/' + this.$route.params.id).catch(err => {
+            apiError()
+        }).then(res => {
             this.setData(res.data)
             this.loaded = true
         })

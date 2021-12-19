@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { apiError } from 'src/apiError'
 import api from '../api'
 export default {
     name: 'PasswordRecovery',
@@ -74,6 +75,8 @@ export default {
                 email: this.$route.query.email,
                 code: this.$route.query.code,
                 password: this.pass
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 console.log(r)
@@ -104,6 +107,8 @@ export default {
             api.get('/user/recoverPassword', {
                 email: this.$route.query.email,
                 code: this.$route.query.code
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 console.log(r)

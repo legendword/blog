@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { apiError } from 'src/apiError'
 import api from '../api'
 export default {
     name: 'EmailVerification',
@@ -37,6 +38,8 @@ export default {
             api.post('/user/verifyEmail', {
                 email: this.$route.query.email,
                 code: this.$route.query.code
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 console.log(r)

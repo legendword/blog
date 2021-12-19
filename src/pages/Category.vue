@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { apiError } from 'src/apiError'
 import api from '../api'
 import PostCard from '../components/PostCard'
 export default {
@@ -71,6 +72,8 @@ export default {
             api.get('/posts/category/'+encodeURIComponent(this.$route.params.name), {
                 sort: this.sortBy,
                 page: this.postPage
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 if (r.success) {

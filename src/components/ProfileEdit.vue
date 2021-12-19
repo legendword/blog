@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { apiError } from 'src/apiError'
 import api from '../api'
 export default {
     name: 'ProfileEdit',
@@ -130,6 +131,8 @@ export default {
             if (this.profileMode == 'user') {
                 api.put('/user/info', {
                     username: this.username
+                }).catch(err => {
+                    apiError()
                 }).then(res => {
                     let r = res.data
                     if (r.error) {
@@ -157,6 +160,8 @@ export default {
             else {
                 api.put('/user/authorInfo', {
                     displayName: this.displayName
+                }).catch(err => {
+                    apiError()
                 }).then(res => {
                     let r = res.data
                     if (r.success) {

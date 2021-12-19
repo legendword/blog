@@ -23,7 +23,11 @@ export default {
             viewsDesc: '最多阅读',
             likesDesc: '最多点赞'
         },
-        loading: '加载中...'
+        loading: '加载中...',
+        serverError: {
+            title: '服务器错误',
+            message: '未能完成请求。服务器可能离线或者出错。请联系站点管理员。'
+        }
     },
     computed: {
         followers: '粉丝',

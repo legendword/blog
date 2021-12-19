@@ -17,15 +17,6 @@
             </q-card-actions>
         </q-card>
         <q-card class="loginDialog" v-else>
-            <q-banner rounded :inline-actions="$q.screen.gt.sm" class="bg-secondary text-white text-weight-medium">
-                <template v-slot:avatar>
-                    <q-icon name="announcement" color="white" />
-                </template>
-                Users registered before v0.2 have to reset their passwords due to back-end platform change.
-                <template v-slot:action>
-                    <q-btn flat label="Read the ChangeLog" @click="readChangeLog"></q-btn>
-                </template>
-            </q-banner>
             <q-card-section>
                 <div class="text-h6">{{ $t('logIn.signIn') }}</div>
             </q-card-section>
@@ -49,6 +40,7 @@
 </template>
 
 <script>
+import { apiError } from 'src/apiError'
 import api from '../api'
 export default {
     name: 'LogIn',
@@ -76,9 +68,6 @@ export default {
         }
     },
     methods: {
-        readChangeLog() {
-            location.href = 'https://github.com/legendword/blog/releases/tag/v0.2'
-        },
         forgotPass() {
             this.$q.dialog({
                 title: this.$t('passwordRecovery.prompt.title'),
@@ -92,6 +81,8 @@ export default {
             }).onOk(data => {
                 api.post('/user/recoverPassword', {
                     email: data
+                }).catch(err => {
+                    apiError()
                 }).then(res => {
                     let r = res.data
                     console.log(r)
@@ -133,6 +124,8 @@ export default {
             api.post('/user/signUp', {
                 email: this.email,
                 password: this.password
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 if (r.success) {
@@ -156,6 +149,8 @@ export default {
                 email: this.email,
                 password: this.password,
                 rememberme: this.rememberme
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 console.log(r);

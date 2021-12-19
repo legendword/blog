@@ -23,6 +23,7 @@
 <script>
 import api from '../api'
 import { mapState } from 'vuex'
+import { apiError } from 'src/apiError'
 export default {
     name: 'Settings',
     data() {
@@ -54,6 +55,8 @@ export default {
                 api.put('/user/settings', {
                     column: 'locale',
                     value: lang
+                }).catch(err => {
+                    apiError()
                 }).then(res => {
                     let r = res.data
                     if (r.success) {

@@ -156,6 +156,7 @@ import api from '../api'
 import NeedToLogIn from '../components/NeedToLogIn.vue'
 import UpcomingFeature from '../components/UpcomingFeature.vue'
 import { formatTimeElapsed } from '../util'
+import { apiError } from 'src/apiError'
 export default {
     name: 'Me',
     components: {
@@ -212,7 +213,9 @@ export default {
                 this.creatorBadges[val] = 0
             }
             if (val == 'overview') {
-                api.get('/authors/stats').then(res => {
+                api.get('/authors/stats').catch(err => {
+                    apiError()
+                }).then(res => {
                     let r = res.data
                     console.log(r)
                     if (r.success) {
@@ -240,6 +243,8 @@ export default {
                 this.creatorPostLoading = true
                 api.get('/posts/author/'+this.author.id, {
                     page: this.creatorPagination.posts.current
+                }).catch(err => {
+                    apiError()
                 }).then(res => {
                     let r = res.data
                     if (r.success) {
@@ -264,6 +269,8 @@ export default {
                 this.creatorCommentLoading = true
                 api.get('/comments/author', {
                     page: this.creatorPagination.comments.current
+                }).catch(err => {
+                    apiError()
                 }).then(res => {
                     let r = res.data
                     console.log(r)
@@ -293,7 +300,9 @@ export default {
                 cancel: true,
                 persistent: true
             }).onOk(() => {
-                api.delete('/posts/'+postId).then(res => {
+                api.delete('/posts/'+postId).catch(err => {
+                    apiError()
+                }).then(res => {
                     let r = res.data
                     if (r.success) {
                         this.$q.notify({
@@ -341,6 +350,9 @@ export default {
     beforeRouteEnter (to, from, next) {
         api.get('/user/info', {
             detailed: true
+        }).catch(err => {
+            apiError()
+            next()
         }).then(res => {
             next(vm => vm.setData(res.data))
         })

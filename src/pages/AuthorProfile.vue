@@ -68,6 +68,7 @@ import { mapState } from 'vuex';
 import ProfileEdit from '../components/ProfileEdit'
 import PostCard from '../components/PostCard'
 import UpcomingFeature from 'src/components/UpcomingFeature.vue';
+import { apiError } from 'src/apiError';
 export default {
     name: 'AuthorProfile',
     components: {
@@ -106,7 +107,9 @@ export default {
             this.tabChange(this.tab)
         },
         followAuthor() {
-            api.post('/authors/'+this.author.id+'/follow').then(res => {
+            api.post('/authors/'+this.author.id+'/follow').catch(err => {
+                apiError()
+            }).then(res => {
                 let r = res.data
                 console.log(r)
                 if (r.success) {
@@ -124,6 +127,8 @@ export default {
             if (val == 'posts') {
                 api.get('/posts/author/'+this.author.id, {
                     page: this.postPage
+                }).catch(err => {
+                    apiError()
                 }).then(res => {
                     let r = res.data
                     console.log(r)
@@ -153,7 +158,9 @@ export default {
             this.openProfileEdit = true
         },
         loadInfo() {
-            api.get('/authors/'+this.$route.params.id).then(res => {
+            api.get('/authors/'+this.$route.params.id).catch(err => {
+                apiError()
+            }).then(res => {
                 let r = res.data
                 this.author = {}
                 this.isCurrentUser = false

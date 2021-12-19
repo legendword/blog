@@ -102,6 +102,7 @@ import markdownItVueOptions from '../markdownItVueOptions'
 import { mapState } from 'vuex'
 import LogIn from '../components/LogIn'
 import api from '../api'
+import { apiError } from 'src/apiError'
 const editorActions = [
     {type: 'btn', icon: 'format_bold', text: '**', mode: 'sandwich'},
     {type: 'btn', icon: 'format_italic', text: '*', mode: 'sandwich'},
@@ -325,6 +326,8 @@ export default {
                 content: this.newPost.content,
                 category: this.newPost.category,
                 tags: this.newPost.tags
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 console.log(r)
@@ -353,6 +356,8 @@ export default {
         this.$store.commit('setBarTitle', this.$t('compose.barTitle'))
         api.get('/categories', {
             newpost: true
+        }).catch(err => {
+            apiError()
         }).then(res => {
             let r = res.data
                 if (r.error) {

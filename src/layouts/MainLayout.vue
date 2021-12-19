@@ -88,6 +88,7 @@
 import SearchBar from 'src/components/SearchBar.vue'
 import { mapState } from 'vuex'
 import api from '../api'
+import { apiError } from '../apiError'
 import LogIn from '../components/LogIn'
 import mainMenuItems from '../mainMenu'
 export default {
@@ -253,6 +254,9 @@ export default {
   beforeRouteEnter (to, from, next) {
     api.get('/user/info', {
       detailed: true
+    }).catch(err => {
+      // apiError()
+      next()
     }).then(res => {
       next(vm => vm.setData(res.data))
     })

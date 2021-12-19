@@ -105,6 +105,7 @@ import { mapState } from 'vuex';
 import ProfileEdit from '../components/ProfileEdit'
 import UpcomingFeature from '../components/UpcomingFeature'
 import CollectionListItem from '../components/CollectionListItem'
+import { apiError } from 'src/apiError';
 export default {
     name: 'UserProfile',
     components: {
@@ -151,7 +152,9 @@ export default {
     },
     methods: {
         followUser() {
-            api.post('/users/'+this.user.id+'/follow').then(res => {
+            api.post('/users/'+this.user.id+'/follow').catch(err => {
+                apiError()
+            }).then(res => {
                 let r = res.data
                 console.log(r)
                 if (r.success) {
@@ -168,7 +171,9 @@ export default {
         },
         becomeAnAuthor() {
             //click becomeAnAuthor
-            api.post('/user/becomeAuthor').then(res => {
+            api.post('/user/becomeAuthor').catch(err => {
+                apiError()
+            }).then(res => {
                 let r = res.data
                 if (r.success) {
                     this.$q.notify({
@@ -203,7 +208,9 @@ export default {
             }
             if (val == 'collections') {
                 this.collectionsLoading = true
-                api.get('/collections/user/'+this.userId).then(res => {
+                api.get('/collections/user/'+this.userId).catch(err => {
+                    apiError()
+                }).then(res => {
                     let r = res.data
                     if (r.success) {
                         this.collections = r.collections
@@ -216,7 +223,9 @@ export default {
             }
         },
         loadInfo() {
-            api.get('/users/'+this.$route.params.id).then(res => {
+            api.get('/users/'+this.$route.params.id).catch(err => {
+                apiError()
+            }).then(res => {
                 let r = res.data
                 this.user = {}
                 this.isCurrentUser = false

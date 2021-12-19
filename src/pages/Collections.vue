@@ -59,6 +59,7 @@
 <script>
 import UpcomingFeature from 'src/components/UpcomingFeature.vue'
 import api from '../api'
+import { apiError } from 'src/apiError'
 export default {
   components: { UpcomingFeature },
     name: 'Collections',
@@ -101,6 +102,8 @@ export default {
                 console.log(val)
                 api.post('/collections', {
                     title: val
+                }).catch(err => {
+                    apiError()
                 }).then(res => {
                     let r = res.data
                     if (r.success) {
@@ -126,7 +129,9 @@ export default {
                     cancel: true,
                     persistent: true
                 }).onOk(() => {
-                    api.delete('/collections/'+id).then(res => {
+                    api.delete('/collections/'+id).catch(err => {
+                        apiError()
+                    }).then(res => {
                         let r = res.data
                         if (r.success) {
                             reset()
@@ -159,7 +164,9 @@ export default {
             }
             else if (menu == 'mine') {
                 //todo not logged in
-                api.get('/collections/mine').then(res => {
+                api.get('/collections/mine').catch(err => {
+                    apiError()
+                }).then(res => {
                     let r = res.data
                     if (r.success) {
                         console.log(r)

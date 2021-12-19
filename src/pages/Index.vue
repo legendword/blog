@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import { apiError } from 'src/apiError'
 import api from '../api'
 import PostCard from '../components/PostCard'
 import PostCardCompact from '../components/PostCardCompact'
@@ -104,6 +105,8 @@ export default {
       api.get('/posts', {
         count: this.postPerPage,
         page: this.postPage
+      }).catch(err => {
+        apiError()
       }).then(res => {
         let r = res.data
         if (r.success) {

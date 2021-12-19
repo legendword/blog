@@ -77,6 +77,7 @@ import SearchBar from '../components/SearchBar.vue'
 import AuthorCard from '../components/AuthorCard.vue'
 import UserCard from '../components/UserCard.vue'
 import CollectionListItem from '../components/CollectionListItem.vue'
+import { apiError } from 'src/apiError'
 export default {
     name: 'Search',
     components: {
@@ -129,6 +130,8 @@ export default {
             api.get('/search/'+currentTab, {
                 query: val,
                 page: this.pagination[currentTab].page
+            }).catch(err => {
+                apiError()
             }).then(res => {
                 let r = res.data
                 console.log(r)

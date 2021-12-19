@@ -23,7 +23,11 @@ export default {
             viewsDesc: 'Most Views',
             likesDesc: 'Most Likes'
         },
-        loading: 'Loading...'
+        loading: 'Loading...',
+        serverError: {
+            title: 'Server Error',
+            message: 'Unable to complete the request. This may be due to server maintainence or error. Please contact the site administrator or try again later.'
+        }
     },
     computed: {
         followers: 'Follower | Followers',

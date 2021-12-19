@@ -51,13 +51,19 @@ api = {
         }
     }),
     post: (path, params) => axiosInstance.post(`${path}`, params, {
-        'Authorization': store.state.authorization
+        headers: {
+            'Authorization': store.state.authorization
+        }
     }),
     put: (path, params) => axiosInstance.put(`${path}`, params, {
-        'Authorization': store.state.authorization
+        headers: {
+            'Authorization': store.state.authorization
+        }
     }),
     delete: (path, params) => axiosInstance.delete(`${path}`, params, {
-        'Authorization': store.state.authorization
+        headers: {
+            'Authorization': store.state.authorization
+        }
     })
 }
 // }

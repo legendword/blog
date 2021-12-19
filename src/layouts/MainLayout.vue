@@ -217,7 +217,8 @@ export default {
               })
             }
             else {
-              delete api.instance.defaults.headers.common['Authorization']
+              // delete api.instance.defaults.headers.common['Authorization']
+              this.$store.commit('setAuthorization', null)
               if (this.isLoggedIn) this.$store.commit('userLogOut')
             }
           }

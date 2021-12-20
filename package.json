@@ -6,7 +6,16 @@
   "author": "Legendword <zwh@legendword.com>",
   "private": true,
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"See package.json => scripts for available tests.\" && exit 0",
+    "test:unit": "jest --updateSnapshot",
+    "test:unit:ci": "jest --ci",
+    "test:unit:coverage": "jest --coverage",
+    "test:unit:watch": "jest --watch",
+    "test:unit:watchAll": "jest --watchAll",
+    "serve:test:coverage": "quasar serve test/jest/coverage/lcov-report/ --port 8788",
+    "concurrently:dev:jest": "concurrently \"quasar dev\" \"jest --watch\"",
+    "test:e2e": "cross-env E2E_TEST=true start-test \"quasar dev\" http-get://localhost:8080 \"cypress open\"",
+    "test:e2e:ci": "cross-env E2E_TEST=true start-test \"quasar dev\" http-get://localhost:8080 \"cypress run\""
   },
   "dependencies": {
     "@capacitor-community/http": "^0.3.0",
@@ -19,11 +28,16 @@
   },
   "devDependencies": {
     "@quasar/app": "^2.2.6",
+    "@quasar/quasar-app-extension-testing": "^1.0.5",
+    "@quasar/quasar-app-extension-testing-e2e-cypress": "^3.1.1",
+    "@quasar/quasar-app-extension-testing-unit-jest": "^2.2.3",
     "devtron": "^1.4.0",
     "electron": "^9.4.4",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.1.1",
     "electron-packager": "^14.2.1",
+    "eslint-plugin-cypress": "^2.11.1",
+    "eslint-plugin-jest": "^24.1.0",
     "workbox-webpack-plugin": "^5.1.4"
   },
   "browserslist": [

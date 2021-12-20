@@ -22,7 +22,7 @@ export default new Vuex.Store({
   // for dev mode and --debug builds only
   strict: process.env.DEBUGGING,
   state: {
-    miniDrawerMode: false,
+    miniDrawerMode: true,
     user: null,
     isLoggedIn: false,
     newAccount: null,

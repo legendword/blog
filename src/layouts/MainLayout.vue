@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh LpR fFf">
 
-    <q-header reveal elevated class="bg-secondary text-white">
+    <q-header reveal elevated class="bg-white text-primary">
       <q-toolbar>
         <q-btn @click="toggleDrawer" flat round dense icon="menu" class="q-mr-sm" />
         <q-btn @click="routerGoBack" v-if="canGoBack" flat round dense icon="chevron_left" class="q-mr-sm" />

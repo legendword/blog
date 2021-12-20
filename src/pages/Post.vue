@@ -12,23 +12,7 @@
                         <div class="text-h4 word-break">{{ post.title }}</div>
                     </div>
                     <div class="col-auto" v-show="isLoggedIn">
-                        <q-btn round flat color="primary" size="28" icon="o_bookmark_add" @click="loadUserCollections">
-                            <q-popup-proxy :breakpoint="500" anchor="bottom end" self="top right">
-                                <q-card style="width: 300px; max-width: 80vw;">
-                                    <q-card-section>
-                                        <div class="text-h6 q-mb-md">{{$t('post.addToCollection')}}</div>
-                                        <q-list bordered separator>
-                                            <q-item clickable v-ripple>
-                                                <q-item-section class="text-primary word-break" @click="newCollection">+ {{$t('post.newCollection')}}</q-item-section>
-                                            </q-item>
-                                            <q-item v-for="item in userCollections" :key="item.id" clickable v-ripple v-close-popup @click="addToCollection(item.id)">
-                                                <q-item-section class="word-break">{{ item.title }}</q-item-section>
-                                            </q-item>
-                                        </q-list>
-                                    </q-card-section>
-                                </q-card>
-                            </q-popup-proxy>
-                        </q-btn>
+                        <add-to-collection :postId="parseInt(postId)" />
                     </div>
                 </div>
                 <!-- post info and author info -->
@@ -231,12 +215,14 @@ import { formatTimeElapsed } from '../util'
 import { scroll } from 'quasar'
 import LoadingMessage from 'src/components/LoadingMessage.vue'
 import { apiError } from 'src/apiError'
+import AddToCollection from 'src/components/post/AddToCollection.vue'
 const { getScrollTarget, setScrollPosition } = scroll
 export default {
     name: 'Post',
     components: {
         MarkDownItVue,
-        LoadingMessage
+        LoadingMessage,
+        AddToCollection
     },
     data() {
         return {
@@ -253,8 +239,7 @@ export default {
             ],
             commentSortBy: 'timeDesc', //todo comment sort
             addReplyId: 0,
-            newReply: '',
-            userCollections: []
+            newReply: ''
         }
     },
     computed: {
@@ -267,83 +252,6 @@ export default {
         ...mapState(['isLoggedIn', 'user'])
     },
     methods: {
-        addToCollection(cid) {
-            api.put('/collections/'+cid+'/posts', {
-                postId: this.postId
-            }).catch(err => {
-                apiError()
-            }).then(res => {
-                let r = res.data
-                if (r.success) {
-                    this.$q.notify({
-                        color: 'positive',
-                        message: this.$t('post.addedToCollection'),
-                        position: 'top',
-                        timeout: 2000
-                    })
-                }
-                else {
-                    this.$q.notify({
-                        color: 'negative',
-                        message: r.msg,
-                        position: 'top',
-                        timeout: 2000
-                    })
-                }
-            })
-        },
-        newCollection() {
-            //!!! mostly in sync with newCollection in Collections.vue
-            this.$q.dialog({
-                title: this.$t('collections.newCollection'),
-                prompt: {
-                    model: '',
-                    label: this.$t('collections.newCollectionDialog.name'),
-                    isValid: val => val.length > 0 && val.length <= 50,
-                    type: 'text'
-                },
-                cancel: true,
-                persistent: true
-            }).onOk(val => {
-                console.log(val)
-                api.post('/collections', {
-                    title: val
-                }).catch(err => {
-                    apiError()
-                }).then(res => {
-                    let r = res.data
-                    if (r.success) {
-                        this.loadUserCollections()
-                    }
-                    else {
-                        this.$q.notify({
-                            color: 'negative',
-                            message: r.msg,
-                            position: 'top',
-                            timeout: 2000
-                        })
-                    }
-                })
-            })
-        },
-        loadUserCollections() {
-            api.get('/collections/mine').catch(err => {
-                apiError()
-            }).then(res => {
-                let r = res.data
-                if (r.success) {
-                    this.userCollections = r.collections
-                }
-                else {
-                    this.$q.notify({
-                        color: 'negative',
-                        message: r.msg,
-                        position: 'top',
-                        timeout: 2000
-                    })
-                }
-            })
-        },
         changeSortBy(val) {
             this.commentSortBy = val
             this.comments = this.sortComments(this.comments)

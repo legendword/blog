@@ -79,7 +79,6 @@
                 <div class="col-12 col-md-6">
                     <h6 class="q-my-md">{{ $t('compose.preview') }}</h6>
                     <q-scroll-area class="composeScrollArea" :thumbStyle="scrollAreaThumbStyle">
-                        <!--<q-markdown class="q-pa-md" no-html :src="newPost.content"></q-markdown> -->
                         <MarkDownItVue class="q-pa-md post-content" :content="newPost.content" :options="markdownItVueOptions"></MarkDownItVue>
                     </q-scroll-area>
                 </div>

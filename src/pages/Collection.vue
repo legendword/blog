@@ -23,24 +23,6 @@
                     <q-btn color="accent" flat :label="$t('collection.editInfo')" @click="editCollectionInfo" />
                     <q-btn color="primary" flat :label="$t('collection.editPosts')" @click="managePostMode = true" v-if="!managePostMode" />
                     <q-btn color="primary" flat :label="$t('general.done')" @click="managePostMode = false" v-else />
-
-                    <q-dialog v-model="showEditInfo">
-                        <q-card style="width: 700px; max-width: 80vw;">
-                            <q-card-section class="row items-center q-pb-none">
-                                <div class="text-h6">{{$t('collection.editInfo')}}</div>
-                                <q-space />
-                                <q-btn icon="close" flat round dense v-close-popup />
-                            </q-card-section>
-                            <q-card-section>
-                                <q-input class="q-mt-sm q-mb-md" outlined v-model="editInfo.title" :label="$t('collection.editInfoDialog.title')" maxlength="50" />
-                                <q-input class="q-mb-md" outlined v-model="editInfo.description" :label="$t('collection.editInfoDialog.description')" maxlength="200" autogrow />
-                                <div class="q-mb-md">
-                                    <q-toggle v-model="editInfo.isPublic" color="primary" :label="$t('collection.editInfoDialog.public')" />
-                                </div>
-                                <q-btn color="primary" :label="$t('general.save')" @click="submitCollectionInfo" />
-                            </q-card-section>
-                        </q-card>
-                    </q-dialog>
                 </div>
             </div>
             
@@ -61,6 +43,7 @@ import { mapState } from 'vuex'
 import PostListItem from '../components/PostListItem.vue'
 import PostListSlideItem from '../components/PostListSlideItem.vue'
 import { apiError } from 'src/apiError'
+import CollectionInfoEdit from 'src/components/dialogs/CollectionInfoEdit.vue'
 export default {
     name: 'Collection',
     components: {
@@ -73,7 +56,6 @@ export default {
             collection: {
                 posts: []
             },
-            showEditInfo: false,
             editInfo: {
                 title: '',
                 description: '',
@@ -100,60 +82,27 @@ export default {
                 else {
                     this.$q.notify({
                         color: 'negative',
-                        message: r.msg,
-                        position: 'top',
-                        timeout: 2000
+                        message: r.msg
                     })
                 }
             })
-        },
-        submitCollectionInfo() {
-            if (this.editInfo.title.length == 0) {
-                this.$q.notify({
-                    color: 'negative',
-                    message: this.$t('collection.editInfoDialog.mustHaveTitle'),
-                    position: 'top',
-                    timeout: 2000
-                })
-            }
-            api.put('/collections/'+this.collection.id, {
-                title: this.editInfo.title,
-                description: this.editInfo.description ? this.editInfo.description : '',
-                isPublic: this.editInfo.isPublic ? 1 : 0
-            }).catch(err => {
-                apiError()
-            }).then(res => {
-                let r = res.data
-                if (r.success) {
-                    this.$q.notify({
-                        color: 'positive',
-                        message: this.$t('collection.editInfoDialog.updated'),
-                        position: 'top',
-                        timeout: 2000
-                    })
-                    this.updateCollectionInfo()
-                }
-                else {
-                    this.$q.notify({
-                        color: 'negative',
-                        message: r.msg,
-                        position: 'top',
-                        timeout: 2000
-                    })
-                }
-            })
-            this.showEditInfo = false
-        },
-        updateCollectionInfo() {
-            this.collection.title = this.editInfo.title
-            this.collection.description = this.editInfo.description
-            this.collection.isPublic = this.editInfo.isPublic ? '1' : '0'
         },
         editCollectionInfo() {
-            this.editInfo.title = this.collection.title
-            this.editInfo.description = this.collection.description
-            this.editInfo.isPublic = this.collection.isPublic == '1'
-            this.showEditInfo = true
+            this.$q.dialog({
+                component: CollectionInfoEdit,
+                parent: this,
+                initialValues: {
+                    title: this.collection.title,
+                    description: this.collection.description,
+                    isPublic: this.collection.isPublic == '1'
+                },
+                id: this.collection.id
+            }).onOk((val) => {
+                console.log(val)
+                this.collection.title = val.title
+                this.collection.description = val.description
+                this.collection.isPublic = val.isPublic ? '1' : '0'
+            })
         },
         formatTime(tm) {
             return formatTimeElapsed(tm)
@@ -166,9 +115,7 @@ export default {
                 else {
                     this.$q.notify({
                         color: 'negative',
-                        message: r.msg,
-                        position: 'top',
-                        timeout: 2000
+                        message: r.msg
                     })
                 }
                 this.$store.commit('setBarTitle')

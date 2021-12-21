@@ -24,7 +24,7 @@
                         <span class="q-mr-sm q-my-auto vertical-middle">{{ user.username }}</span>
                         <q-chip v-show="user.isAuthor" color="accent" text-color="white" icon="done" clickable @click="goToAuthorPage">{{ $t('tag.author') }}</q-chip>
                     </div>
-                    <div class="col-12 col-sm-auto q-mx-sm-md q-mt-md q-mt-sm-none text-center" v-show="isLoggedIn">
+                    <div class="col-12 col-sm-auto q-mx-sm-md q-mt-md q-mt-sm-none text-center" v-show="isLoggedIn && !isCurrentUser">
                         <q-btn class="q-px-md" :text-color="hoverUnfollow ? 'white' : 'black'" :color="hoverUnfollow ? 'negative' : 'white'" :label="$t('userAction.' + (hoverUnfollow ? 'unfollow' : 'following'))" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followUser" v-if="user.isFollowing"></q-btn>
                         <q-btn class="q-px-md" color="primary" :label="$t('userAction.follow')" @click="followUser" v-else></q-btn>
                     </div>

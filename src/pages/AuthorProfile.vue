@@ -47,21 +47,19 @@
                 </q-tab-panel>
             </q-tab-panels>
         </div>
-        <profile-edit profileMode="author" :data="author" :open="openProfileEdit" @closed="openProfileEdit = false"></profile-edit>
     </q-page>
 </template>
 
 <script>
 import api from '../api';
 import { mapState } from 'vuex';
-import ProfileEdit from '../components/ProfileEdit'
-import PostCard from '../components/PostCard'
+import PostCard from '../components/PostCard.vue'
 import UpcomingFeature from 'src/components/UpcomingFeature.vue';
 import { apiError } from 'src/apiError';
+import AuthorInfoEdit from 'src/components/dialogs/AuthorInfoEdit.vue';
 export default {
     name: 'AuthorProfile',
     components: {
-        ProfileEdit,
         PostCard,
         UpcomingFeature
     },
@@ -76,7 +74,6 @@ export default {
             isCurrentUser: false,
             authorNotFound: false,
             tab: 'profile',
-            openProfileEdit: false,
             hoverUnfollow: false
         }
     },
@@ -144,7 +141,17 @@ export default {
             let tabTop = el.getBoundingClientRect().top
         },
         enterProfileEdit() {
-            this.openProfileEdit = true
+            this.$q.dialog({
+                component: AuthorInfoEdit,
+                parent: this,
+                initialValues: {
+                    displayName: this.author.displayName
+                }
+            }).onOk((val) => {
+                console.log(val)
+                this.author.displayName = val.displayName
+                this.$store.commit('setBarTitle', this.$t('barTitle.author') + ' / ' + this.author.displayName)
+            })
         },
         loadInfo() {
             api.get('/authors/'+this.$route.params.id).catch(err => {

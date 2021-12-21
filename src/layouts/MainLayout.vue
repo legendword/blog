@@ -16,7 +16,7 @@
         <q-list padding class="menu-list">
           <q-item v-for="item in menuItems" :key="item.link" clickable v-ripple :to="item.link" :exact="item.exact ? true : false">
             <q-item-section avatar>
-              <q-icon :name="item.icon" class="margin-auto" />
+              <q-icon :name="item.icon" />
             </q-item-section>
 
             <q-item-section>
@@ -32,7 +32,7 @@
       <div class="absolute-bottom userDrawer q-pb-sm">
         <q-item clickable v-ripple v-if="isLoggedIn && user.isAuthor == 1" to="/compose" exact>
           <q-item-section avatar>
-            <q-icon name="create" class="margin-auto" />
+            <q-icon name="create" />
           </q-item-section>
           <q-item-section>
             Compose
@@ -40,7 +40,7 @@
         </q-item>
         <q-item clickable v-ripple>
           <q-item-section avatar>
-            <q-avatar color="primary" text-color="white">{{ isLoggedIn ? user.username[0]:'' }}</q-avatar>
+            <q-avatar color="primary" text-color="white" size="md">{{ isLoggedIn ? user.username[0]:'' }}</q-avatar>
           </q-item-section>
           <q-item-section>
             <q-item-label lines="1" class="text-weight-medium" v-if="isLoggedIn">{{ user.username }}</q-item-label>

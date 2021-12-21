@@ -14,15 +14,10 @@
             <div class="text-h6">
                 {{ collection.postCount }} {{ $tc('computed.posts', collection.postCount) }}
             </div>
-            <div class="row justify-between items-center q-mb-lg">
-                <div class="text-h6">
-                    {{ collection.postCount }} {{ $tc('computed.posts', collection.postCount) }}
-                </div>
-                <div v-show="isLoggedIn && user.id == collection.userId">
-                    <q-btn color="accent" flat :label="$t('collection.editInfo')" @click="editCollectionInfo" />
-                    <q-btn color="primary" flat :label="$t('collection.editPosts')" @click="managePostMode = true" v-if="!managePostMode" />
-                    <q-btn color="primary" flat :label="$t('general.done')" @click="managePostMode = false" v-else />
-                </div>
+            <div v-show="isLoggedIn && user.id == collection.userId">
+                <q-btn color="accent" flat :label="$t('collection.editInfo')" @click="editCollectionInfo" />
+                <q-btn color="primary" flat :label="$t('collection.editPosts')" @click="managePostMode = true" v-if="!managePostMode" />
+                <q-btn color="primary" flat :label="$t('general.done')" @click="managePostMode = false" v-else />
             </div>
         </div>
         

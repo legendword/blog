@@ -7,7 +7,7 @@
                 <q-btn icon="close" flat round dense @click="onClickCancel" />
             </q-card-section>
             <q-card-section>
-                <q-input class="q-mt-sm q-mb-md" outlined v-model="values.title" :label="$t('collection.editInfoDialog.title')" maxlength="50" />
+                <q-input class="q-my-md" outlined v-model="values.title" :label="$t('collection.editInfoDialog.title')" maxlength="50" />
                 <q-input class="q-mb-md" outlined v-model="values.description" :label="$t('collection.editInfoDialog.description')" maxlength="200" autogrow />
                 <div class="q-mb-md">
                     <q-toggle v-model="values.isPublic" color="primary" :label="$t('collection.editInfoDialog.public')" />

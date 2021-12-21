@@ -79,21 +79,19 @@
                 </q-tab-panel>
             </q-tab-panels>
         </div>
-        <profile-edit profileMode="user" :data="currentUser" :open="openProfileEdit" @closed="openProfileEdit = false"></profile-edit>
     </q-page>
 </template>
 
 <script>
 import api from '../api';
 import { mapState } from 'vuex';
-import ProfileEdit from '../components/ProfileEdit'
 import UpcomingFeature from '../components/UpcomingFeature'
 import CollectionListItem from '../components/CollectionListItem'
 import { apiError } from 'src/apiError';
+import UserInfoEdit from 'src/components/dialogs/UserInfoEdit.vue';
 export default {
     name: 'UserProfile',
     components: {
-        ProfileEdit,
         UpcomingFeature,
         CollectionListItem
     },
@@ -104,7 +102,6 @@ export default {
             isCurrentUser: false,
             userNotFound: false,
             tab: 'profile',
-            openProfileEdit: false,
             hoverUnfollow: false,
             collections: [],
             collectionsLoading: false
@@ -183,7 +180,19 @@ export default {
             })
         },
         enterProfileEdit() {
-            this.openProfileEdit = true
+            this.$q.dialog({
+                component: UserInfoEdit,
+                parent: this,
+                initialValues: {
+                    username: this.currentUser.username
+                }
+            }).onOk((val) => {
+                console.log(val)
+                this.$store.commit('userDataChange', {
+                    username: val.username
+                })
+                this.$store.commit('setBarTitle', this.$t('barTitle.user') + ' / ' + val.username)
+            })
         },
         tabChange(val) {
             let newPath = '/user/'+this.$route.params.id+'/'+val

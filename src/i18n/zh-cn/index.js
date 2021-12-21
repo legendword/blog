@@ -197,6 +197,7 @@ export default {
         collections: '收藏夹',
         following: '关注',
         me: '我',
+        compose: '创作',
         notSignedIn: '未登录',
         settings: '设置',
         signIn: '登录',

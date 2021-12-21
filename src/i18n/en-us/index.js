@@ -197,6 +197,7 @@ export default {
         collections: 'Collections',
         following: 'Following',
         me: 'Me',
+        compose: 'Compose',
         notSignedIn: 'Not Signed In',
         settings: 'Settings',
         signIn: 'Sign In',

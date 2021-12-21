@@ -21,5 +21,5 @@ export const mainCategories = [
     }
 ]
 export const otherCategories = [
-    'changelog', 'guideline'
+    'changelog', 'support'
 ]

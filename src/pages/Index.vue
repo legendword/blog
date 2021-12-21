@@ -52,7 +52,7 @@
                 <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true"></q-pagination>
             </div>
         </template>
-        <q-banner class="bg-accent text-white q-my-md">
+        <q-banner class="bg-shade-light text-primary q-my-xl">
             Legendword Blog is in <b>Beta Testing</b>. If you encountered any issues or would like to propose a new feature, please open an Issue on GitHub.
             <template v-slot:action>
                 <q-btn flat color="white" label="GitHub" @click="goToGitHub" />

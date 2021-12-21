@@ -1,11 +1,7 @@
 <template>
     <q-page class="q-pa-md q-pa-sm-lg">
         <div v-if="loaded">
-            <div v-if="postNotFound">
-                <h5>{{ $t('post.notFoundTitle') }}</h5>
-                <h6>{{ $t('post.notFoundMsg') }}</h6>
-            </div>
-            <div v-else class="post-layout">
+            <div class="post-layout">
                 <!-- title and add to collection btn -->
                 <div class="row q-mt-lg q-mb-xl">
                     <div class="col">
@@ -149,7 +145,7 @@ export default {
             }
             else {
                 if (r.errorType && r.errorType == 'NotFound') {
-                    this.postNotFound = true
+                    this.$router.push('/404')
                 }
                 else {
                     this.$q.notify({

@@ -1,62 +1,51 @@
 <template>
     <q-page class="q-pb-lg" v-show="loaded">
-        <div v-if="authorNotFound">
-            <q-banner class="q-pa-lg bg-primary text-white">
-                <div class="row">
-                    <div class="col-12 text-body1 userName q-py-sm">
-                        {{ $t('authorProfile.notFoundMsg') }}
-                    </div>
+        <q-banner class="q-px-lg q-pt-lg">
+            <div class="text-h6 userName q-py-sm row items-center">
+                <div class="col-auto">
+                    <q-avatar size="64px" color="deep-purple-6" text-color="white" class="q-my-auto">{{ author.displayName?author.displayName[0]:'' }}</q-avatar>
                 </div>
-            </q-banner>
-        </div>
-        <div v-else>
-            <q-banner class="q-px-lg q-pt-lg">
-                <div class="text-h6 userName q-py-sm row items-center">
-                    <div class="col-auto">
-                        <q-avatar size="64px" color="deep-purple-6" text-color="white" class="q-my-auto">{{ author.displayName?author.displayName[0]:'' }}</q-avatar>
-                    </div>
-                    <div class="col q-mx-md">
-                        <span class="q-mr-sm q-my-auto vertical-middle">{{ author.displayName }}</span>
-                        <q-chip color="accent" text-color="white" icon="create">{{ $t('tag.author') }}</q-chip>
-                    </div>
-                    <div class="col-12 col-sm-auto q-mx-sm-md q-mt-md q-mt-sm-none text-center" v-show="isLoggedIn">
-                        <q-btn class="q-px-md" :text-color="hoverUnfollow ? 'white' : 'black'" :color="hoverUnfollow ? 'negative' : 'white'" :label="$t('userAction.' + (hoverUnfollow ? 'unfollow' : 'following'))" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followAuthor" v-if="author.isFollowing"></q-btn>
-                        <q-btn class="q-px-md" color="primary" :label="$t('userAction.follow')" @click="followAuthor" v-else></q-btn>
-                    </div>
+                <div class="col q-mx-md">
+                    <span class="q-mr-sm q-my-auto vertical-middle">{{ author.displayName }}</span>
+                    <q-chip color="accent" text-color="white" icon="create">{{ $t('tag.author') }}</q-chip>
                 </div>
-                <div class="row q-my-md text-subtitle1 q-gutter-md">
-                    <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ author.followerCount }}</span> {{ $tc('computed.followers', author.followerCount) }}</div>
-                    <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ author.postCount }}</span> {{ $tc('computed.posts', author.postCount) }}</div>
+                <div class="col-12 col-sm-auto q-mx-sm-md q-mt-md q-mt-sm-none text-center" v-show="isLoggedIn">
+                    <q-btn class="q-px-md" :text-color="hoverUnfollow ? 'white' : 'black'" :color="hoverUnfollow ? 'negative' : 'white'" :label="$t('userAction.' + (hoverUnfollow ? 'unfollow' : 'following'))" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followAuthor" v-if="author.isFollowing"></q-btn>
+                    <q-btn class="q-px-md" color="primary" :label="$t('userAction.follow')" @click="followAuthor" v-else></q-btn>
                 </div>
-            </q-banner>
-            <div class="q-pa-md">
-                <q-tabs v-model="tab" align="left" ref="tab" @input="tabChange">
-                    <q-tab name="profile" :label="$t('authorProfile.profile')" class="q-px-lg" />
-                    <q-tab name="posts" :label="$t('authorProfile.posts')" class="q-px-lg" />
-                </q-tabs>
-                <q-tab-panels v-model="tab" animated>
-                    <q-tab-panel name="profile">
-                        <div class="text-h6 q-my-md">
-                            {{ $t('authorProfile.profile') }}
-                            <div class="float-right">
-                                <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">{{ $t('authorProfile.editProfile') }}</q-btn>
-                            </div>
-                        </div>
-                        <upcoming-feature version="0.4"></upcoming-feature>
-                    </q-tab-panel>
-                    <q-tab-panel name="posts">
-                        <div class="text-h6 q-my-md">
-                            {{ $t('authorProfile.posts') }}
-                        </div>
-                        <q-intersection class="col-12 wideCard" v-for="item in postList" :key="item.postId">
-                            <post-card :post="item"></post-card>
-                        </q-intersection>
-                        <div class="flex flex-center q-mt-md" v-show="postCount > 0">
-                            <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
-                        </div>
-                    </q-tab-panel>
-                </q-tab-panels>
             </div>
+            <div class="row q-my-md text-subtitle1 q-gutter-md">
+                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ author.followerCount }}</span> {{ $tc('computed.followers', author.followerCount) }}</div>
+                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ author.postCount }}</span> {{ $tc('computed.posts', author.postCount) }}</div>
+            </div>
+        </q-banner>
+        <div class="q-pa-md">
+            <q-tabs v-model="tab" align="left" ref="tab" @input="tabChange">
+                <q-tab name="profile" :label="$t('authorProfile.profile')" class="q-px-lg" />
+                <q-tab name="posts" :label="$t('authorProfile.posts')" class="q-px-lg" />
+            </q-tabs>
+            <q-tab-panels v-model="tab" animated>
+                <q-tab-panel name="profile">
+                    <div class="text-h6 q-my-md">
+                        {{ $t('authorProfile.profile') }}
+                        <div class="float-right">
+                            <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">{{ $t('authorProfile.editProfile') }}</q-btn>
+                        </div>
+                    </div>
+                    <upcoming-feature version="0.4"></upcoming-feature>
+                </q-tab-panel>
+                <q-tab-panel name="posts">
+                    <div class="text-h6 q-my-md">
+                        {{ $t('authorProfile.posts') }}
+                    </div>
+                    <q-intersection class="col-12 wideCard" v-for="item in postList" :key="item.postId">
+                        <post-card :post="item"></post-card>
+                    </q-intersection>
+                    <div class="flex flex-center q-mt-md" v-show="postCount > 0">
+                        <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
+                    </div>
+                </q-tab-panel>
+            </q-tab-panels>
         </div>
         <profile-edit profileMode="author" :data="author" :open="openProfileEdit" @closed="openProfileEdit = false"></profile-edit>
     </q-page>
@@ -176,7 +165,7 @@ export default {
                 else {
                     if (r.errorType) {
                         if (r.errorType == 'NotFound') {
-                            this.authorNotFound = true;
+                            this.$router.push('/404')
                         }
                     }
                     else {

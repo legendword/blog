@@ -1,32 +1,27 @@
 <template>
     <q-page class="q-pa-md q-pa-sm-lg">
         <h4 class="q-mb-lg">{{$t('tagPage.title')}}: {{ $route.params.name }}</h4>
-        <div v-show="tagNotFound">
-            {{$t('tagPage.notFoundMsg')}}
+        <div class="row justify-between q-mb-md">
+            <div class="text-h5">{{$t('general.posts')}}</div>
+            <div>
+                <q-btn-dropdown flat icon="sort" color="primary" :label="$t('general.sortBy')">
+                    <q-list>
+                        <q-item v-for="item in sortOptions" :key="item.value" clickable v-close-popup @click="changeSortBy(item.value)" :active="sortBy == item.value">
+                            <q-item-section>
+                                <q-item-label>{{ item.label }}</q-item-label>
+                            </q-item-section>
+                        </q-item>
+                    </q-list>
+                </q-btn-dropdown>
+            </div>
         </div>
-        <div v-show="!tagNotFound">
-            <div class="row justify-between q-mb-md">
-                <div class="text-h5">{{$t('general.posts')}}</div>
-                <div>
-                    <q-btn-dropdown flat icon="sort" color="primary" :label="$t('general.sortBy')">
-                        <q-list>
-                            <q-item v-for="item in sortOptions" :key="item.value" clickable v-close-popup @click="changeSortBy(item.value)" :active="sortBy == item.value">
-                                <q-item-section>
-                                    <q-item-label>{{ item.label }}</q-item-label>
-                                </q-item-section>
-                            </q-item>
-                        </q-list>
-                    </q-btn-dropdown>
-                </div>
-            </div>
-            <div class="row q-col-gutter-md">
-                <q-intersection class="col-12 wideCard" v-for="item in postList" :key="item.postId">
-                    <post-card :post="item"></post-card>
-                </q-intersection>
-            </div>
-            <div class="flex flex-center q-mt-md" v-show="postList.length > 0">
-                <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
-            </div>
+        <div class="row q-col-gutter-md">
+            <q-intersection class="col-12 wideCard" v-for="item in postList" :key="item.postId">
+                <post-card :post="item"></post-card>
+            </q-intersection>
+        </div>
+        <div class="flex flex-center q-mt-md" v-show="postList.length > 0">
+            <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
         </div>
     </q-page>
 </template>
@@ -42,7 +37,6 @@ export default {
     },
     data() {
         return {
-            tagNotFound: false,
             sortBy: 'timeDesc',
             sortOptions: [
                 {label: this.$t('general.sort.timeDesc'), value: 'timeDesc'},
@@ -85,7 +79,7 @@ export default {
                 }
                 else {
                     if (r.errorType && r.errorType == 'NotFound') {
-                        this.tagNotFound = true
+                        this.$router.push('/404')
                     }
                     else {
                         this.$q.notify({color: 'negative', message: r.msg, position: 'top', timeout: 2000})

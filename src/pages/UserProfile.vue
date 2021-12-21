@@ -1,99 +1,83 @@
 <template>
     <q-page class="q-pb-lg" v-show="loaded">
-        <div v-if="userNotFound">
-            <q-banner class="q-pa-lg bg-primary text-white">
-                <!--
-                <template v-slot:avatar>
-                    <q-icon name="account_circle" color="white" />
-                </template>
-                -->
-                <div class="row">
-                    <div class="col-12 text-body1 userName q-py-sm">
-                        {{ $t('userProfile.notFoundMsg') }}
-                    </div>
+        <q-banner class="q-px-lg q-pt-lg">
+            <div class="text-h6 userName q-py-sm row items-center">
+                <div class="col-auto">
+                    <q-avatar size="64px" color="primary" text-color="white" class="q-my-auto">{{ user.username?user.username[0]:'' }}</q-avatar>
                 </div>
-            </q-banner>
-        </div>
-        <div v-else>
-            <q-banner class="q-px-lg q-pt-lg">
-                <div class="text-h6 userName q-py-sm row items-center">
-                    <div class="col-auto">
-                        <q-avatar size="64px" color="primary" text-color="white" class="q-my-auto">{{ user.username?user.username[0]:'' }}</q-avatar>
-                    </div>
-                    <div class="col q-mx-md">
-                        <span class="q-mr-sm q-my-auto vertical-middle">{{ user.username }}</span>
-                        <q-chip v-show="user.isAuthor" color="accent" text-color="white" icon="done" clickable @click="goToAuthorPage">{{ $t('tag.author') }}</q-chip>
-                    </div>
-                    <div class="col-12 col-sm-auto q-mx-sm-md q-mt-md q-mt-sm-none text-center" v-show="isLoggedIn && !isCurrentUser">
-                        <q-btn class="q-px-md" :text-color="hoverUnfollow ? 'white' : 'black'" :color="hoverUnfollow ? 'negative' : 'white'" :label="$t('userAction.' + (hoverUnfollow ? 'unfollow' : 'following'))" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followUser" v-if="user.isFollowing"></q-btn>
-                        <q-btn class="q-px-md" color="primary" :label="$t('userAction.follow')" @click="followUser" v-else></q-btn>
-                    </div>
+                <div class="col q-mx-md">
+                    <span class="q-mr-sm q-my-auto vertical-middle">{{ user.username }}</span>
+                    <q-chip v-show="user.isAuthor" color="accent" text-color="white" icon="done" clickable @click="goToAuthorPage">{{ $t('tag.author') }}</q-chip>
                 </div>
-                <!--
-                <q-card class="userStats bg-primary text-white row text-center">
-                    <q-card-section class="col">
-                        <div class="text-subtitle1 text-bold">{{ user.followingCount }}</div>
-                        <div class="text-body2">{{ $t('general.following') }}</div>
-                    </q-card-section>
-                    <q-card-section class="col">
-                        <div class="text-subtitle1 text-bold">{{ user.followerCount }}</div>
-                        <div class="text-body2">{{ $tc('computed.followers', user.followerCount) }}</div>
-                    </q-card-section>
-                    <q-card-section class="col">
-                        <div class="text-subtitle1 text-bold">0</div>
-                        <div class="text-body2">{{ $tc('computed.collections', 0) }}</div>
-                    </q-card-section>
-                </q-card> -->
-                <div class="row q-my-md text-subtitle1 q-gutter-md">
-                    <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.followingCount }}</span> {{ $t('general.following') }}</div>
-                    <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.followerCount }}</span> {{ $tc('computed.followers', user.followerCount) }}</div>
-                    <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.collectionCount }}</span> {{ $tc('computed.collections', user.collectionCount) }}</div>
+                <div class="col-12 col-sm-auto q-mx-sm-md q-mt-md q-mt-sm-none text-center" v-show="isLoggedIn && !isCurrentUser">
+                    <q-btn class="q-px-md" :text-color="hoverUnfollow ? 'white' : 'black'" :color="hoverUnfollow ? 'negative' : 'white'" :label="$t('userAction.' + (hoverUnfollow ? 'unfollow' : 'following'))" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followUser" v-if="user.isFollowing"></q-btn>
+                    <q-btn class="q-px-md" color="primary" :label="$t('userAction.follow')" @click="followUser" v-else></q-btn>
                 </div>
-            </q-banner>
-            <div class="q-pa-md">
-                <q-tabs v-model="tab" align="left" @input="tabChange">
-                    <q-tab name="profile" :label="$t('userProfile.profile')" class="q-px-lg" />
-                    <q-tab name="collections" :label="$t('userProfile.collections')" class="q-px-lg" />
-                </q-tabs>
-                <q-tab-panels v-model="tab" animated>
-                    <q-tab-panel name="profile">
-                        <div class="text-h6 q-my-md">
-                            {{ $t('userProfile.profile') }}
-                            <div class="float-right">
-                                <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">{{ $t('userProfile.editProfile') }}</q-btn>
-                            </div>
-                        </div>
-                        <q-banner class="bg-grey-3 q-my-md" v-show="isCurrentUser && !user.isAuthor">
-                            {{ $t('compose.notAuthorMsg') }}
-                            <template v-slot:action>
-                                <q-btn flat color="primary" :label="$t('compose.becomeAuthor')" @click="becomeAnAuthor" />
-                            </template>
-                        </q-banner>
-                        <upcoming-feature version="0.4"></upcoming-feature>
-                    </q-tab-panel>
-                    <q-tab-panel name="collections">
-                        <div class="text-h6 q-my-md">
-                            {{ $t('userProfile.collections') }}
-                        </div>
-                        <q-list class="q-mx-md" v-if="collectionsLoading">
-                            <q-item v-for="i in 2" :key="i">
-                                <q-item-section>
-                                    <q-item-label class="text-subtitle2 collectionItemTitle">
-                                        <q-skeleton type="text" />
-                                    </q-item-label>
-                                    <q-item-label caption class="collectionItemInfo">
-                                        <q-skeleton type="text" width="45%" />
-                                    </q-item-label>
-                                </q-item-section>
-                            </q-item>
-                        </q-list>
-                        <q-list bordered separator class="q-mx-md" v-else>
-                            <collection-list-item v-for="item in collections" :key="item.id" :collection="item">
-                            </collection-list-item>
-                        </q-list>
-                    </q-tab-panel>
-                </q-tab-panels>
             </div>
+            <!--
+            <q-card class="userStats bg-primary text-white row text-center">
+                <q-card-section class="col">
+                    <div class="text-subtitle1 text-bold">{{ user.followingCount }}</div>
+                    <div class="text-body2">{{ $t('general.following') }}</div>
+                </q-card-section>
+                <q-card-section class="col">
+                    <div class="text-subtitle1 text-bold">{{ user.followerCount }}</div>
+                    <div class="text-body2">{{ $tc('computed.followers', user.followerCount) }}</div>
+                </q-card-section>
+                <q-card-section class="col">
+                    <div class="text-subtitle1 text-bold">0</div>
+                    <div class="text-body2">{{ $tc('computed.collections', 0) }}</div>
+                </q-card-section>
+            </q-card> -->
+            <div class="row q-my-md text-subtitle1 q-gutter-md">
+                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.followingCount }}</span> {{ $t('general.following') }}</div>
+                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.followerCount }}</span> {{ $tc('computed.followers', user.followerCount) }}</div>
+                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.collectionCount }}</span> {{ $tc('computed.collections', user.collectionCount) }}</div>
+            </div>
+        </q-banner>
+        <div class="q-pa-md">
+            <q-tabs v-model="tab" align="left" @input="tabChange">
+                <q-tab name="profile" :label="$t('userProfile.profile')" class="q-px-lg" />
+                <q-tab name="collections" :label="$t('userProfile.collections')" class="q-px-lg" />
+            </q-tabs>
+            <q-tab-panels v-model="tab" animated>
+                <q-tab-panel name="profile">
+                    <div class="text-h6 q-my-md">
+                        {{ $t('userProfile.profile') }}
+                        <div class="float-right">
+                            <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">{{ $t('userProfile.editProfile') }}</q-btn>
+                        </div>
+                    </div>
+                    <q-banner class="bg-grey-3 q-my-md" v-show="isCurrentUser && !user.isAuthor">
+                        {{ $t('compose.notAuthorMsg') }}
+                        <template v-slot:action>
+                            <q-btn flat color="primary" :label="$t('compose.becomeAuthor')" @click="becomeAnAuthor" />
+                        </template>
+                    </q-banner>
+                    <upcoming-feature version="0.4"></upcoming-feature>
+                </q-tab-panel>
+                <q-tab-panel name="collections">
+                    <div class="text-h6 q-my-md">
+                        {{ $t('userProfile.collections') }}
+                    </div>
+                    <q-list class="q-mx-md" v-if="collectionsLoading">
+                        <q-item v-for="i in 2" :key="i">
+                            <q-item-section>
+                                <q-item-label class="text-subtitle2 collectionItemTitle">
+                                    <q-skeleton type="text" />
+                                </q-item-label>
+                                <q-item-label caption class="collectionItemInfo">
+                                    <q-skeleton type="text" width="45%" />
+                                </q-item-label>
+                            </q-item-section>
+                        </q-item>
+                    </q-list>
+                    <q-list bordered separator class="q-mx-md" v-else>
+                        <collection-list-item v-for="item in collections" :key="item.id" :collection="item">
+                        </collection-list-item>
+                    </q-list>
+                </q-tab-panel>
+            </q-tab-panels>
         </div>
         <profile-edit profileMode="user" :data="currentUser" :open="openProfileEdit" @closed="openProfileEdit = false"></profile-edit>
     </q-page>
@@ -242,7 +226,7 @@ export default {
                 else {
                     if (r.errorType) {
                         if (r.errorType == 'NotFound') {
-                            this.userNotFound = true;
+                            this.$router.push('/404')
                         }
                     }
                     else {

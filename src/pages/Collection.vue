@@ -1,19 +1,18 @@
 <template>
     <q-page class="q-pa-lg">
-        <div v-show="collectionNotFound" class="text-center">
-            <div class="text-h5 q-my-lg">Oops...</div>
-            <p>{{$t('collection.notFoundMsg')}}</p>
+        <div class="text-h4 q-my-md word-break">{{ collection.title }}</div>
+        <div class="text-subtitle1 q-my-md text-grey-8 word-break">{{ collection.description }}</div>
+        <div class="collection-infoLine q-mb-lg flex items-center">
+            <span class="q-pr-md">
+                <q-btn color="primary" flat dense :label="collection.username" :to="'/user/'+collection.userId" />
+            </span>
+            <span class="q-pr-md">
+                {{ $t('collection.lastUpdated')+':' }} {{ collection.updateTime ? formatTime(collection.updateTime) : '' }}
+            </span>
         </div>
-        <div v-show="!collectionNotFound">
-            <div class="text-h4 q-my-md word-break">{{ collection.title }}</div>
-            <div class="text-subtitle1 q-my-md text-grey-8 word-break">{{ collection.description }}</div>
-            <div class="collection-infoLine q-mb-lg flex items-center">
-                <span class="q-pr-md">
-                    <q-btn color="primary" flat dense :label="collection.username" :to="'/user/'+collection.userId" />
-                </span>
-                <span class="q-pr-md">
-                    {{ $t('collection.lastUpdated')+':' }} {{ collection.updateTime ? formatTime(collection.updateTime) : '' }}
-                </span>
+        <div class="row justify-between items-center q-mb-lg">
+            <div class="text-h6">
+                {{ collection.postCount }} {{ $tc('computed.posts', collection.postCount) }}
             </div>
             <div class="row justify-between items-center q-mb-lg">
                 <div class="text-h6">
@@ -25,14 +24,15 @@
                     <q-btn color="primary" flat :label="$t('general.done')" @click="managePostMode = false" v-else />
                 </div>
             </div>
-            
-            <q-list bordered separator v-if="managePostMode">
-                <PostListSlideItem v-for="item in collection.posts" :key="item.postId" :post="item" @deletePost="deletePost(item.postId)"></PostListSlideItem>
-            </q-list>
-            <q-list bordered separator v-else>
-                <PostListItem v-for="item in collection.posts" :key="item.postId" :post="item"></PostListItem>
-            </q-list>
         </div>
+        
+        <q-list bordered separator v-if="managePostMode">
+            <PostListSlideItem v-for="item in collection.posts" :key="item.postId" :post="item" @deletePost="deletePost(item.postId)"></PostListSlideItem>
+        </q-list>
+        <q-list bordered separator v-else>
+            <PostListItem v-for="item in collection.posts" :key="item.postId" :post="item"></PostListItem>
+        </q-list>
+
     </q-page>
 </template>
 
@@ -108,9 +108,17 @@ export default {
             return formatTimeElapsed(tm)
         },
         setData(r) {
-            if (r.error) {
-                if (r.errorType && r.errorType == 'CollectionNotFound') {
-                    this.collectionNotFound = true
+            if (r.success) {
+                console.log(r)
+                for (let i of ['postCount', 'updateTime']) {
+                    r.collection[i] = parseInt(r.collection[i])
+                }
+                this.collection = r.collection
+                this.$store.commit('setBarTitle', this.$t('collection.title') + ' / ' + r.collection.title)
+            }
+            else {
+                if (r.errorType && r.errorType == 'NotFound') {
+                    this.$router.push('/404')
                 }
                 else {
                     this.$q.notify({
@@ -119,14 +127,6 @@ export default {
                     })
                 }
                 this.$store.commit('setBarTitle')
-            }
-            else if (r.success) {
-                console.log(r)
-                for (let i of ['postCount', 'updateTime']) {
-                    r.collection[i] = parseInt(r.collection[i])
-                }
-                this.collection = r.collection
-                this.$store.commit('setBarTitle', this.$t('collection.title') + ' / ' + r.collection.title)
             }
         }
     },

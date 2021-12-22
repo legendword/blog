@@ -2,15 +2,13 @@
     <q-page class="q-pa-lg">
         <q-banner class="bg-grey-3 q-my-md" v-show="isLoggedIn && user.isAuthor == '0'">
             {{ $t('compose.notAuthorMsg') }}
-            <template v-slot:action>
-                <q-btn flat color="primary" :label="$t('compose.becomeAuthor')" /> <!-- todo: becomeAnAuthor -->
-            </template>
+            <!-- #todo: becomeAnAuthor -->
         </q-banner>
         <div v-show="isLoggedIn && user.isAuthor == '1'">
             <div class="editor-wrapper q-mt-lg">
                 <editor ref="editor" :initialValues="emptyValues" />
 
-                <div class="q-mt-md">
+                <div class="q-mt-lg q-mb-xl">
                     <q-btn color="primary" :label="$t('compose.submit')" @click="submitPost" />
                 </div>
             </div>

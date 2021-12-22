@@ -3,7 +3,11 @@
         <search-bar></search-bar>
         <div class="q-mt-md row q-col-gutter-md">
             <div class="col-12 col-sm-6 col-md-3" v-for="item in mainCategories" :key="item.name">
-                <q-card :style="{backgroundColor: item.color, color: '#fff'}" class="categoryCard" @click="$router.push('/category/'+item.name)">
+                <q-card
+                    :style="{border: `1px solid ${item.color}`, color: item.color}" class="categoryCard"
+                    @click="$router.push('/category/'+item.name)"
+                    flat
+                >
                     <q-card-section class="row items-center no-wrap">
                         <q-avatar>
                             <q-icon :name="item.icon" />

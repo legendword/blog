@@ -29,7 +29,7 @@ Currently supported platforms: **MacOS, Windows, Linux**, iOS*
 
 *: iOS app will be published to the App Store in a future release.
 
-##### Current Version: v0.1.1 (Public Beta)
+[View the latest release](https://github.com/legendword/blog/releases/latest)
 
 ### Key Features:
 - User Accounts: Set custom username and create an author profile linked to the user.
@@ -57,11 +57,11 @@ Download **Legendword.Blog-[version]-linux-x64.zip** and unzip it. Run `Legendwo
 
 ## Debugging/Developing the project on your local machine
 
-### Learn about the libraries used
+### Libraries Used
 
 This project uses [Quasar](https://quasar.dev/), [Quasar CLI](https://quasar.dev/quasar-cli/), [Axios](https://github.com/axios/axios), [Vue i18n](https://kazupon.github.io/vue-i18n/), and [MarkDownItVue](https://github.com/ravenq/markdown-it-vue).
 
-### Install the dependencies
+### Install Dependencies
 ```bash
 npm install
 ```

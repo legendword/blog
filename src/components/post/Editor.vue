@@ -52,18 +52,20 @@
 
             <q-tab-panels v-model="tab">
                 <q-tab-panel name="editor" class="q-pa-none">
-                    <q-card flat bordered>
+                    <q-card flat bordered class="overflow-scroll-x">
                         <q-bar class="bg-white text-black">
                             <div class="barNoMLImportant">
-                                <q-btn-dropdown dense flat icon="format_size">
-                                    <q-list dense>
-                                        <q-item v-for="(item, index) in headingSizes" :key="index" clickable v-close-popup @click="headingAction(index)">
-                                            <q-item-section>
-                                                <q-item-label class="text-weight-medium">{{ item }}</q-item-label>
-                                            </q-item-section>
-                                        </q-item>
-                                    </q-list>
-                                </q-btn-dropdown>
+                                <q-btn dense flat icon="format_size">
+                                    <q-menu auto-close>
+                                        <q-list dense>
+                                            <q-item v-for="(item, index) in headingSizes" :key="index" clickable @click="headingAction(index)">
+                                                <q-item-section>
+                                                    <q-item-label class="text-weight-medium">{{ item }}</q-item-label>
+                                                </q-item-section>
+                                            </q-item>
+                                        </q-list>
+                                    </q-menu>
+                                </q-btn>
                             </div>
                             <!-- special actions should be inserted above -->
                             <template v-for="(action, index) in editorActions">
@@ -96,6 +98,9 @@
                         </q-bar>
                     </q-card>
                     <q-input class="q-ma-sm" type="textarea" autogrow v-model="values.content" input-class="textarea" borderless ref="contentInput"></q-input>
+                    <div class="q-mt-md text-caption">
+                        Styling with <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" rel="noopener noreferrer">Markdown</a> is enabled. Create new lines with two returns.
+                    </div>
                 </q-tab-panel>
                 <q-tab-panel name="preview" class="q-pa-none">
                     <div class="q-ma-sm post-content content-preview">
@@ -209,9 +214,10 @@ export default {
     updated() {
         if (this.editorActionsPerformed.didPerform) {
             let textarea = this.$refs.contentInput.$refs.input
-            textarea.setSelectionRange(this.editorActionsPerformed.selectionRange[0], this.editorActionsPerformed.selectionRange[1])
+            // textarea.setSelectionRange(this.editorActionsPerformed.selectionRange[0], this.editorActionsPerformed.selectionRange[1])
+            textarea.setSelectionRange(this.editorActionsPerformed.selectionRange[1], this.editorActionsPerformed.selectionRange[1])
             textarea.focus()
-            console.log(textarea.selectionStart, textarea.selectionEnd)
+            // console.log(textarea.selectionStart, textarea.selectionEnd)
             this.editorActionsPerformed.didPerform = false
         }
     },
@@ -347,16 +353,20 @@ export default {
     .category-select {
         min-width: 200px;
     }
-    .textarea, .content-preview {
-        min-height: 50vh;
-    }
     .textarea {
+        min-height: 50vh;
         resize: none !important;
         font-size: 1.1rem;
         line-height: 1.5;
     }
+    .content-preview {
+        min-height: calc(50vh + 66px);
+    }
 }
 .barNoMLImportant {
     margin-left: 0 !important;
+}
+.overflow-scroll-x {
+    overflow-x: scroll;
 }
 </style>

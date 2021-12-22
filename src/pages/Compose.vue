@@ -8,7 +8,7 @@
         </q-banner>
         <div v-show="isLoggedIn && user.isAuthor == '1'">
             <div class="editor-wrapper q-mt-lg">
-                <editor ref="editor" />
+                <editor ref="editor" :initialValues="emptyValues" />
 
                 <div class="q-mt-md">
                     <q-btn color="primary" :label="$t('compose.submit')" @click="submitPost" />
@@ -25,6 +25,13 @@ import LogIn from '../components/LogIn.vue'
 import api from '../api'
 import { apiError } from 'src/apiError'
 import Editor from 'src/components/post/Editor.vue'
+const emptyValues = {
+    title: '',
+    description: '',
+    content: '',
+    category: '',
+    tags: []
+}
 export default {
     name: 'Compose',
     components: {
@@ -33,13 +40,13 @@ export default {
     },
     data() {
         return {
-            
+            emptyValues: emptyValues
         }
     },
     computed: mapState(['user', 'isLoggedIn']),
     methods: {
         submitPost() {
-            // let post = {...this.$refs.editor.values}
+            let post = {...this.$refs.editor.values}
             // console.log(post)
             // return
 
@@ -88,6 +95,18 @@ export default {
     },
     created() {
         this.$store.commit('setBarTitle', this.$t('compose.barTitle'))
+    },
+    beforeRouteLeave(to, from, next) {
+        this.$q.dialog({
+            title: 'Confirm',
+            message: 'Do you really want to leave? Your changes will be lost.',
+            cancel: true,
+            persistent: true
+        }).onOk(() => {
+            next()
+        }).onCancel(() => {
+            next(false)
+        })
     }
 }
 </script>

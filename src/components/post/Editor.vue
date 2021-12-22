@@ -98,7 +98,9 @@
                     <q-input class="q-ma-sm" type="textarea" autogrow v-model="values.content" input-class="textarea" borderless ref="contentInput"></q-input>
                 </q-tab-panel>
                 <q-tab-panel name="preview" class="q-pa-none">
-                    <MarkDownItVue class="q-pa-md post-content content-preview" :content="values.content" :options="markdownItVueOptions" />
+                    <div class="q-ma-sm post-content content-preview">
+                        <div class="markdown-body" v-html="htmlPreview" />
+                    </div>
                 </q-tab-panel>
             </q-tab-panels>
         </div>
@@ -109,9 +111,10 @@
 import api from 'src/api'
 import TagSelector from '../form/TagSelector.vue'
 import { apiError } from 'src/apiError'
-import MarkDownItVue from 'markdown-it-vue'
-import 'markdown-it-vue/dist/markdown-it-vue.css'
-import markdownItVueOptions from 'src/markdownItVueOptions'
+// import MarkDownItVue from 'markdown-it-vue'
+import 'src/css/markdown-it-vue.css'
+// import markdownItVueOptions from 'src/markdownItVueOptions'
+import markdownIt from 'markdown-it'
 const emptyValues = {
     title: '',
     description: '',
@@ -140,7 +143,7 @@ export default {
     name: 'Editor',
     components: {
         TagSelector,
-        MarkDownItVue
+        // MarkDownItVue
     },
     props: {
         initialValues: Object
@@ -170,10 +173,19 @@ export default {
                 label: ''
             },
 
-            markdownItVueOptions: markdownItVueOptions,
+            // markdownItVueOptions: markdownItVueOptions,
+            htmlPreview: ''
+        }
+    },
+    watch: {
+        tab(val) {
+            if (val == 'preview') {
+                this.generatePreview()
+            }
         }
     },
     created() {
+        console.log('Editor created')
         api.get('/categories', {
             newpost: true
         }).catch(err => {
@@ -204,6 +216,14 @@ export default {
         }
     },
     methods: {
+        generatePreview() {
+            let md = markdownIt({
+                linkify: true
+            })
+            this.htmlPreview = md.render(this.values.content)
+            // console.log(this.htmlPreview)
+        },
+
         headingAction(ind) {
             let text = ''
             for (let i=0;i<=ind;i++) {
@@ -333,7 +353,7 @@ export default {
     .textarea {
         resize: none !important;
         font-size: 1.1rem;
-        line-height: 2;
+        line-height: 1.5;
     }
 }
 .barNoMLImportant {

@@ -1,8 +1,7 @@
 <template>
     <q-page class="q-pa-lg">
         <search-bar></search-bar>
-        <h4 class="q-mb-lg">{{ $t('indexPage.allCategories') }}</h4>
-        <div class="row q-col-gutter-md">
+        <div class="q-mt-md row q-col-gutter-md">
             <div class="col-12 col-sm-6 col-md-3" v-for="item in mainCategories" :key="item.name">
                 <q-card :style="{backgroundColor: item.color, color: '#fff'}" class="categoryCard" @click="$router.push('/category/'+item.name)">
                     <q-card-section class="row items-center no-wrap">

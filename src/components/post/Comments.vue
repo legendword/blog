@@ -32,7 +32,7 @@
 
 <script>
 import { apiError } from 'src/apiError'
-import DropdownSelect from '../DropdownSelect.vue'
+import DropdownSelect from '../form/DropdownSelect.vue'
 import Comment from './Comment.vue'
 import api from 'src/api'
 import { mapState } from 'vuex'

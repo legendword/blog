@@ -1,6 +1,7 @@
 const markdownItVueOptions = {
     githubToc: {
-        toc: false,
+        tocFirstLevel: 1,
+        tocLastLevel: 3,
         anchorLink: false
     }
 }

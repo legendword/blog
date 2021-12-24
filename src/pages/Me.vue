@@ -2,147 +2,122 @@
     <q-page class="q-pb-lg">
         <need-to-log-in v-if="!isLoggedIn" />
         <div v-else>
-            <div class="row" v-if="user.isAuthor">
-                <div class="col-12 col-sm-6">
-                    <user-card :user="user"></user-card>
-                </div>
-                <div class="col-12 col-sm-6">
-                    <author-card :author="author"></author-card>
-                </div>
-            </div>
-            <div class="row" v-else>
-                <div class="col-12">
-                    <user-card :user="user"></user-card>
-                </div>
-            </div>
-            <div class="q-px-md q-px-sm-lg" v-if="user.isAuthor">
-                <h5 class="q-mb-sm">{{ $t('me.creator') }}</h5>
-                <div class="xs">
-                    <q-tabs v-model="creatorTab" active-color="primary" align="justify">
-                        <q-tab v-for="item in creatorTabs" :key="item" :name="item" :label="$t('general.'+item)">
-                            <q-badge floating v-if="creatorBadges[item]">{{creatorBadges[item]}}</q-badge>
-                        </q-tab>
-                    </q-tabs>
-                </div>
-                <div class="row">
-                    <div class="gt-xs col-auto">
-                        <q-list bordered separator class="creatorTabs text-weight-medium">
-                            <q-item v-for="item in creatorTabs" :key="item" clickable v-ripple :active="creatorTab == item" @click="creatorTab = item">
-                                <q-item-section>{{ $t('general.'+item) }}</q-item-section>
-                                <q-item-section side v-if="creatorBadges[item]">
-                                    <q-badge>{{creatorBadges[item]}}</q-badge>
-                                </q-item-section>
-                            </q-item>
-                        </q-list>
+            <!-- Profile Banner -->
+            <q-banner class="q-px-lg p-pt-xl q-py-lg">
+                <div class="text-h6 q-py-sm row items-center">
+                    <div class="col-auto">
+                        <q-avatar size="64px" color="deep-purple-6" text-color="white" class="q-my-auto">{{ author.displayName?author.displayName[0]:'' }}</q-avatar>
                     </div>
-                    <div class="col">
-                        <q-tab-panels v-model="creatorTab" animated :vertical="$q.screen.gt.xs">
-                            <q-tab-panel name="overview" class="q-px-sm q-px-sm-md">
-                                <div class="text-h5">{{ $t('general.overview') }}</div>
-                                <div class="row q-mt-lg text-center">
-                                    <div class="col-12 col-sm-6 col-md-4 q-pa-sm" v-for="stat in creator.stats" :key="stat.label">
-                                        <q-card>
-                                            <q-card-section>
-                                                <div class="text-h6">{{$t('me.stats.'+stat.label)}}</div>
-                                            </q-card-section>
-                                            <q-card-section>
-                                                <div class="text-h5">{{stat.value}}</div>
-                                            </q-card-section>
-                                        </q-card>
-                                    </div>
-                                </div>
-                            </q-tab-panel>
-                            <q-tab-panel name="posts" class="q-px-sm q-px-sm-md">
-                                <div class="text-h5 q-mb-lg q-pr-md">
-                                    {{ $t('general.posts') }}
-                                    <div class="float-right">
-                                        <q-btn color="primary" icon="add" :label="$t('me.newPost')" to="/compose" />
-                                    </div>
-                                </div>
-                                <div class="q-ma-sm q-mb-md" v-if="creatorPostLoading">
-                                    <q-card>
-                                        <q-card-section>
-                                            <q-skeleton type="rect" class="q-mb-sm"></q-skeleton>
-                                            <q-skeleton type="text"></q-skeleton>
-                                        </q-card-section>
-                                    </q-card>
-                                </div>
-                                <div class="q-ma-sm q-mb-md" v-for="post in creator.posts" :key="post.postId">
-                                    <q-card>
-                                        <q-card-section>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <div class="text-h5 q-mb-sm">{{ post.title }}</div>
-                                                    <div class="xs text-body1">
-                                                        <div>{{ post.publishTimeStr }}</div>
-                                                        <div>{{ post.views }} {{$t('me.postViews')}}</div>
-                                                    </div>
-                                                    <div class="gt-xs text-body1">
-                                                        <span class="q-pr-md">
-                                                            {{ post.publishTimeStr }}
-                                                        </span>
-                                                        <span>
-                                                            {{ post.views }} {{$t('me.postViews')}}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-auto q-my-auto">
-                                                    <q-btn-dropdown flat dense class="xs" color="primary" icon="pending">
-                                                        <q-list>
-                                                            <q-item clickable v-close-popup @click="$router.push('/post/'+post.postId)">
-                                                                <q-item-section>
-                                                                    <q-item-label>{{$t('me.viewPost')}}</q-item-label>
-                                                                </q-item-section>
-                                                            </q-item>
-                                                            <q-item clickable v-close-popup @click="removePost(post.postId, post.title)">
-                                                                <q-item-section>
-                                                                    <q-item-label>{{$t('me.removePost')}}</q-item-label>
-                                                                </q-item-section>
-                                                            </q-item>
-                                                        </q-list>
-                                                    </q-btn-dropdown>
-                                                    <q-btn-group class="gt-xs">
-                                                        <q-btn color="primary" :label="$t('me.viewPost')" :to="'/post/'+post.postId"></q-btn>
-                                                        <q-btn color="grey" :label="$t('me.removePost')" @click="removePost(post.postId, post.title)"></q-btn>
-                                                    </q-btn-group>
-                                                </div>
+                    <div class="col q-mx-md">
+                        <span class="q-mr-sm q-my-auto vertical-middle">{{ author.displayName }}</span>
+                        <q-chip color="accent" text-color="white" icon="create">{{ $t('tag.author') }}</q-chip>
+                    </div>
+                    <div class="col-12 col-sm-auto q-mx-sm-md q-mt-lg q-mt-sm-none text-center" v-show="isLoggedIn">
+                        <q-btn class="q-px-md bg-primary text-white">View Public Profile</q-btn>
+                    </div>
+                    <div class="col-12 col-sm-auto q-mx-sm-md q-mt-lg q-mt-sm-none text-center" v-show="isLoggedIn">
+                        <q-btn class="q-px-md bg-primary text-white">Edit Profile</q-btn>
+                    </div>
+                </div>
+                <!-- Follower,Post,Following Count -->
+                <div class="row q-my-md text-subtitle1 q-gutter-md">
+                    <div class="col-12 col-sm-auto q-my-none"><strong class="text-h6 text-primary">x</strong> {{ $t('general.followers')}}</div>
+                    <div class="col-12 col-sm-auto q-my-none"><strong class="text-h6 text-primary">x</strong> {{ $t('general.following')}}</div>
+                    <div class="col-12 col-sm-auto q-my-none"><strong class="text-h6 text-primary">x</strong> {{ $t('general.posts')}}</div>
+                </div>
+            </q-banner>
+
+            <!-- Profile Tab -->
+            <div class="q-pa-md">
+                <q-tabs v-model="tab" align="left" ref="tab" @input="tabChange">
+                    <q-tab name="profile" class="q-px-lg">Profile</q-tab>
+                    <q-tab name="posts" class="q-px-lg">Posts</q-tab>
+                    <q-tab name="commented" class="q-px-lg">Commented</q-tab>
+                    <q-tab name="liked" class="q-px-lg">Liked</q-tab>
+                    <q-tab name="saved" class="q-px-lg">Saved</q-tab>
+                </q-tabs>
+                <q-tab-panels v-model="tab" animated>
+                    <q-tab-panel name="profile">
+                        <div class="text-h6 q-my-md">Profile</div>
+                        <upcoming-feature version="0.4"></upcoming-feature>
+                    </q-tab-panel>
+                    <q-tab-panel name="posts" class="q-px-sm q-px-sm-md">
+                        <div class="text-h6 q-my-md">
+                            {{ $t('general.posts') }}
+                            <div class="float-right">
+                                <q-btn color="primary" icon="add" :label="$t('me.newPost')" to="/compose" />
+                            </div>
+                        </div>
+                        <div class="q-ma-sm q-mb-md" v-if="creatorPostLoading">
+                            <q-card>
+                                <q-card-section>
+                                    <q-skeleton type="rect" class="q-mb-sm"></q-skeleton>
+                                    <q-skeleton type="text"></q-skeleton>
+                                </q-card-section>
+                            </q-card>
+                        </div>
+                        <div class="q-ma-sm q-mb-md" v-for="post in creator.posts" :key="post.postId">
+                            <q-card>
+                                <q-card-section>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="text-h5 q-mb-sm">{{ post.title }}</div>
+                                            <div class="xs text-body1">
+                                                <div>{{ post.publishTimeStr }}</div>
+                                                <div>{{ post.views }} {{$t('me.postViews')}}</div>
                                             </div>
-                                            
-                                        </q-card-section>
-                                    </q-card>
+                                            <div class="gt-xs text-body1">
+                                                <span class="q-pr-md">
+                                                    {{ post.publishTimeStr }}
+                                                </span>
+                                                <span>
+                                                    {{ post.views }} {{$t('me.postViews')}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto q-my-auto">
+                                            <q-btn-dropdown flat dense class="xs" color="primary" icon="pending">
+                                                <q-list>
+                                                    <q-item clickable v-close-popup @click="$router.push('/post/'+post.postId)">
+                                                        <q-item-section>
+                                                            <q-item-label>{{$t('me.viewPost')}}</q-item-label>
+                                                        </q-item-section>
+                                                    </q-item>
+                                                    <q-item clickable v-close-popup @click="removePost(post.postId, post.title)">
+                                                        <q-item-section>
+                                                            <q-item-label>{{$t('me.removePost')}}</q-item-label>
+                                                        </q-item-section>
+                                                    </q-item>
+                                                </q-list>
+                                            </q-btn-dropdown>
+                                            <q-btn-group class="gt-xs">
+                                                <q-btn color="primary" :label="$t('me.viewPost')" :to="'/post/'+post.postId"></q-btn>
+                                                <q-btn color="grey" :label="$t('me.removePost')" @click="removePost(post.postId, post.title)"></q-btn>
+                                            </q-btn-group>
+                                        </div>
+                                    </div>
                                     
-                                </div>
-                                <div class="flex flex-center q-mt-md" v-if="!creatorPostLoading">
-                                    <q-pagination v-model="creatorPagination.posts.current" :max="creatorPagination.posts.max" input @input="creatorPageChange" />
-                                </div>
-                            </q-tab-panel>
-                            <q-tab-panel name="comments" class="q-px-sm q-px-sm-md">
-                                <div class="text-h5">{{ $t('general.comments') }}</div>
-                                <div class="q-ma-sm q-mb-md" v-if="creatorCommentLoading">
-                                    <q-card>
-                                        <q-card-section>
-                                            <q-skeleton type="rect" class="q-mb-sm"></q-skeleton>
-                                            <q-skeleton type="text"></q-skeleton>
-                                        </q-card-section>
-                                    </q-card>
-                                </div>
-                                <div class="q-ma-sm q-mb-md" v-for="comment in creator.comments" :key="comment.id">
-                                    <q-card>
-                                        <q-card-section>
-                                            <div class="text-subtitle1">
-                                                <router-link class="link-text text-weight-medium q-pr-sm" :to="'/user/'+comment.userId">{{ comment.username }}</router-link> <span class="text-dimmed q-pr-sm">commented on</span> <router-link class="link-text" :to="'/post/'+comment.postId">{{ comment.postTitle }}</router-link></div>
-                                            <div class="text-body1 q-py-md">{{ comment.content }}</div>
-                                            <div class="text-dimmed q-mt-sm">{{ formatTime(comment.publishTime) }}</div>
-                                        </q-card-section>
-                                    </q-card>
-                                </div>
-                                <div class="flex flex-center q-mt-md" v-if="!creatorCommentLoading">
-                                    <q-pagination v-model="creatorPagination.comments.current" :max="creatorPagination.comments.max" input @input="creatorPageChange" />
-                                </div>
-                            </q-tab-panel>
-                        </q-tab-panels>
-                    </div>
-                </div>
+                                </q-card-section>
+                            </q-card>
+                            
+                        </div>
+                        <div class="flex flex-center q-mt-md" v-if="!creatorPostLoading">
+                            <q-pagination v-model="creatorPagination.posts.current" :max="creatorPagination.posts.max" input @input="creatorPageChange" />
+                        </div>
+                    </q-tab-panel>
+                    <q-tab-panel name="commented">
+                        <div class="text-h6 q-my-md">Commented</div>
+                        <upcoming-feature version="0.4"></upcoming-feature>
+                    </q-tab-panel>
+                    <q-tab-panel name="liked">
+                        <div class="text-h6 q-my-md">Liked</div>
+                        <upcoming-feature version="0.4"></upcoming-feature>
+                    </q-tab-panel>
+                    <q-tab-panel name="saved">
+                        <div class="text-h6 q-my-md">Saved</div>
+                        <upcoming-feature version="0.4"></upcoming-feature>
+                    </q-tab-panel>
+                </q-tab-panels>
             </div>
         </div>
     </q-page>
@@ -190,7 +165,17 @@ export default {
                 }
             },
             creatorPostLoading: false,
-            creatorCommentLoading: false
+            creatorCommentLoading: false,
+            loaded: false,
+            author: {},
+            postList: [],
+            postCount: 0,
+            postPage: 1,
+            postPerPage: 10,
+            isCurrentUser: false,
+            authorNotFound: false,
+            tab: 'profile',
+            hoverUnfollow: false
         }
     },
     computed: {

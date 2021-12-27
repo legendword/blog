@@ -120,6 +120,7 @@ import { apiError } from 'src/apiError'
 import 'src/css/markdown-it-vue.css'
 // import markdownItVueOptions from 'src/markdownItVueOptions'
 import markdownIt from 'markdown-it'
+import logger from 'src/logger'
 const emptyValues = {
     title: '',
     description: '',
@@ -190,7 +191,7 @@ export default {
         }
     },
     created() {
-        console.log('Editor created')
+        logger('Editor created')
         api.get('/categories', {
             newpost: true
         }).catch(err => {
@@ -217,7 +218,7 @@ export default {
             // textarea.setSelectionRange(this.editorActionsPerformed.selectionRange[0], this.editorActionsPerformed.selectionRange[1])
             textarea.setSelectionRange(this.editorActionsPerformed.selectionRange[1], this.editorActionsPerformed.selectionRange[1])
             textarea.focus()
-            // console.log(textarea.selectionStart, textarea.selectionEnd)
+            // logger(textarea.selectionStart, textarea.selectionEnd)
             this.editorActionsPerformed.didPerform = false
         }
     },
@@ -227,7 +228,7 @@ export default {
                 linkify: true
             })
             this.htmlPreview = md.render(this.values.content)
-            // console.log(this.htmlPreview)
+            // logger(this.htmlPreview)
         },
 
         headingAction(ind) {
@@ -302,9 +303,9 @@ export default {
             this.values.content = newContent
         },
         performEditorAction(action) {
-            console.log(action)
+            logger(action)
             let textarea = this.$refs.contentInput.$refs.input
-            //console.log(textarea.selectionStart, textarea.selectionEnd)
+            //logger(textarea.selectionStart, textarea.selectionEnd)
             let start = textarea.selectionStart
             let end = textarea.selectionEnd
             let content = this.values.content

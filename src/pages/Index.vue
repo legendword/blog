@@ -71,6 +71,7 @@ import PostCard from '../components/PostCard'
 import PostCardCompact from '../components/PostCardCompact'
 import SearchBar from '../components/SearchBar'
 import { mainCategories, otherCategories } from '../mainCategories'
+import logger from 'src/logger'
 export default {
     name: 'Home',
     data() {
@@ -113,7 +114,7 @@ export default {
             }).then(res => {
                 let r = res.data
                 if (r.success) {
-                    console.log(r)
+                    logger(r)
                     this.postList = r.posts
                     if (r.postCount !== undefined) {
                         this.postCount = parseInt(r.postCount)

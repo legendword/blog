@@ -42,6 +42,7 @@
 <script>
 import { apiError } from 'src/apiError'
 import api from '../api'
+import logger from 'src/logger'
 export default {
     name: 'LogIn',
     props: {
@@ -85,7 +86,7 @@ export default {
                     apiError()
                 }).then(res => {
                     let r = res.data
-                    console.log(r)
+                    logger(r)
                     if (r.success) {
                         this.$q.dialog({
                             title: this.$t('passwordRecovery.prompt.title'),
@@ -153,7 +154,7 @@ export default {
                 apiError()
             }).then(res => {
                 let r = res.data
-                console.log(r);
+                logger(r);
                 if (r.invalid) {
                     this.$q.notify({
                         color: 'negative',

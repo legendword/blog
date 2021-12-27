@@ -30,6 +30,7 @@
 import { apiError } from 'src/apiError'
 import api from '../api'
 import PostCard from '../components/PostCard'
+import logger from 'src/logger'
 export default {
     name: 'Category',
     components: {
@@ -74,7 +75,7 @@ export default {
                 if (r.success) {
                     this.postList = r.posts
                     if (this.postPage == 1) {
-                        console.log(r)
+                        logger(r)
                         this.postCount = parseInt(r.postCount)
                     }
                 }

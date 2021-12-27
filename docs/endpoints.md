@@ -207,6 +207,8 @@ Query a list of newest posts by publication date.
   - **postId**: Integer
   - **publishTime**: Integer - timestamp
   - **publishTimeStr**: String - human readable time
+  - **updateTime**: Integer?
+  - **updateTimeStr**: String?
   - **title**: String
   - **views**: Integer
 - **postCount**: Integer? - total number of posts, only returns when argument page is 1
@@ -288,10 +290,11 @@ None.
   - **tags**: Array\<Object\>
     - **id**: Integer
     - **name**: String
-  
   - **postId**: Integer
   - **publishTime**: Integer - timestamp
   - **publishTimeStr**: String - human readable time
+  - **updateTime**: Integer?
+  - **updateTimeStr**: String?
   - **title**: String
   - **description**: String
   - **content**: String - the full content of the post

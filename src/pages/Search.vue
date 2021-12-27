@@ -78,6 +78,7 @@ import AuthorCard from '../components/AuthorCard.vue'
 import UserCard from '../components/UserCard.vue'
 import CollectionListItem from '../components/CollectionListItem.vue'
 import { apiError } from 'src/apiError'
+import logger from 'src/logger'
 export default {
     name: 'Search',
     components: {
@@ -125,7 +126,7 @@ export default {
         newSearch(val) {
             this.actualQuery = val
             let currentTab = this.tab
-            console.log(currentTab)
+            logger(currentTab)
             this.isLoading = true
             api.get('/search/'+currentTab, {
                 query: val,
@@ -134,7 +135,7 @@ export default {
                 apiError()
             }).then(res => {
                 let r = res.data
-                console.log(r)
+                logger(r)
                 if (r.success) {
                     this.resultList[currentTab] = r.result
                     if (r.resultCount) {

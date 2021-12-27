@@ -1,5 +1,6 @@
 import { LocalStorage } from 'quasar'
 import api from 'src/api'
+import logger from 'src/logger'
 
 // "async" is optional;
 // more info on params: https://quasar.dev/quasar-cli/boot-files
@@ -10,7 +11,7 @@ export default async ({ app, router, store, Vue }) => {
     if (hasToken) {
       let alive = (hasUserInfo ? api.get('/alive').then(res => {
         let r = res.data
-        console.log(r)
+        logger(r)
         if (r.success) {
           if (!r.isLoggedIn) return false;
           else return true;
@@ -26,9 +27,9 @@ export default async ({ app, router, store, Vue }) => {
             token: token
           }).then(res => {
             let r = res.data
-            console.log('signInWithToken', r)
+            logger('signInWithToken', r)
             if (r.success) {
-              console.log('signInWithToken Success')
+              logger('signInWithToken Success')
               if (r.jwt) {
                 store.commit('setAuthorization', 'Bearer ' + r.jwt)
               }
@@ -39,7 +40,7 @@ export default async ({ app, router, store, Vue }) => {
               }
             }
             else {
-              console.log('signInWithToken Failed')
+              logger('signInWithToken Failed')
               LocalStorage.remove('identifier')
               LocalStorage.remove('token')
               store.commit('setAuthorization', null)

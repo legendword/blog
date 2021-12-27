@@ -57,6 +57,7 @@ import PostCard from '../components/PostCard.vue'
 import UpcomingFeature from 'src/components/UpcomingFeature.vue';
 import { apiError } from 'src/apiError';
 import AuthorInfoEdit from 'src/components/dialogs/AuthorInfoEdit.vue';
+import logger from 'src/logger';
 export default {
     name: 'AuthorProfile',
     components: {
@@ -97,7 +98,7 @@ export default {
                 apiError()
             }).then(res => {
                 let r = res.data
-                console.log(r)
+                logger(r)
                 if (r.success) {
                     this.author.followerCount = parseInt(this.author.followerCount) + parseInt(r.delta)
                     this.author.isFollowing = !this.author.isFollowing
@@ -117,7 +118,7 @@ export default {
                     apiError()
                 }).then(res => {
                     let r = res.data
-                    console.log(r)
+                    logger(r)
                     if (r.error) {
                         this.$q.notify({
                             color: 'negative',
@@ -148,7 +149,7 @@ export default {
                     displayName: this.author.displayName
                 }
             }).onOk((val) => {
-                console.log(val)
+                logger(val)
                 this.author.displayName = val.displayName
                 this.$store.commit('setBarTitle', this.$t('barTitle.author') + ' / ' + this.author.displayName)
             })
@@ -162,7 +163,7 @@ export default {
                 this.isCurrentUser = false
                 this.authorNotFound = false
                 if (r.success) {
-                    console.log(r.author)
+                    logger(r.author)
                     this.author = r.author
                     this.isCurrentUser = this.$store.state.isLoggedIn && r.author.userId == this.$store.state.user.id
                     this.$store.commit('setBarTitle', this.$t('barTitle.author') + ' / ' + this.author.displayName)

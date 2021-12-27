@@ -23,6 +23,7 @@ import LogIn from '../components/LogIn.vue'
 import api from '../api'
 import { apiError } from 'src/apiError'
 import Editor from 'src/components/post/Editor.vue'
+import logger from 'src/logger'
 const emptyValues = {
     title: '',
     description: '',
@@ -45,7 +46,7 @@ export default {
     methods: {
         submitPost() {
             let post = {...this.$refs.editor.values}
-            // console.log(post)
+            // logger(post)
             // return
 
             if (post.title.length == 0 || post.content.length == 0 || post.description.length == 0 || post.category == '') {
@@ -72,7 +73,7 @@ export default {
                 apiError()
             }).then(res => {
                 let r = res.data
-                console.log(r)
+                logger(r)
                 if (r.success) {
                     this.$q.notify({
                         color: 'positive',

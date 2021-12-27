@@ -19,7 +19,6 @@ module.exports = function (/* ctx */) {
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
       'i18n',
-      'axios',
       'notify',
       'authentication',
     ],

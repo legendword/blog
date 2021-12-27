@@ -76,6 +76,7 @@ import LoadingMessage from 'src/components/LoadingMessage.vue'
 import { apiError } from 'src/apiError'
 import AddToCollection from 'src/components/post/AddToCollection.vue'
 import Comments from 'src/components/post/Comments.vue'
+import logger from 'src/logger'
 // const { getScrollTarget, setScrollPosition } = scroll
 export default {
     name: 'Post',
@@ -121,7 +122,7 @@ export default {
                 apiError()
             }).then(res => {
                 let r = res.data
-                console.log(r)
+                logger(r)
                 if (r.success) {
                     this.post.followerCount = parseInt(this.post.followerCount) + parseInt(r.delta)
                     this.post.isFollowing = !this.post.isFollowing
@@ -133,7 +134,7 @@ export default {
         },
         setData(r) {
             if (r.success) {
-                console.log(r.post)
+                logger(r.post)
                 if (r.post.likedComments) {
                     r.post.likedComments = r.post.likedComments.map(v => v.id)
                 }

@@ -36,6 +36,7 @@ import DropdownSelect from '../form/DropdownSelect.vue'
 import Comment from './Comment.vue'
 import api from 'src/api'
 import { mapState } from 'vuex'
+import logger from 'src/logger'
 export default {
     components: {
         DropdownSelect,
@@ -91,7 +92,7 @@ export default {
                 apiError()
             }).then(res => {
                 let r = res.data
-                console.log(r)
+                logger(r)
                 if (r.success) {
                     this.$q.notify({ color: 'positive', message: this.$t('post.commentSuccess') });
                     this.newComment = ''
@@ -126,7 +127,7 @@ export default {
                     comments[parentIndex].replies.push(i)
                 }
             }
-            console.log(comments)
+            logger(comments)
             this.list = this.sort(comments)
         },
         sort(cm) {

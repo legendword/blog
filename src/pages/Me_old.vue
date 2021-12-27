@@ -157,6 +157,7 @@ import NeedToLogIn from '../components/NeedToLogIn.vue'
 import UpcomingFeature from '../components/UpcomingFeature.vue'
 import { formatTimeElapsed } from '../util'
 import { apiError } from 'src/apiError'
+import logger from 'src/logger'
 export default {
     name: 'Me',
     components: {
@@ -217,7 +218,7 @@ export default {
                     apiError()
                 }).then(res => {
                     let r = res.data
-                    console.log(r)
+                    logger(r)
                     if (r.success) {
                         let stats = []
                         for (let i in r.stats) {
@@ -229,7 +230,7 @@ export default {
                         this.creator.stats = stats
                     }
                     else {
-                        console.log(r)
+                        logger(r)
                         this.$q.notify({
                             color: 'negative',
                             message: r.msg ? r.msg : r,
@@ -273,7 +274,7 @@ export default {
                     apiError()
                 }).then(res => {
                     let r = res.data
-                    console.log(r)
+                    logger(r)
                     if (r.success) {
                         this.creator.comments = r.comments
                         if (r.commentCount) {
@@ -325,7 +326,7 @@ export default {
             })
         },
         setData(r) {
-            console.log(r)
+            logger(r)
             if (r.isLoggedIn) {
                 this.user = r.user
                 this.user.isAuthor = this.user.isAuthor == '1'
@@ -337,7 +338,7 @@ export default {
                         let r = res.data
                         if (r.success) {
                             this.creatorBadges.comments = r.badges.comments
-                            console.log(this.creatorBadges['comments'])
+                            logger(this.creatorBadges['comments'])
                         }
                     })
                 }

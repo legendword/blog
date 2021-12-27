@@ -2,6 +2,7 @@ import { Dialog } from 'quasar'
 import { i18n } from 'boot/i18n'
 import api from 'src/api'
 import { apiError } from 'src/apiError'
+import logger from 'src/logger'
 
 const newCollection = () => {
     return new Promise((resolve, reject) => {
@@ -16,7 +17,7 @@ const newCollection = () => {
             cancel: true,
             persistent: true
         }).onOk(val => {
-            console.log(val)
+            logger(val)
             api.post('/collections', {
                 title: val
             }).catch(err => {

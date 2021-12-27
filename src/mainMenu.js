@@ -14,13 +14,21 @@ const mainMenuItems = [
         name: 'layoutDrawer.following',
         link: '/following',
         icon: 'ion-today',
-        badge: 'following'
+        badge: 'following',
+        requireLogin: true
     },
     {
         name: 'layoutDrawer.me',
         link: '/me',
-        icon: 'ion-home',
-        badge: 'comments'
+        icon: 'ion-person',
+        requireLogin: true
+    },
+    {
+        name: 'layoutDrawer.creator',
+        link: '/creator',
+        icon: 'ion-create',
+        badge: 'comments',
+        requireLogin: true
     }
 ];
 export default mainMenuItems;

@@ -39,6 +39,7 @@ import PostListItem from '../components/PostListItem.vue'
 import PostListSlideItem from '../components/PostListSlideItem.vue'
 import { apiError } from 'src/apiError'
 import CollectionInfoEdit from 'src/components/dialogs/CollectionInfoEdit.vue'
+import logger from 'src/logger'
 export default {
     name: 'Collection',
     components: {
@@ -93,7 +94,7 @@ export default {
                 },
                 id: this.collection.id
             }).onOk((val) => {
-                console.log(val)
+                logger(val)
                 this.collection.title = val.title
                 this.collection.description = val.description
                 this.collection.isPublic = val.isPublic ? '1' : '0'
@@ -104,7 +105,7 @@ export default {
         },
         setData(r) {
             if (r.success) {
-                console.log(r)
+                logger(r)
                 for (let i of ['postCount', 'updateTime']) {
                     r.collection[i] = parseInt(r.collection[i])
                 }

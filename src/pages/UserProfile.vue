@@ -89,6 +89,7 @@ import UpcomingFeature from '../components/UpcomingFeature'
 import CollectionListItem from '../components/CollectionListItem'
 import { apiError } from 'src/apiError';
 import UserInfoEdit from 'src/components/dialogs/UserInfoEdit.vue';
+import logger from 'src/logger';
 export default {
     name: 'UserProfile',
     components: {
@@ -137,7 +138,7 @@ export default {
                 apiError()
             }).then(res => {
                 let r = res.data
-                console.log(r)
+                logger(r)
                 if (r.success) {
                     this.user.followerCount = parseInt(this.user.followerCount) + parseInt(r.delta)
                     this.user.isFollowing = !this.user.isFollowing
@@ -187,7 +188,7 @@ export default {
                     username: this.currentUser.username
                 }
             }).onOk((val) => {
-                console.log(val)
+                logger(val)
                 this.$store.commit('userDataChange', {
                     username: val.username
                 })
@@ -224,7 +225,7 @@ export default {
                 this.isCurrentUser = false
                 this.userNotFound = false
                 if (r.success) {
-                    console.log(r)
+                    logger(r)
                     this.user = r.user
                     this.user.isAuthor = this.user.isAuthor == '1'
                     this.isCurrentUser = r.isCurrentUser

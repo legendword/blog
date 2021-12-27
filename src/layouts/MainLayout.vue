@@ -14,7 +14,7 @@
     <q-drawer content-class="bg-shade-light" show-if-above v-model="leftDrawer" :width="200" side="left" mini>
       <q-scroll-area class="fit">
         <q-list padding class="menu-list">
-          <q-item v-for="item in menuItems" :key="item.link" clickable v-ripple :to="item.link" :exact="item.exact ? true : false">
+          <q-item v-for="item in menuItems.filter(v => !v.requireLogin || isLoggedIn)" :key="item.link" clickable v-ripple :to="item.link" :exact="item.exact ? true : false">
             <q-item-section avatar>
               <q-icon :name="item.icon">
                 <q-badge v-if="item.badge && menuBadges[item.badge] != 0" floating rounded class="badge">{{ menuBadges[item.badge] }}</q-badge>
@@ -115,9 +115,6 @@ export default {
     },
     canGoBack() {
       return !this.menuLinks.includes(this.$route.path)
-    },
-    hideDrawerMode() {
-      return this.$route.meta.hideDrawer ? true : false
     },
     ...mapState(['user','isLoggedIn','miniDrawerMode'])
   },

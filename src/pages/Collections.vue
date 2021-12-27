@@ -60,6 +60,7 @@
 import UpcomingFeature from 'src/components/UpcomingFeature.vue'
 import api from '../api'
 import { apiError } from 'src/apiError'
+import logger from 'src/logger'
 export default {
   components: { UpcomingFeature },
     name: 'Collections',
@@ -99,7 +100,7 @@ export default {
                 cancel: true,
                 persistent: true
             }).onOk(val => {
-                console.log(val)
+                logger(val)
                 api.post('/collections', {
                     title: val
                 }).catch(err => {
@@ -169,7 +170,7 @@ export default {
                 }).then(res => {
                     let r = res.data
                     if (r.success) {
-                        console.log(r)
+                        logger(r)
                         this.list.mine = r.collections
                     }
                     else {

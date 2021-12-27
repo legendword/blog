@@ -71,6 +71,7 @@ import { mapState } from 'vuex'
 import { formatTimeElapsed } from 'src/util'
 import { apiError } from 'src/apiError'
 import api from 'src/api'
+import logger from 'src/logger'
 export default {
     name: 'comment',
     props: {
@@ -108,7 +109,7 @@ export default {
                 apiError()
             }).then(res => {
                 let r = res.data
-                console.log(r)
+                logger(r)
                 if (r.success) {
                     this.$q.notify({ color: 'positive', message: this.$t('post.commentSuccess') });
                     this.newReply = ''
@@ -132,7 +133,7 @@ export default {
                     this.comment.userLiked = !this.comment.userLiked
                 }
                 else {
-                    console.log(r)
+                    logger(r)
                     this.$q.notify({
                         color: 'negative',
                         message: r.msg,
@@ -159,7 +160,7 @@ export default {
                         this.$emit('update')
                     }
                     else {
-                        console.log(r)
+                        logger(r)
                         this.$q.notify({
                             color: 'negative',
                             message: r.msg,

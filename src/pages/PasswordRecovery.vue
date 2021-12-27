@@ -43,6 +43,9 @@ import api from '../api'
 import logger from 'src/logger'
 export default {
     name: 'PasswordRecovery',
+    meta: {
+        title: 'Recover Password'
+    },
     data() {
         return {
             loaded: false,

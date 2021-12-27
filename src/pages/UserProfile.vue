@@ -96,6 +96,11 @@ export default {
         UpcomingFeature,
         CollectionListItem
     },
+    meta() {
+        return {
+            title: this.user.username ? this.user.username : null
+        }
+    },
     data() {
         return {
             loaded: false,

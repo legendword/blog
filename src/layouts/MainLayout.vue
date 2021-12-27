@@ -8,6 +8,26 @@
         <q-toolbar-title @click="scrollBackTop">
           {{ barTitle }}
         </q-toolbar-title>
+        <q-item clickable v-ripple>
+          <q-item-section class="row">
+            <q-avatar color="primary" text-color="white" size="md">{{ isLoggedIn ? user.username[0]:'' }}</q-avatar>
+          </q-item-section>
+          <q-menu fit anchor="bottom right" self="top right" content-class="bg-white text-primary text-weight-medium">
+            <q-list style="min-width: 100px" v-show="isLoggedIn">
+              <q-item clickable v-close-popup to="/settings" exact>
+                <q-item-section>{{ $t('layoutDrawer.settings') }}</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="signOut">
+                <q-item-section>{{ $t('layoutDrawer.signOut') }}</q-item-section>
+              </q-item>
+            </q-list>
+            <q-list style="min-width: 100px" v-show="!isLoggedIn">
+              <q-item clickable v-close-popup @click="signIn">
+                <q-item-section>{{ $t('layoutDrawer.signIn') }}</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-item>
       </q-toolbar>
     </q-header>
 
@@ -31,47 +51,6 @@
           </q-item>
         </q-list>
       </q-scroll-area>
-      <div class="absolute-bottom userDrawer q-pb-sm">
-        <q-list padding class="menu-list">
-          <q-item clickable v-ripple v-if="isLoggedIn && user.isAuthor == 1" to="/compose" exact>
-            <q-item-section avatar>
-              <q-icon name="create" />
-            </q-item-section>
-
-            <q-tooltip content-class="bg-primary" anchor="center right" self="center left" :offset="[5, 0]">
-              {{ $t("layoutDrawer.compose") }}
-            </q-tooltip>
-
-            <q-item-section>
-              {{ $t("layoutDrawer.compose") }}
-            </q-item-section>
-          </q-item>
-          <q-item clickable v-ripple>
-            <q-item-section avatar>
-              <q-avatar color="primary" text-color="white" size="md">{{ isLoggedIn ? user.username[0]:'' }}</q-avatar>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label lines="1" class="text-weight-medium" v-if="isLoggedIn">{{ user.username }}</q-item-label>
-              <q-item-label lines="1" v-else>{{ $t('layoutDrawer.notSignedIn') }}</q-item-label>
-            </q-item-section>
-            <q-menu fit anchor="bottom right" self="bottom left" content-class="bg-primary-light text-primary-light text-weight-medium">
-              <q-list style="min-width: 100px" v-show="isLoggedIn">
-                <q-item clickable v-close-popup to="/settings" exact>
-                  <q-item-section>{{ $t('layoutDrawer.settings') }}</q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup @click="signOut">
-                  <q-item-section>{{ $t('layoutDrawer.signOut') }}</q-item-section>
-                </q-item>
-              </q-list>
-              <q-list style="min-width: 100px" v-show="!isLoggedIn">
-                <q-item clickable v-close-popup @click="signIn">
-                  <q-item-section>{{ $t('layoutDrawer.signIn') }}</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-item>
-        </q-list>
-      </div>
     </q-drawer>
 
     <q-page-container>
@@ -95,6 +74,13 @@ export default {
   components: {
     LogIn,
     SearchBar
+  },
+  meta: {
+    title: 'Legendword Blog',
+    titleTemplate: title => title === 'Legendword Blog' ? title : `${title} - Legendword Blog`,
+    meta: {
+      description: { name: 'description', content: 'Distraction-free blogging experience. Made for everyone.' }
+    }
   },
   data () {
     return {

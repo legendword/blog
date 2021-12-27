@@ -64,6 +64,11 @@ export default {
         PostCard,
         UpcomingFeature
     },
+    meta() {
+        return {
+            title: this.author.displayName ? this.author.displayName : null
+        }
+    },
     data() {
         return {
             loaded: false,

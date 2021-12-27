@@ -81,6 +81,9 @@ import { apiError } from 'src/apiError'
 import logger from 'src/logger'
 export default {
     name: 'Search',
+    meta: {
+        title: 'Search'
+    },
     components: {
         SearchBar,
         PostListItem,

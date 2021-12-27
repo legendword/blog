@@ -1,7 +1,7 @@
 {
   "name": "blog",
   "version": "0.3",
-  "description": "An elegant blog system by Legendword, built with Quasar.",
+  "description": "Distraction-free blogging experience. Made for everyone.",
   "productName": "Legendword Blog",
   "author": "Legendword <zwh@legendword.com>",
   "private": true,

@@ -36,6 +36,11 @@ export default {
     components: {
         PostCard
     },
+    meta() {
+        return {
+            title: `Tag: ${this.$route.params.name}`
+        }
+    },
     data() {
         return {
             sortBy: 'timeDesc',

@@ -74,6 +74,9 @@ import { mainCategories, otherCategories } from '../mainCategories'
 import logger from 'src/logger'
 export default {
     name: 'Home',
+    meta: {
+        title: 'Home'
+    },
     data() {
         return {
             mainCategories: mainCategories,

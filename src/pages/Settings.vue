@@ -26,6 +26,9 @@ import { mapState } from 'vuex'
 import { apiError } from 'src/apiError'
 export default {
     name: 'Settings',
+    meta: {
+        title: 'Settings'
+    },
     data() {
         return {
             options: {

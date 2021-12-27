@@ -22,6 +22,9 @@ import PostCard from '../components/PostCard'
 import { apiError } from 'src/apiError'
 export default {
     name: 'Following',
+    meta: {
+        title: 'Feed'
+    },
     components: {
         PostCard,
         NeedToLogIn

@@ -46,16 +46,16 @@ export default {
         PostListItem,
         PostListSlideItem
     },
+    meta() {
+        return {
+            title: this.collection.title ?? null
+        }
+    },
     data() {
         return {
             collectionNotFound: false,
             collection: {
                 posts: []
-            },
-            editInfo: {
-                title: '',
-                description: '',
-                isPublic: true
             },
             managePostMode: false
         }

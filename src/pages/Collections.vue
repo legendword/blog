@@ -61,9 +61,19 @@ import UpcomingFeature from 'src/components/UpcomingFeature.vue'
 import api from '../api'
 import { apiError } from 'src/apiError'
 import logger from 'src/logger'
+const titlePrefix = {
+    browse: 'Browse',
+    favorites: 'Favorite',
+    mine: 'My'
+}
 export default {
-  components: { UpcomingFeature },
+    components: { UpcomingFeature },
     name: 'Collections',
+    meta() {
+        return {
+            title: `${titlePrefix[this.currentMenu]} Collections`
+        }
+    },
     data() {
         return {
             menuList: [

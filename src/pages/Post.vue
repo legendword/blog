@@ -86,6 +86,14 @@ export default {
         AddToCollection,
         Comments
     },
+    meta() {
+        return {
+            title: this.pageTitle,
+            meta: {
+                description: this.postDescription
+            }
+        }
+    },
     data() {
         return {
             loaded: false,
@@ -93,6 +101,8 @@ export default {
             post: {},
             postNotFound: false,
             hoverUnfollow: false,
+            pageTitle: null,
+            pageDescription: null
         }
     },
     computed: {
@@ -143,6 +153,8 @@ export default {
                 }
                 this.post = r.post
                 this.$store.commit('setBarTitle', r.post.title)
+                this.pageTitle = r.post.title
+                this.pageDescription = r.post.description
             }
             else {
                 if (r.errorType && r.errorType == 'NotFound') {

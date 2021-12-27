@@ -36,6 +36,11 @@ export default {
     components: {
         PostCard
     },
+    meta() {
+        return {
+            title: `Category: ${this.$te('categories.'+this.$route.params.name) ? this.$t('categories.'+this.$route.params.name) : this.$route.params.name}`
+        }
+    },
     data() {
         return {
             categoryNotFound: false,

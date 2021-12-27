@@ -2,7 +2,9 @@
 .thumbs.db
 node_modules
 
+# Lock files
 package-lock.json
+yarn.lock
 
 # Quasar core related directories
 .quasar
@@ -33,3 +35,4 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+

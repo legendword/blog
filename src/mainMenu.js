@@ -28,7 +28,8 @@ const mainMenuItems = [
         link: '/creator',
         icon: 'ion-create',
         badge: 'comments',
-        requireLogin: true
+        requireLogin: true,
+        requireAuthor: true
     }
 ];
 export default mainMenuItems;

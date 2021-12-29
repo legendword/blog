@@ -1,5 +1,10 @@
 // app global css in SCSS form
 
+:root {
+    --shade-light: #FEF3EC;
+    --shade-hover: #e86e1c26;
+}
+
 .text-shade-light {
     color: initial;
 }

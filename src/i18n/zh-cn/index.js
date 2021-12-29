@@ -8,12 +8,14 @@ export default {
         followers: '粉丝',
         overview: '概览',
         comments: '评论',
+        drafts: '草稿',
         email: '邮箱',
         password: '密码',
         cancel: '取消',
         submit: '提交',
         done: '完成',
         save: '保存',
+        yes: '确认',
         username: '用户名',
         displayName: '作者名',
         sortBy: '排序',
@@ -205,7 +207,10 @@ export default {
         signOut: '退出登录'
     },
     me: {
-        creator: '创作者中心',
+        postViews: '阅读'
+    },
+    creator: {
+        title: '创作者中心',
         newPost: '创建新文章',
         viewPost: '查看',
         removePost: '删除',
@@ -219,7 +224,6 @@ export default {
             totalComments: '评论',
             totalFollowers: '粉丝'
         },
-        postViews: '阅读'
     },
     followingPage: {
         newPosts: '最近更新'

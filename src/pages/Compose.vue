@@ -39,7 +39,8 @@ export default {
     },
     data() {
         return {
-            emptyValues: emptyValues
+            emptyValues: emptyValues,
+            safeToLeave: false
         }
     },
     computed: mapState(['user', 'isLoggedIn']),
@@ -80,6 +81,7 @@ export default {
                         message: this.$t('compose.postIsPublished'),
                     })
                     //after post publish
+                    this.safeToLeave = true
                     // #todo: provide popup to copy link
                     this.$router.push('/me')
                 }
@@ -96,16 +98,19 @@ export default {
         this.$store.commit('setBarTitle', this.$t('compose.barTitle'))
     },
     beforeRouteLeave(to, from, next) {
-        this.$q.dialog({
-            title: 'Confirm',
-            message: 'Do you really want to leave? Your changes will be lost.',
-            cancel: true,
-            persistent: true
-        }).onOk(() => {
-            next()
-        }).onCancel(() => {
-            next(false)
-        })
+        if (this.safeToLeave) next();
+        else {
+            this.$q.dialog({
+                title: 'Confirm',
+                message: 'Do you really want to leave? Your changes will be lost.',
+                cancel: true,
+                persistent: true
+            }).onOk(() => {
+                next()
+            }).onCancel(() => {
+                next(false)
+            })
+        }
     }
 }
 </script>

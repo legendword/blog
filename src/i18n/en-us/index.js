@@ -8,12 +8,14 @@ export default {
         followers: 'Followers',
         overview: 'Overview',
         comments: 'Comments',
+        drafts: 'Drafts',
         email: 'Email',
         password: 'Password',
         cancel: 'Cancel',
         submit: 'Submit',
         done: 'Done',
         save: 'Save',
+        yes: 'Yes',
         username: 'Username',
         displayName: 'Display Name',
         sortBy: 'Sort By',
@@ -205,13 +207,16 @@ export default {
         signOut: 'Sign Out'
     },
     me: {
-        creator: 'Creator',
+        postViews: 'Views'
+    },
+    creator: {
+        title: 'Creator Dashboard',
         newPost: 'New Post',
         viewPost: 'View',
         removePost: 'Remove',
         removePostDialog: {
             title: 'Remove Post',
-            msg: 'Are you sure you want to permanently delete the following post and all of its content and replies? This action is not reversible: ',
+            msg: 'Are you sure you want to permanently delete the following post and all of its content and replies? This action is not reversible.',
             success: 'Post Deleted'
         },
         stats: {
@@ -219,7 +224,6 @@ export default {
             totalComments: 'Comments',
             totalFollowers: 'Followers'
         },
-        postViews: 'Views'
     },
     followingPage: {
         newPosts: 'New Posts'

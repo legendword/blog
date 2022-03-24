@@ -37,11 +37,11 @@
         </q-banner>
         <div class="q-pa-md">
             <q-tabs v-model="tab" align="left" @input="tabChange">
-                <q-tab name="profile" :label="$t('userProfile.profile')" class="q-px-lg" />
+                <q-tab name="UserProfile" :label="$t('userProfile.profile')" class="q-px-lg" />
                 <q-tab name="collections" :label="$t('userProfile.collections')" class="q-px-lg" />
             </q-tabs>
             <q-tab-panels v-model="tab" animated>
-                <q-tab-panel name="profile">
+                <q-tab-panel name="UserProfile">
                     <div class="text-h6 q-my-md">
                         {{ $t('userProfile.profile') }}
                         <div class="float-right">
@@ -107,7 +107,7 @@ export default {
             user: {},
             isCurrentUser: false,
             userNotFound: false,
-            tab: 'profile',
+            tab: 'UserProfile',
             hoverUnfollow: false,
             collections: [],
             collectionsLoading: false
@@ -259,7 +259,7 @@ export default {
     },
     created() {
         let tab = this.$route.params.tab
-        if (['profile', 'collections'].includes(tab)) {
+        if (['UserProfile', 'collections'].includes(tab)) {
             this.tab = tab
         }
         this.loadInfo()

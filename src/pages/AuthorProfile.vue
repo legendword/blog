@@ -21,11 +21,11 @@
         </q-banner>
         <div class="q-pa-md">
             <q-tabs v-model="tab" align="left" ref="tab" @input="tabChange">
-                <q-tab name="profile" :label="$t('authorProfile.profile')" class="q-px-lg" />
+                <q-tab name="AuthorProfile" :label="$t('authorProfile.profile')" class="q-px-lg" />
                 <q-tab name="posts" :label="$t('authorProfile.posts')" class="q-px-lg" />
             </q-tabs>
             <q-tab-panels v-model="tab" animated>
-                <q-tab-panel name="profile">
+                <q-tab-panel name="AuthorProfile">
                     <div class="text-h6 q-my-md">
                         {{ $t('authorProfile.profile') }}
                         <div class="float-right">
@@ -79,7 +79,7 @@ export default {
             postPerPage: 10,
             isCurrentUser: false,
             authorNotFound: false,
-            tab: 'profile',
+            tab: 'AuthorProfile',
             hoverUnfollow: false
         }
     },
@@ -196,7 +196,7 @@ export default {
     },
     created() {
         let tab = this.$route.params.tab
-        if (['profile', 'posts'].includes(tab)) {
+        if (['AuthorProfile', 'posts'].includes(tab)) {
             this.tab = tab
         }
         this.loadInfo()

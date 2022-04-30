@@ -41,18 +41,19 @@
 </template>
 
 <script>
-import NeedToLogIn from '../components/NeedToLogIn.vue'
 import api from 'src/api'
 import { apiError } from 'src/apiError'
 import logger from 'src/logger'
 import CreatorPostList from 'src/components/lists/CreatorPostList.vue'
 import UpcomingFeature from 'src/components/UpcomingFeature.vue'
+import requireLoggedIn from '../mixins/requireLoggedIn'
 
 const tabs = ['overview', 'posts', 'drafts']
 
 export default {
     name: 'Creator',
-    components: { CreatorPostList, UpcomingFeature, NeedToLogIn },
+    components: { CreatorPostList, UpcomingFeature },
+    mixins: [requireLoggedIn],
     data() {
         return {
             tabs: tabs,
@@ -70,11 +71,6 @@ export default {
                 comments: 0
             },
             loaded: false
-        }
-    },
-    computed: {
-        isLoggedIn() {
-            return this.$store.state.isLoggedIn
         }
     },
     watch: {
@@ -147,16 +143,19 @@ export default {
             else {
                 this.$q.notify({ color: 'negative', message: 'Not Logged In' });
             }
+        },
+        init() {
+            api.get('/user/info', {
+                detailed: true
+            }).catch(err => {
+                apiError()
+            }).then(res => {
+                this.setData(res.data)
+            })
         }
     },
     created() {
-        api.get('/user/info', {
-            detailed: true
-        }).catch(err => {
-            apiError()
-        }).then(res => {
-            this.setData(res.data)
-        })
+        this.init()
     }
 }
 </script>

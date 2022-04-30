@@ -16,19 +16,20 @@
 </template>
 
 <script>
-import NeedToLogIn from '../components/NeedToLogIn.vue'
 import api from '../api'
-import PostCard from '../components/PostCard'
+import PostCard from '../components/PostCard.vue'
 import { apiError } from 'src/apiError'
+import requireLoggedIn from 'src/mixins/requireLoggedIn'
+
 export default {
     name: 'Following',
     meta: {
         title: 'Feed'
     },
     components: {
-        PostCard,
-        NeedToLogIn
+        PostCard
     },
+    mixins: [requireLoggedIn],
     data() {
         return {
             postList: [],
@@ -38,9 +39,6 @@ export default {
         }
     },
     computed: {
-        isLoggedIn() {
-            return this.$store.state.isLoggedIn
-        },
         maxPages () {
             return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1)
         }
@@ -71,6 +69,9 @@ export default {
                     })
                 }
             })
+        },
+        init() {
+            this.getPosts()
         }
     },
     created() {

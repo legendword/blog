@@ -58,16 +58,17 @@
 <script>
 import { mapState } from 'vuex'
 import api from '../api'
-import NeedToLogIn from '../components/NeedToLogIn.vue'
 import UpcomingFeature from '../components/UpcomingFeature.vue'
 import { apiError } from 'src/apiError'
 import logger from 'src/logger'
+import requireLoggedIn from 'src/mixins/requireLoggedIn'
+
 export default {
     name: 'Me',
     components: {
-        NeedToLogIn,
         UpcomingFeature
     },
+    mixins: [requireLoggedIn],
     data() {
         return {
             author: {},
@@ -76,9 +77,6 @@ export default {
             author: {},
             tab: 'profile',
         }
-    },
-    computed: {
-        ...mapState(['isLoggedIn'])
     },
     watch: {
         creatorTab: function(val) {
@@ -109,6 +107,15 @@ export default {
                     this.author = r.author
                 }
             }
+        },
+        init() { // for requireLoggedIn mixin
+            api.get('/user/info', {
+                detailed: true
+            }).catch(err => {
+                apiError()
+            }).then(res => {
+                this.setData(res.data)
+            })
         }
     },
     beforeRouteEnter (to, from, next) {

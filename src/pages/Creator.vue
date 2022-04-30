@@ -1,40 +1,47 @@
 <template>
-    <q-page class="row" v-if="loaded">
-        <div class="desktop-sidebar">
-            <q-list padding>
-                <q-item v-for="item in tabs" :key="item" clickable v-ripple :active="tab === item" @click="tab = item" class="sidebar-item" active-class="sidebar-item active">
-                    <q-item-section>
-                        {{ $t('general.'+item) }}
-                    </q-item-section>
-                </q-item>
-            </q-list>
-        </div>
-        <div class="col q-pa-md">
-            <q-tab-panels v-model="tab">
-                <q-tab-panel name="overview">
-                    <div class="row text-center q-mx-none q-mx-sm-md q-mx-md-lg">
-                        <div class="col-12 col-sm-6 col-md-4 q-pa-sm" v-for="stat in overview.stats" :key="stat.label">
-                            <q-card flat bordered>
-                                <q-card-section>
-                                    <div class="text-h6 q-mb-md">{{$t('creator.stats.'+stat.label)}}</div>
-                                    <div class="text-h5">{{stat.value}}</div>
-                                </q-card-section>
-                            </q-card>
+    <q-page class="q-pa-lg">
+        <need-to-log-in v-if="!isLoggedIn" />
+        <div v-else-if="loaded" class="row">
+            <div class="desktop-sidebar">
+                <q-list padding>
+                    <q-item v-for="item in tabs" :key="item" clickable v-ripple :active="tab === item" @click="tab = item" class="sidebar-item" active-class="sidebar-item active">
+                        <q-item-section>
+                            {{ $t('general.'+item) }}
+                        </q-item-section>
+                    </q-item>
+                </q-list>
+            </div>
+            <div class="col q-pa-md">
+                <q-tab-panels v-model="tab">
+                    <q-tab-panel name="overview">
+                        <div class="row text-center q-mx-none q-mx-sm-md q-mx-md-lg">
+                            <div class="col-12 col-sm-6 col-md-4 q-pa-sm" v-for="stat in overview.stats" :key="stat.label">
+                                <q-card flat bordered>
+                                    <q-card-section>
+                                        <div class="text-h6 q-mb-md">{{$t('creator.stats.'+stat.label)}}</div>
+                                        <div class="text-h5">{{stat.value}}</div>
+                                    </q-card-section>
+                                </q-card>
+                            </div>
                         </div>
-                    </div>
-                </q-tab-panel>
-                <q-tab-panel name="posts">
-                    <creator-post-list :author="author" />
-                </q-tab-panel>
-                <q-tab-panel name="drafts">
-                    <upcoming-feature version="0.5" />
-                </q-tab-panel>
-            </q-tab-panels>
+                    </q-tab-panel>
+                    <q-tab-panel name="posts">
+                        <div class="q-my-md">
+                            <q-btn flat color="primary" icon="add" :label="$t('creator.newPost')" to="/compose" />
+                        </div>
+                        <creator-post-list :author="author" />
+                    </q-tab-panel>
+                    <q-tab-panel name="drafts">
+                        <upcoming-feature version="0.5" />
+                    </q-tab-panel>
+                </q-tab-panels>
+            </div>
         </div>
     </q-page>
 </template>
 
 <script>
+import NeedToLogIn from '../components/NeedToLogIn.vue'
 import api from 'src/api'
 import { apiError } from 'src/apiError'
 import logger from 'src/logger'
@@ -45,7 +52,7 @@ const tabs = ['overview', 'posts', 'drafts']
 
 export default {
     name: 'Creator',
-    components: { CreatorPostList, UpcomingFeature },
+    components: { CreatorPostList, UpcomingFeature, NeedToLogIn },
     data() {
         return {
             tabs: tabs,
@@ -63,6 +70,11 @@ export default {
                 comments: 0
             },
             loaded: false
+        }
+    },
+    computed: {
+        isLoggedIn() {
+            return this.$store.state.isLoggedIn
         }
     },
     watch: {

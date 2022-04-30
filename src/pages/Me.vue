@@ -13,11 +13,14 @@
                         <q-chip v-show="user.isAuthor" color="accent" text-color="white" icon="done" clickable @click="goToAuthorPage">{{ $t('tag.author') }}</q-chip>
                     </div>
                     <div class="col-12 col-sm-auto q-mx-sm-md q-mt-lg q-mt-sm-none text-center">
-                        <q-btn class="q-px-md bg-primary text-white" @click="goToUserPage">View Public Profile</q-btn>
+                        <q-btn flat class="q-px-md" color="primary" @click="goToUserPage">View Public Profile</q-btn>
                     </div>
+                    <!--
+                    !! which profile (user/author) to edit?
                     <div class="col-12 col-sm-auto q-mx-sm-md q-mt-lg q-mt-sm-none text-center">
-                        <q-btn class="q-px-md bg-primary text-white">Edit Profile</q-btn>
+                        <q-btn class="q-px-md" color="primary">Edit Profile</q-btn>
                     </div>
+                    -->
                 </div>
                 <!-- Follower,Post,Following Count -->
                 <div class="row q-mt-md text-subtitle1 q-gutter-md">

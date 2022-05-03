@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import TableOfContents from '../helpers/TableOfContents'
 import MarkDownItVue from 'markdown-it-vue'
 import 'markdown-it-vue/dist/markdown-it-vue.css'
 import markdownItVueOptions from '../markdownItVueOptions'
@@ -155,6 +156,9 @@ export default {
                 this.$store.commit('setBarTitle', r.post.title)
                 this.pageTitle = r.post.title
                 this.pageDescription = r.post.description
+
+                let toc = new TableOfContents(this.post.content);
+                console.log('toc', toc.getHeadings());
             }
             else {
                 if (r.errorType && r.errorType == 'NotFound') {

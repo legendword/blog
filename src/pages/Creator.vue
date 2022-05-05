@@ -53,6 +53,9 @@ const tabs = ['overview', 'posts', 'drafts']
 export default {
     name: 'Creator',
     components: { CreatorPostList, UpcomingFeature },
+    meta: {
+        title: 'Creator Dashboard'
+    },
     mixins: [requireLoggedIn],
     data() {
         return {

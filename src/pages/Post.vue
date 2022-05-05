@@ -49,8 +49,14 @@
                         </q-card>
                     </div>
                 </div>
-                <!-- post content -->
-                <MarkDownItVue class="post-content q-pt-lg q-pb-md col-12 col-md-8" :content="post.content ? post.content : ''" :options="markdownItVueOptions"></MarkDownItVue>
+                <div class="relative-position">
+                    <!-- table of contents -->
+                    <div v-if="post.showTOC == 1" class="toc-container q-pt-sm">
+                        <toc :headings="headings" @select="goToNthHeading" />
+                    </div>
+                    <!-- post content -->
+                    <MarkDownItVue class="post-content q-pt-lg q-pb-md col-12 col-md-8" :content="post.content ? post.content : ''" :options="markdownItVueOptions"></MarkDownItVue>
+                </div>
                 <!-- comments -->
                 <div class="q-mt-xl">
                     <q-separator />
@@ -77,6 +83,7 @@ import LoadingMessage from 'src/components/LoadingMessage.vue'
 import { apiError } from 'src/apiError'
 import AddToCollection from 'src/components/post/AddToCollection.vue'
 import Comments from 'src/components/post/Comments.vue'
+import Toc from 'src/components/post/Toc.vue'
 import logger from 'src/logger'
 // const { getScrollTarget, setScrollPosition } = scroll
 export default {
@@ -85,7 +92,8 @@ export default {
         MarkDownItVue,
         LoadingMessage,
         AddToCollection,
-        Comments
+        Comments,
+        Toc
     },
     meta() {
         return {
@@ -103,7 +111,9 @@ export default {
             postNotFound: false,
             hoverUnfollow: false,
             pageTitle: null,
-            pageDescription: null
+            pageDescription: null,
+            headings: [],
+            goToNthHeading: TableOfContents.goToNthHeading
         }
     },
     computed: {
@@ -157,8 +167,9 @@ export default {
                 this.pageTitle = r.post.title
                 this.pageDescription = r.post.description
 
-                let toc = new TableOfContents(this.post.content);
-                console.log('toc', toc.getHeadings());
+                let toc = new TableOfContents(this.post.content)
+                this.headings = toc.getHeadings()
+                console.log('toc', this.headings)
             }
             else {
                 if (r.errorType && r.errorType == 'NotFound') {
@@ -208,6 +219,15 @@ export default {
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
+}
+@media screen and (min-width: 1600px) {
+    .toc-container {
+        position: absolute;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: auto;
+    }
 }
 .post-infoLine {
     color: #636363;

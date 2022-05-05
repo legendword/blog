@@ -18,7 +18,7 @@ class TableOfContents {
 
     getHeadings() {
         let t = [], res = [];
-        let inHeading = false, headingLevel = null, headingContent = null;
+        let inHeading = false, headingLevel = null, headingContent = null, id = 0;
         for (let token of this.parsed) {
             if (token.type === "heading_open") {
                 if (inHeading) console.error("Duplicate heading_open");
@@ -32,6 +32,7 @@ class TableOfContents {
                 let ind = this.options.headingLevels.indexOf(headingLevel);
                 if (ind !== -1) {
                     t.push({
+                        id: id++,
                         level: ind,
                         content: headingContent
                     })
@@ -41,28 +42,35 @@ class TableOfContents {
                 headingContent += token.content;
             }
         }
-        let prevHeadingLevel = null;
         for (let i of t) {
-            if (prevHeadingLevel === null || i.headingLevel === 0) {
+            if (res.length === 0 || i.level === 0) {
                 // add to base res
-                res.push({
-                    ...i,
-                    children: []
-                });
+                res.push(i);
             }
             else {
                 // find lastest heading obj with headingLevel < current headingLevel
                 let cur = res[res.length - 1];
-                while (cur.children.length > 0 && cur.children[0].headingLevel < i.headingLevel) {
+                while (cur.children && cur.children[cur.children.length - 1].level < i.level) {
                     cur = cur.children[cur.children.length - 1];
                 }
-                cur.children.push({
-                    ...i,
-                    children: []
-                });
+                if (!cur.children) {
+                    cur.children = [i];
+                }
+                else {
+                    cur.children.push(i);
+                }
             }
         }
         return res;
+    }
+
+    static goToNthHeading(n, options = TableOfContents.defaultOptions) {
+        let elems = document.querySelectorAll(options.headingLevels.map(v => `.post-content ${v}`).join(", "));
+        if (elems.length > n) {
+            elems[n].scrollIntoView({
+                behavior: "smooth"
+            });
+        }
     }
 }
 

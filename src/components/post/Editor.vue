@@ -38,6 +38,10 @@
                     v-model="values.tags"
                 />
             </div>
+
+            <div class="row q-gutter-md q-mt-md">
+                <q-toggle v-model="values.showTOC" label="Show Table of Contents" />
+            </div>
         </div>
         <div class="post-content-wrapper q-mt-xl">
             <q-tabs
@@ -103,6 +107,7 @@
                     </div>
                 </q-tab-panel>
                 <q-tab-panel name="preview" class="q-pa-none">
+                    <toc v-if="values.showTOC" :headings="headings" @select="goToNthHeading" />
                     <div class="q-ma-sm post-content content-preview">
                         <div class="markdown-body" v-html="htmlPreview" />
                     </div>
@@ -115,18 +120,21 @@
 <script>
 import api from 'src/api'
 import TagSelector from '../form/TagSelector.vue'
+import Toc from './Toc.vue'
 import { apiError } from 'src/apiError'
 // import MarkDownItVue from 'markdown-it-vue'
 import 'src/css/markdown-it-vue.css'
 // import markdownItVueOptions from 'src/markdownItVueOptions'
 import markdownIt from 'markdown-it'
 import logger from 'src/logger'
+import TableOfContents from 'src/helpers/TableOfContents'
 const emptyValues = {
     title: '',
     description: '',
     content: '',
     category: '',
-    tags: []
+    tags: [],
+    showTOC: true
 }
 const limits = {
     title: 50,
@@ -149,6 +157,7 @@ export default {
     name: 'Editor',
     components: {
         TagSelector,
+        Toc
         // MarkDownItVue
     },
     props: {
@@ -180,7 +189,9 @@ export default {
             },
 
             // markdownItVueOptions: markdownItVueOptions,
-            htmlPreview: ''
+            htmlPreview: '',
+            headings: [],
+            goToNthHeading: TableOfContents.goToNthHeading
         }
     },
     watch: {
@@ -229,6 +240,9 @@ export default {
             })
             this.htmlPreview = md.render(this.values.content)
             // logger(this.htmlPreview)
+            let toc = new TableOfContents(this.values.content);
+            this.headings = toc.getHeadings();
+            console.log(this.headings);
         },
 
         headingAction(ind) {

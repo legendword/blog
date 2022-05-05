@@ -6,7 +6,7 @@
         </q-banner>
         <div v-show="isLoggedIn && user.isAuthor == '1'">
             <div class="editor-wrapper q-mt-lg">
-                <editor ref="editor" :initialValues="emptyValues" />
+                <editor ref="editor" />
 
                 <div class="q-mt-lg q-mb-xl">
                     <q-btn color="primary" :label="$t('compose.submit')" @click="submitPost" />
@@ -24,22 +24,17 @@ import api from '../api'
 import { apiError } from 'src/apiError'
 import Editor from 'src/components/post/Editor.vue'
 import logger from 'src/logger'
-const emptyValues = {
-    title: '',
-    description: '',
-    content: '',
-    category: '',
-    tags: []
-}
 export default {
     name: 'Compose',
     components: {
         LogIn,
         Editor
     },
+    meta: {
+        title: 'Compose'
+    },
     data() {
         return {
-            emptyValues: emptyValues,
             safeToLeave: false
         }
     },
@@ -69,7 +64,8 @@ export default {
                 description: post.description,
                 content: post.content,
                 category: post.category,
-                tags: post.tags
+                tags: post.tags,
+                showTOC: post.showTOC ? 1 : 0
             }).catch(err => {
                 apiError()
             }).then(res => {

@@ -1,5 +1,5 @@
 <template>
-    <q-page class="q-pa-lg">
+    <q-page>
         <need-to-log-in v-if="!isLoggedIn" />
         <div v-else-if="loaded" class="row">
             <div class="desktop-sidebar">
@@ -26,13 +26,16 @@
                         </div>
                     </q-tab-panel>
                     <q-tab-panel name="posts">
-                        <div class="q-my-md">
+                        <div class="q-mb-md">
                             <q-btn flat color="primary" icon="add" :label="$t('creator.newPost')" to="/compose" />
                         </div>
-                        <creator-post-list :author="author" />
+                        <creator-post-list />
                     </q-tab-panel>
                     <q-tab-panel name="drafts">
                         <upcoming-feature version="0.5" />
+                    </q-tab-panel>
+                    <q-tab-panel name="comments">
+                        <creator-comment-list />
                     </q-tab-panel>
                 </q-tab-panels>
             </div>
@@ -47,12 +50,13 @@ import logger from 'src/logger'
 import CreatorPostList from 'src/components/lists/CreatorPostList.vue'
 import UpcomingFeature from 'src/components/UpcomingFeature.vue'
 import requireLoggedIn from '../mixins/requireLoggedIn'
+import CreatorCommentList from 'src/components/lists/CreatorCommentList.vue'
 
-const tabs = ['overview', 'posts', 'drafts']
+const tabs = ['overview', 'posts', 'drafts', 'comments']
 
 export default {
     name: 'Creator',
-    components: { CreatorPostList, UpcomingFeature },
+    components: { CreatorPostList, UpcomingFeature, CreatorCommentList },
     meta: {
         title: 'Creator Dashboard'
     },
@@ -93,7 +97,7 @@ export default {
                 this.$router.replace(newPath)
             }
             if (val === 'overview') {
-                api.get('/authors/stats').catch(err => {
+                api.get('/creator/stats').catch(err => {
                     apiError()
                 }).then(res => {
                     let r = res.data

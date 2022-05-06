@@ -40,9 +40,6 @@ import logger from 'src/logger'
 export default {
     name: 'CreatorPostList',
     components: { PostDelete },
-    props: {
-        author: Object
-    },
     data() {
         return {
             posts: [],
@@ -78,7 +75,7 @@ export default {
             const { page, rowsPerPage } = props.pagination
             this.loading = true
 
-            api.get('/posts/author/'+this.author.id, {
+            api.get('/creator/posts', {
                 page: page,
                 count: rowsPerPage
             }).catch(err => {

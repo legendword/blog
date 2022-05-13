@@ -8,12 +8,12 @@
         <q-toolbar-title @click="scrollBackTop">
           {{ barTitle }}
         </q-toolbar-title>
-        <q-item clickable v-ripple>
+        <q-item clickable v-ripple v-if="isLoggedIn">
           <q-item-section class="row">
-            <q-avatar color="primary" text-color="white" size="md">{{ isLoggedIn ? user.username[0]:'' }}</q-avatar>
+            <q-avatar color="primary" text-color="white" size="md">{{ user.username[0] }}</q-avatar>
           </q-item-section>
           <q-menu fit anchor="bottom right" self="top right" content-class="bg-white text-primary text-weight-medium">
-            <q-list style="min-width: 100px" v-show="isLoggedIn">
+            <q-list style="min-width: 100px">
               <q-item clickable v-close-popup to="/settings" exact>
                 <q-item-section>{{ $t('layoutDrawer.settings') }}</q-item-section>
               </q-item>
@@ -21,13 +21,9 @@
                 <q-item-section>{{ $t('layoutDrawer.signOut') }}</q-item-section>
               </q-item>
             </q-list>
-            <q-list style="min-width: 100px" v-show="!isLoggedIn">
-              <q-item clickable v-close-popup @click="signIn">
-                <q-item-section>{{ $t('layoutDrawer.signIn') }}</q-item-section>
-              </q-item>
-            </q-list>
           </q-menu>
         </q-item>
+        <q-btn v-else @click="signIn" flat color="primary" :label="$t('layoutDrawer.signIn')" />
       </q-toolbar>
     </q-header>
 

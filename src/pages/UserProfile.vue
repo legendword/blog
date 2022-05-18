@@ -85,8 +85,8 @@
 <script>
 import api from "../api";
 import { mapState } from "vuex";
-import UpcomingFeature from "../components/UpcomingFeature"
-import CollectionListItem from "../components/CollectionListItem"
+import UpcomingFeature from "../components/UpcomingFeature";
+import CollectionListItem from "../components/CollectionListItem";
 import { apiError } from "src/apiError";
 import UserInfoEdit from "src/components/dialogs/UserInfoEdit.vue";
 import logger from "src/logger";
@@ -99,7 +99,7 @@ export default {
     meta() {
         return {
             title: this.user.username ? this.user.username : null
-        }
+        };
     },
     data() {
         return {
@@ -111,17 +111,17 @@ export default {
             hoverUnfollow: false,
             collections: [],
             collectionsLoading: false
-        }
+        };
     },
     computed: {
         userId () {
-            return this.$route.params.id
+            return this.$route.params.id;
         },
         currentUser () {
-            return this.$store.state.user
+            return this.$store.state.user;
         },
         isLoggedIn () {
-            return this.$store.state.isLoggedIn
+            return this.$store.state.isLoggedIn;
         }
     },
     watch: {
@@ -129,10 +129,10 @@ export default {
             handler: function(newVal) {
                 if (this.isCurrentUser) {
                     for (let i in newVal) {
-                        this.user[i] = newVal[i]
+                        this.user[i] = newVal[i];
                     }
                 }
-                this.user.isAuthor = this.user.isAuthor == "1"
+                this.user.isAuthor = this.user.isAuthor == "1";
             },
             deep: true
         }
@@ -140,40 +140,40 @@ export default {
     methods: {
         followUser() {
             api.post("/users/"+this.user.id+"/follow").catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
-                    this.user.followerCount = parseInt(this.user.followerCount) + parseInt(r.delta)
-                    this.user.isFollowing = !this.user.isFollowing
+                    this.user.followerCount = parseInt(this.user.followerCount) + parseInt(r.delta);
+                    this.user.isFollowing = !this.user.isFollowing;
                 }
                 else this.$q.notify({ color: "negative", message: r.msg, position: "top", timeout: 2000 });
-            })
+            });
         },
         goToAuthorPage() {
             if (this.user.isAuthor && this.user.authorId) {
-                this.$router.push("/author/"+this.user.authorId)
+                this.$router.push("/author/"+this.user.authorId);
             }
         },
         becomeAnAuthor() {
             //click becomeAnAuthor
             api.post("/user/becomeAuthor").catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
                     this.$q.notify({
                         color: "positive",
                         message: this.$t("compose.authorApplicationApproved"),
                         position: "top",
                         timeout: 2000
-                    })
-                    this.user.isAuthor = true
-                    this.user.authorId = r.authorId
+                    });
+                    this.user.isAuthor = true;
+                    this.user.authorId = r.authorId;
                     this.$store.commit("userDataChange", {
                         isAuthor: "1"
-                    })
+                    });
                 }
                 else {
                     this.$q.notify({
@@ -181,9 +181,9 @@ export default {
                         message: r.msg,
                         position: "top",
                         timeout: 2000
-                    })
+                    });
                 }
-            })
+            });
         },
         enterProfileEdit() {
             this.$q.dialog({
@@ -193,55 +193,55 @@ export default {
                     username: this.currentUser.username
                 }
             }).onOk((val) => {
-                logger(val)
+                logger(val);
                 this.$store.commit("userDataChange", {
                     username: val.username
-                })
-                this.$store.commit("setBarTitle", this.$t("barTitle.user") + " / " + val.username)
-            })
+                });
+                this.$store.commit("setBarTitle", this.$t("barTitle.user") + " / " + val.username);
+            });
         },
         tabChange(val) {
-            let newPath = "/user/"+this.$route.params.id+"/"+val
+            let newPath = "/user/"+this.$route.params.id+"/"+val;
             if (this.$route.path != newPath) {
-                this.$router.replace(newPath)
+                this.$router.replace(newPath);
             }
             if (val == "collections") {
-                this.collectionsLoading = true
+                this.collectionsLoading = true;
                 api.get("/collections/user/"+this.userId).catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
+                    let r = res.data;
                     if (r.success) {
-                        this.collections = r.collections
+                        this.collections = r.collections;
                     }
                     else {
                         this.$q.notify({ color: "negative", message: r.msg, position: "top", timeout: 2000 });
                     }
-                    this.collectionsLoading = false
-                })
+                    this.collectionsLoading = false;
+                });
             }
         },
         loadInfo() {
             api.get("/users/"+this.$route.params.id).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                this.user = {}
-                this.isCurrentUser = false
-                this.userNotFound = false
+                let r = res.data;
+                this.user = {};
+                this.isCurrentUser = false;
+                this.userNotFound = false;
                 if (r.success) {
-                    logger(r)
-                    this.user = r.user
-                    this.user.isAuthor = this.user.isAuthor == "1"
-                    this.isCurrentUser = r.isCurrentUser
-                    this.$store.commit("setBarTitle", this.$t("barTitle.user") + " / " + this.user.username)
-                    this.tabChange(this.tab)
-                    this.loaded = true
+                    logger(r);
+                    this.user = r.user;
+                    this.user.isAuthor = this.user.isAuthor == "1";
+                    this.isCurrentUser = r.isCurrentUser;
+                    this.$store.commit("setBarTitle", this.$t("barTitle.user") + " / " + this.user.username);
+                    this.tabChange(this.tab);
+                    this.loaded = true;
                 }
                 else {
                     if (r.errorType) {
                         if (r.errorType == "NotFound") {
-                            this.$router.push("/404")
+                            this.$router.push("/404");
                         }
                     }
                     else {
@@ -250,21 +250,21 @@ export default {
                             message: r.msg,
                             position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
-                    this.$store.commit("setBarTitle")
+                    this.$store.commit("setBarTitle");
                 }
-            })
+            });
         }
     },
     created() {
-        let tab = this.$route.params.tab
+        let tab = this.$route.params.tab;
         if (["profile", "collections"].includes(tab)) {
-            this.tab = tab
+            this.tab = tab;
         }
-        this.loadInfo()
+        this.loadInfo();
     }
-}
+};
 </script>
 
 <style>

@@ -14,15 +14,15 @@ export default {
     name: "NewAccount",
     methods: {
         backHome() {
-            this.$router.push("/")
+            this.$router.push("/");
         }
     },
     computed: {
         newAccount () {
-            return this.$store.state.newAccount
+            return this.$store.state.newAccount;
         }
     }
-}
+};
 </script>
 
 <style>

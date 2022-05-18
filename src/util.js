@@ -1,20 +1,20 @@
 export const formatViews = function(n) {
-    let res,unit
+    let res,unit;
     if (n >= 1000000) {
-        res = n/1000000
-        unit = "M"
+        res = n/1000000;
+        unit = "M";
     }
     else if (n >= 1000) {
-        res = n/1000
-        unit = "K"
+        res = n/1000;
+        unit = "K";
     }
     else {
-        res = n
-        unit = ""
+        res = n;
+        unit = "";
     }
-    res = Math.floor(res * 10)
-    if (res < 100 && res % 10 != 0) return (res/10) + unit
-    else return Math.floor(res/10) + unit
+    res = Math.floor(res * 10);
+    if (res < 100 && res % 10 != 0) return (res/10) + unit;
+    else return Math.floor(res/10) + unit;
 };
 //todo formatFollowerCount
 export const formatTimeElapsed = function(tm) {

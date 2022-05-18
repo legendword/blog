@@ -7,7 +7,7 @@ class TableOfContents {
     options;
     static defaultOptions = {
         headingLevels: ["h1", "h2", "h3"]
-    }
+    };
 
     constructor(markdownContent, options = TableOfContents.defaultOptions) {
         this.content = markdownContent;
@@ -35,7 +35,7 @@ class TableOfContents {
                         id: id++,
                         level: ind,
                         content: headingContent
-                    })
+                    });
                 }
             }
             else if (inHeading) {

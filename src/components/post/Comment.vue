@@ -67,11 +67,11 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
-import { formatTimeElapsed } from "src/util"
-import { apiError } from "src/apiError"
-import api from "src/api"
-import logger from "src/logger"
+import { mapState } from "vuex";
+import { formatTimeElapsed } from "src/util";
+import { apiError } from "src/apiError";
+import api from "src/api";
+import logger from "src/logger";
 export default {
     name: "comment",
     props: {
@@ -82,7 +82,7 @@ export default {
     },
     computed: {
         timeElapsed() {
-            return formatTimeElapsed(this.comment.publishTime)
+            return formatTimeElapsed(this.comment.publishTime);
         },
         ...mapState(["isLoggedIn", "user"])
     },
@@ -90,7 +90,7 @@ export default {
         return {
             newReply: "",
             isReplying: false
-        }
+        };
     },
     methods: {
         submitReply() {
@@ -98,48 +98,48 @@ export default {
                 return;
             }
             if (this.newReply == "") {
-                this.$q.notify({ color: "warning", message: this.$t("post.emptyCommentMsg") })
-                return
+                this.$q.notify({ color: "warning", message: this.$t("post.emptyCommentMsg") });
+                return;
             }
             api.post("/comments", {
                 postId: this.postId,
                 content: this.newReply,
                 parentId: this.comment.id
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
                     this.$q.notify({ color: "positive", message: this.$t("post.commentSuccess") });
-                    this.newReply = ""
-                    this.isReplying = false
+                    this.newReply = "";
+                    this.isReplying = false;
 
-                    this.$emit("update")
+                    this.$emit("update");
                     // #todo: instead of re-fetching the entire comment section, just append to this.comment.replies
                 }
                 else {
                     this.$q.notify({ color: "negative", message: r.msg });
                 }
-            })
+            });
         },
         likeComment() {
             api.post("/comments/"+this.comment.id+"/like").catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
-                    this.comment.likes += r.delta
-                    this.comment.userLiked = !this.comment.userLiked
+                    this.comment.likes += r.delta;
+                    this.comment.userLiked = !this.comment.userLiked;
                 }
                 else {
-                    logger(r)
+                    logger(r);
                     this.$q.notify({
                         color: "negative",
                         message: r.msg,
-                    })
+                    });
                 }
-            })
+            });
         },
         deleteComment() {
             this.$q.dialog({
@@ -149,28 +149,28 @@ export default {
                 cancel: true
             }).onOk(() => {
                 api.delete("/comments/"+this.comment.id).catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
+                    let r = res.data;
                     if (r.success) {
                         this.$q.notify({
                             color: "positive",
                             message: this.$t("post.deleteComment.success"),
-                        })
-                        this.$emit("update")
+                        });
+                        this.$emit("update");
                     }
                     else {
-                        logger(r)
+                        logger(r);
                         this.$q.notify({
                             color: "negative",
                             message: r.msg,
-                        })
+                        });
                     }
-                })
-            })
+                });
+            });
         }
     }
-}
+};
 </script>
 
 <style lang="scss">

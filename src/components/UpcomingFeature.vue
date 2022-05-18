@@ -24,7 +24,7 @@ export default {
             location.href = "https://github.com/legendword/blog";
         }
     }
-}
+};
 </script>
 
 <style>

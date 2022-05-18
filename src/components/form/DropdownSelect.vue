@@ -23,7 +23,7 @@ export default {
         options: Array, // {label, value}
         value: String
     }
-}
+};
 </script>
 
 <style>

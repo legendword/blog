@@ -71,20 +71,20 @@
 </template>
 
 <script>
-import TableOfContents from "../helpers/TableOfContents"
-import MarkDownItVue from "markdown-it-vue"
-import "markdown-it-vue/dist/markdown-it-vue.css"
-import markdownItVueOptions from "../markdownItVueOptions"
-import api from "../api"
-import { mapState } from "vuex"
-import { formatTimeElapsed } from "../util"
-import { scroll } from "quasar"
-import LoadingMessage from "src/components/LoadingMessage.vue"
-import { apiError } from "src/apiError"
-import AddToCollection from "src/components/post/AddToCollection.vue"
-import Comments from "src/components/post/Comments.vue"
-import Toc from "src/components/post/Toc.vue"
-import logger from "src/logger"
+import TableOfContents from "../helpers/TableOfContents";
+import MarkDownItVue from "markdown-it-vue";
+import "markdown-it-vue/dist/markdown-it-vue.css";
+import markdownItVueOptions from "../markdownItVueOptions";
+import api from "../api";
+import { mapState } from "vuex";
+import { formatTimeElapsed } from "../util";
+import { scroll } from "quasar";
+import LoadingMessage from "src/components/LoadingMessage.vue";
+import { apiError } from "src/apiError";
+import AddToCollection from "src/components/post/AddToCollection.vue";
+import Comments from "src/components/post/Comments.vue";
+import Toc from "src/components/post/Toc.vue";
+import logger from "src/logger";
 // const { getScrollTarget, setScrollPosition } = scroll
 export default {
     name: "Post",
@@ -101,7 +101,7 @@ export default {
             meta: {
                 description: this.postDescription
             }
-        }
+        };
     },
     data() {
         return {
@@ -114,74 +114,74 @@ export default {
             pageDescription: null,
             headings: [],
             goToNthHeading: TableOfContents.goToNthHeading
-        }
+        };
     },
     computed: {
         postId() {
-            return parseInt(this.$route.params.id)
+            return parseInt(this.$route.params.id);
         },
         ...mapState(["isLoggedIn", "user"])
     },
     methods: {
         getPost() {
             api.get("/posts/"+this.postId).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                this.setData(res.data)
-            })
+                this.setData(res.data);
+            });
         },
         goToCategory() {
             if (this.post.category) {
-                this.$router.push("/category/"+this.post.category)
+                this.$router.push("/category/"+this.post.category);
             }
         },
         goToTag(tagName) {
-            this.$router.push("/tag/"+tagName)
+            this.$router.push("/tag/"+tagName);
         },
         followAuthor() {
             api.post("/authors/"+this.post.authorId+"/follow").catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
-                    this.post.followerCount = parseInt(this.post.followerCount) + parseInt(r.delta)
-                    this.post.isFollowing = !this.post.isFollowing
+                    this.post.followerCount = parseInt(this.post.followerCount) + parseInt(r.delta);
+                    this.post.isFollowing = !this.post.isFollowing;
                 }
                 else {
                     this.$q.notify({ color: "negative", message: r.msg });
                 }
-            })
+            });
         },
         setData(r) {
             if (r.success) {
-                logger(r.post)
+                logger(r.post);
                 if (r.post.likedComments) {
-                    r.post.likedComments = r.post.likedComments.map(v => v.id)
+                    r.post.likedComments = r.post.likedComments.map(v => v.id);
                 }
                 else {
-                    r.post.likedComments = []
+                    r.post.likedComments = [];
                 }
-                this.post = r.post
-                this.$store.commit("setBarTitle", r.post.title)
-                this.pageTitle = r.post.title
-                this.pageDescription = r.post.description
+                this.post = r.post;
+                this.$store.commit("setBarTitle", r.post.title);
+                this.pageTitle = r.post.title;
+                this.pageDescription = r.post.description;
 
-                let toc = new TableOfContents(this.post.content)
-                this.headings = toc.getHeadings()
-                console.log("toc", this.headings)
+                let toc = new TableOfContents(this.post.content);
+                this.headings = toc.getHeadings();
+                console.log("toc", this.headings);
             }
             else {
                 if (r.errorType && r.errorType == "NotFound") {
-                    this.$router.push("/404")
+                    this.$router.push("/404");
                 }
                 else {
                     this.$q.notify({
                         color: "negative",
                         message: r.msg
-                    })
+                    });
                 }
-                this.$store.commit("setBarTitle")
+                this.$store.commit("setBarTitle");
             }
         }
     },
@@ -201,13 +201,13 @@ export default {
     },
     created() { //v0.2: using created() to load content after route for better user experience
         api.get("/posts/" + this.$route.params.id).catch(err => {
-            apiError()
+            apiError();
         }).then(res => {
-            this.setData(res.data)
-            this.loaded = true
-        })
+            this.setData(res.data);
+            this.loaded = true;
+        });
     }
-}
+};
 </script>
 
 <style scoped lang="scss">

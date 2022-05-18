@@ -278,4 +278,4 @@ export default {
         failedTitle: "Email Verification Failed",
         failedMsg: "The password recovery link might have expired. Please try again."
     }
-}
+};

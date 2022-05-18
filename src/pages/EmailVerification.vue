@@ -14,38 +14,38 @@
 </template>
 
 <script>
-import { apiError } from "src/apiError"
-import api from "../api"
-import logger from "src/logger"
+import { apiError } from "src/apiError";
+import api from "../api";
+import logger from "src/logger";
 export default {
     name: "EmailVerification",
     data() {
         return {
             loaded: false,
             success: true
-        }
+        };
     },
     methods: {
         backHome() {
-            this.$router.push("/")
+            this.$router.push("/");
         }
     },
     created() {
         if (!this.$route.query.email || !this.$route.query.code) {
-            this.success = false
-            this.loaded = true
+            this.success = false;
+            this.loaded = true;
         }
         else {
             api.post("/user/verifyEmail", {
                 email: this.$route.query.email,
                 code: this.$route.query.code
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
-                    this.success = true
+                    this.success = true;
                 }
                 else {
                     this.$q.notify({
@@ -53,14 +53,14 @@ export default {
                         message: r.msg,
                         position: "top",
                         timeout: 2000
-                    })
-                    this.success = false
+                    });
+                    this.success = false;
                 }
-                this.loaded = true
-            })
+                this.loaded = true;
+            });
         }
     }
-}
+};
 </script>
 
 <style>

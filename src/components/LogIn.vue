@@ -40,9 +40,9 @@
 </template>
 
 <script>
-import { apiError } from "src/apiError"
-import api from "../api"
-import logger from "src/logger"
+import { apiError } from "src/apiError";
+import api from "../api";
+import logger from "src/logger";
 export default {
     name: "LogIn",
     props: {
@@ -66,7 +66,7 @@ export default {
             passwordRules: [
                 val => val && val.length > 0 || this.$t("forms.requiredField")
             ]
-        }
+        };
     },
     methods: {
         forgotPass() {
@@ -83,15 +83,15 @@ export default {
                 api.post("/user/recoverPassword", {
                     email: data
                 }).catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
-                    logger(r)
+                    let r = res.data;
+                    logger(r);
                     if (r.success) {
                         this.$q.dialog({
                             title: this.$t("passwordRecovery.prompt.title"),
                             message: this.$t("passwordRecovery.prompt.successMsg")
-                        })
+                        });
                     }
                     else {
                         this.$q.notify({
@@ -99,26 +99,26 @@ export default {
                             message: r.msg,
                             position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
-                })
-            })
+                });
+            });
         },
         toggleSignUp() {
-            this.signUp = !this.signUp
+            this.signUp = !this.signUp;
         },
         resetFields() {
-            this.password = this.email = ""
-            this.signUp = false
+            this.password = this.email = "";
+            this.signUp = false;
         },
         backToHome() {
-            this.resetFields()
+            this.resetFields();
             if (this.noBackToHome) {
-                this.$emit("closed")
+                this.$emit("closed");
             }
             else {
-                if (this.$route.path!="/") this.$router.push("/")
-                this.$emit("closed")
+                if (this.$route.path!="/") this.$router.push("/");
+                this.$emit("closed");
             }
         },
         submitSignUp() {
@@ -126,14 +126,14 @@ export default {
                 email: this.email,
                 password: this.password
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
-                    this.$store.commit("newAccount", this.email)
-                    this.resetFields()
-                    this.$emit("closed")
-                    this.$router.push("/newAccount")
+                    this.$store.commit("newAccount", this.email);
+                    this.resetFields();
+                    this.$emit("closed");
+                    this.$router.push("/newAccount");
                 }
                 else {
                     this.$q.notify({
@@ -141,9 +141,9 @@ export default {
                         message: r.msg,
                         position: "top",
                         timeout: 2000
-                    })
+                    });
                 }
-            })
+            });
         },
         submitLogIn() {
             api.post("/user/signIn", {
@@ -151,9 +151,9 @@ export default {
                 password: this.password,
                 rememberme: this.rememberme
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 logger(r);
                 if (r.invalid) {
                     this.$q.notify({
@@ -161,20 +161,20 @@ export default {
                         message: this.$t("logIn.incorrect"),
                         position: "top",
                         timeout: 2000
-                    })
+                    });
                 }
                 else if (r.success) {
                     if (r.jwt) {
                         // api.instance.defaults.headers.common["Authorization"] = "Bearer " + r.jwt
-                        this.$store.commit("setAuthorization", "Bearer " + r.jwt)
+                        this.$store.commit("setAuthorization", "Bearer " + r.jwt);
                     }
-                    this.$store.commit("userLogIn", r.user)
+                    this.$store.commit("userLogIn", r.user);
                     if (r.identifier && r.token) {
-                        this.$q.localStorage.set("token", r.token)
-                        this.$q.localStorage.set("identifier", r.identifier)
+                        this.$q.localStorage.set("token", r.token);
+                        this.$q.localStorage.set("identifier", r.identifier);
                     }
-                    this.resetFields()
-                    this.$emit("closed")
+                    this.resetFields();
+                    this.$emit("closed");
                     //this.$router.go(0)
                 }
                 else {
@@ -183,12 +183,12 @@ export default {
                         message: r.msg,
                         position: "top",
                         timeout: 2000
-                    })
+                    });
                 }
-            })
+            });
         }
     }
-}
+};
 </script>
 
 <style scoped>

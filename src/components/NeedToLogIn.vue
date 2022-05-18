@@ -11,21 +11,21 @@
 </template>
 
 <script>
-import LogIn from "./LogIn.vue"
+import LogIn from "./LogIn.vue";
 export default {
     name: "NeedToLogIn",
     components: { LogIn },
     data() {
         return {
             openLogIn: false
-        }
+        };
     },
     methods: {
         signInClick() {
-            this.openLogIn = true
+            this.openLogIn = true;
         }
     }
-}
+};
 </script>
 
 <style>

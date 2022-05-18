@@ -25,14 +25,14 @@ export default {
     data() {
         return {
             selected: null
-        }
+        };
     },
     watch: {
         selected(val) {
             if (val) this.$emit("select", val);
         }
     }
-}
+};
 </script>
 
 <style>

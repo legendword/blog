@@ -27,10 +27,10 @@
 </template>
 
 <script>
-import { apiError } from "src/apiError"
-import api from "../api"
-import PostCard from "../components/PostCard"
-import logger from "src/logger"
+import { apiError } from "src/apiError";
+import api from "../api";
+import PostCard from "../components/PostCard";
+import logger from "src/logger";
 export default {
     name: "Tag",
     components: {
@@ -39,7 +39,7 @@ export default {
     meta() {
         return {
             title: `Tag: ${this.$route.params.name}`
-        }
+        };
     },
     data() {
         return {
@@ -53,51 +53,51 @@ export default {
             postCount: 0,
             postPage: 1,
             postPerPage: 10
-        }
+        };
     },
     computed: {
         maxPages () {
-            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1)
+            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1);
         }
     },
     methods: {
         changePage(val) {
-            this.getPosts()
+            this.getPosts();
         },
         changeSortBy(value) {
-            this.sortBy = value
-            this.getPosts()
+            this.sortBy = value;
+            this.getPosts();
         },
         getPosts() {
             api.get("/posts/tag/"+encodeURIComponent(this.$route.params.name), {
                 sort: this.sortBy,
                 page: this.postPage
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
-                    this.postList = r.posts
+                    this.postList = r.posts;
                     if (this.postPage == 1) {
-                        logger(r)
-                        this.postCount = parseInt(r.postCount)
+                        logger(r);
+                        this.postCount = parseInt(r.postCount);
                     }
                 }
                 else {
                     if (r.errorType && r.errorType == "NotFound") {
-                        this.$router.push("/404")
+                        this.$router.push("/404");
                     }
                     else {
-                        this.$q.notify({color: "negative", message: r.msg, position: "top", timeout: 2000})
+                        this.$q.notify({color: "negative", message: r.msg, position: "top", timeout: 2000});
                     }
                 }
-            })
+            });
         }
     },
     mounted() {
-        this.getPosts()
+        this.getPosts();
     }
-}
+};
 </script>
 
 <style>

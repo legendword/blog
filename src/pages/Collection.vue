@@ -32,14 +32,14 @@
 </template>
 
 <script>
-import api from "../api"
-import { formatTimeElapsed } from "../util"
-import { mapState } from "vuex"
-import PostListItem from "../components/PostListItem.vue"
-import PostListSlideItem from "../components/PostListSlideItem.vue"
-import { apiError } from "src/apiError"
-import CollectionInfoEdit from "src/components/dialogs/CollectionInfoEdit.vue"
-import logger from "src/logger"
+import api from "../api";
+import { formatTimeElapsed } from "../util";
+import { mapState } from "vuex";
+import PostListItem from "../components/PostListItem.vue";
+import PostListSlideItem from "../components/PostListSlideItem.vue";
+import { apiError } from "src/apiError";
+import CollectionInfoEdit from "src/components/dialogs/CollectionInfoEdit.vue";
+import logger from "src/logger";
 export default {
     name: "Collection",
     components: {
@@ -49,7 +49,7 @@ export default {
     meta() {
         return {
             title: this.collection.title ?? null
-        }
+        };
     },
     data() {
         return {
@@ -58,30 +58,30 @@ export default {
                 posts: []
             },
             managePostMode: false
-        }
+        };
     },
     computed: mapState(["isLoggedIn", "user"]),
     methods: {
         deletePost(pid) {
-            let index = this.collection.posts.findIndex(v => v.postId == pid)
-            if (index == -1) return
+            let index = this.collection.posts.findIndex(v => v.postId == pid);
+            if (index == -1) return;
             api.delete("/collections/"+this.collection.id+"/posts", {
                 postId: pid
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
-                    this.collection.posts.splice(index, 1)
-                    this.collection.postCount -= 1
+                    this.collection.posts.splice(index, 1);
+                    this.collection.postCount -= 1;
                 }
                 else {
                     this.$q.notify({
                         color: "negative",
                         message: r.msg
-                    })
+                    });
                 }
-            })
+            });
         },
         editCollectionInfo() {
             this.$q.dialog({
@@ -94,54 +94,54 @@ export default {
                 },
                 id: this.collection.id
             }).onOk((val) => {
-                logger(val)
-                this.collection.title = val.title
-                this.collection.description = val.description
-                this.collection.isPublic = val.isPublic ? "1" : "0"
-            })
+                logger(val);
+                this.collection.title = val.title;
+                this.collection.description = val.description;
+                this.collection.isPublic = val.isPublic ? "1" : "0";
+            });
         },
         formatTime(tm) {
-            return formatTimeElapsed(tm)
+            return formatTimeElapsed(tm);
         },
         setData(r) {
             if (r.success) {
-                logger(r)
+                logger(r);
                 for (let i of ["postCount", "updateTime"]) {
-                    r.collection[i] = parseInt(r.collection[i])
+                    r.collection[i] = parseInt(r.collection[i]);
                 }
-                this.collection = r.collection
-                this.$store.commit("setBarTitle", this.$t("collection.title") + " / " + r.collection.title)
+                this.collection = r.collection;
+                this.$store.commit("setBarTitle", this.$t("collection.title") + " / " + r.collection.title);
             }
             else {
                 if (r.errorType && r.errorType == "NotFound") {
-                    this.$router.push("/404")
+                    this.$router.push("/404");
                 }
                 else {
                     this.$q.notify({
                         color: "negative",
                         message: r.msg
-                    })
+                    });
                 }
-                this.$store.commit("setBarTitle")
+                this.$store.commit("setBarTitle");
             }
         }
     },
     beforeRouteEnter (to, from, next) {
         api.get("/collections/"+to.params.id).catch(err => {
-            apiError()
+            apiError();
         }).then(res => {
-            next(vm => vm.setData(res.data))
-        })
+            next(vm => vm.setData(res.data));
+        });
     },
     beforeRouteUpdate (to, from, next) {
         api.get("/collections/"+to.params.id).catch(err => {
-            apiError()
+            apiError();
         }).then(res => {
-            this.setData(res.data)
-            next()
-        })
+            this.setData(res.data);
+            next();
+        });
     }
-}
+};
 </script>
 
 <style scoped>

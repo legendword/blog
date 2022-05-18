@@ -31,12 +31,12 @@
 </template>
 
 <script>
-import { apiError } from "src/apiError"
-import DropdownSelect from "../form/DropdownSelect.vue"
-import Comment from "./Comment.vue"
-import api from "src/api"
-import { mapState } from "vuex"
-import logger from "src/logger"
+import { apiError } from "src/apiError";
+import DropdownSelect from "../form/DropdownSelect.vue";
+import Comment from "./Comment.vue";
+import api from "src/api";
+import { mapState } from "vuex";
+import logger from "src/logger";
 export default {
     components: {
         DropdownSelect,
@@ -57,28 +57,28 @@ export default {
                 {label: this.$t("general.sort.likesDesc"), value: "likesDesc"}
             ],
             newComment: ""
-        }
+        };
     },
     watch: {
         sortBy() {
-            this.list = this.sort(this.list)
+            this.list = this.sort(this.list);
         },
         comments() {
-            this.parse()
+            this.parse();
         }
     },
     computed: {
         commentCount() {
-            return this.list.length ?? null
+            return this.list.length ?? null;
         },
         ...mapState(["isLoggedIn", "user"])
     },
     created() {
-        this.parse()
+        this.parse();
     },
     methods: {
         updateList() {
-            this.$emit("update")
+            this.$emit("update");
         },
         submit() {
             if (this.newComment == "") {
@@ -89,46 +89,46 @@ export default {
                 postId: this.postId,
                 content: this.newComment
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
                     this.$q.notify({ color: "positive", message: this.$t("post.commentSuccess") });
-                    this.newComment = ""
-                    this.updateList()
+                    this.newComment = "";
+                    this.updateList();
                     // todo: don't update everything
                 }
                 else this.$q.notify({ color: "negative", message: r.msg });
-            })
+            });
         },
         parse() {
-            let comments = []
-            let childComments = []
+            let comments = [];
+            let childComments = [];
             for (let i of this.comments) {
-                i.userLiked = this.likedComments && this.likedComments.includes(i.id)
+                i.userLiked = this.likedComments && this.likedComments.includes(i.id);
                 for (let tmp of ["id", "parentId", "likes", "publishTime"]) {
-                    i[tmp] = parseInt(i[tmp])
+                    i[tmp] = parseInt(i[tmp]);
                 }
                 if (i.parentId == 0) { //no parent comment
-                    i.replies = []
-                    comments.push(i)
+                    i.replies = [];
+                    comments.push(i);
                 }
                 else {
-                    childComments.push(i)
+                    childComments.push(i);
                 }
             }
             for (let i of childComments) {
                 let parentIndex = comments.findIndex(v => v.id == i.parentId);
                 if (parentIndex == -1) {
-                    console.error("Parent id is not found!")
+                    console.error("Parent id is not found!");
                 }
                 else {
-                    comments[parentIndex].replies.push(i)
+                    comments[parentIndex].replies.push(i);
                 }
             }
-            logger(comments)
-            this.list = this.sort(comments)
+            logger(comments);
+            this.list = this.sort(comments);
         },
         sort(cm) {
             if (this.sortBy == "timeDesc") {
@@ -136,34 +136,34 @@ export default {
                     if (a.publishTime < b.publishTime) return 1;
                     else if (a.publishTime == b.publishTime) return 0;
                     else return -1;
-                })
+                });
                 for (let i in cm) {
                     cm[i].replies = cm[i].replies.sort((a,b) => {
                         if (a.publishTime < b.publishTime) return 1;
                         else if (a.publishTime == b.publishTime) return 0;
                         else return -1;
-                    })
+                    });
                 }
-                return cm
+                return cm;
             }
             else if (this.sortBy == "likesDesc") {
                 cm = cm.sort((a,b) => {
                     if (a.likes < b.likes) return 1;
                     else if (a.likes == b.likes) return 0;
                     else return -1;
-                })
+                });
                 for (let i in cm) {
                     cm[i].replies = cm[i].replies.sort((a,b) => {
                         if (a.likes < b.likes) return 1;
                         else if (a.likes == b.likes) return 0;
                         else return -1;
-                    })
+                    });
                 }
-                return cm
+                return cm;
             }
         }
     }
-}
+};
 </script>
 
 <style>

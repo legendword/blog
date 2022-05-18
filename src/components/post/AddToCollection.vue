@@ -19,9 +19,9 @@
 </template>
 
 <script>
-import api from "src/api"
-import { apiError } from "src/apiError"
-import { addToCollection, newCollection } from "src/helpers/collections"
+import api from "src/api";
+import { apiError } from "src/apiError";
+import { addToCollection, newCollection } from "src/helpers/collections";
 export default {
     props: {
         postId: Number
@@ -29,54 +29,54 @@ export default {
     data() {
         return {
             list: []
-        }
+        };
     },
     methods: {
         load() {
             api.get("/collections/mine").catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
-                    this.list = r.collections
+                    this.list = r.collections;
                 }
                 else {
                     this.$q.notify({
                         color: "negative",
                         message: r.msg
-                    })
+                    });
                 }
-            })
+            });
         },
         submit(id) {
             if (id == -1) {
                 newCollection().then((resolved) => {
                     if (resolved) {
-                        this.load()
+                        this.load();
                     }
                 }, (msg) => {
                     this.$q.notify({
                         color: "negative",
                         message: msg
-                    })
-                })
+                    });
+                });
             }
             else {
                 addToCollection(id, this.postId).then((msg) => {
                     this.$q.notify({
                         color: "positive",
                         message: msg
-                    })
+                    });
                 }, (msg) => {
                     this.$q.notify({
                         color: "negative",
                         message: msg
-                    })
-                })
+                    });
+                });
             }
         }
     }
-}
+};
 </script>
 
 <style>

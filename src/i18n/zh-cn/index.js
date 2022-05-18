@@ -278,4 +278,4 @@ export default {
         failedTitle: "邮箱链接失效",
         failedMsg: "密码重置链接可能已经过期，请重试。"
     }
-}
+};

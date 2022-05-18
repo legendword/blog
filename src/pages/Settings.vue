@@ -21,9 +21,9 @@
 </template>
 
 <script>
-import api from "../api"
-import { mapState } from "vuex"
-import { apiError } from "src/apiError"
+import api from "../api";
+import { mapState } from "vuex";
+import { apiError } from "src/apiError";
 export default {
     name: "Settings",
     meta: {
@@ -38,30 +38,30 @@ export default {
                 ]
             },
             language: this.$root.$i18n.locale
-        }
+        };
     },
     computed: {
         sts() {
-            return this.$store.state.user ? this.$store.state.user.settings : ""
+            return this.$store.state.user ? this.$store.state.user.settings : "";
         },
         ...mapState(["isLoggedIn"]) //todo !isLoggedIn message
     },
     methods: {
         backHome() {
-            this.$router.push("/")
+            this.$router.push("/");
         }
     },
     watch: {
         language(lang) {
-            this.$root.$i18n.locale = lang
+            this.$root.$i18n.locale = lang;
             if (this.isLoggedIn) {
                 api.put("/user/settings", {
                     column: "locale",
                     value: lang
                 }).catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
+                    let r = res.data;
                     if (r.success) {
                         //do nothing
                     }
@@ -71,13 +71,13 @@ export default {
                             message: r.msg,
                             position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
-                })
+                });
             }
         }
     }
-}
+};
 </script>
 
 <style>

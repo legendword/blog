@@ -19,10 +19,10 @@ export default {
     },
     methods: {
         goToCollection() {
-            this.$router.push("/collection/"+this.collection.id)
+            this.$router.push("/collection/"+this.collection.id);
         }
     }
-}
+};
 </script>
 
 <style scoped>

@@ -56,12 +56,12 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
-import api from "../api"
-import UpcomingFeature from "../components/UpcomingFeature.vue"
-import { apiError } from "src/apiError"
-import logger from "src/logger"
-import requireLoggedIn from "src/mixins/requireLoggedIn"
+import { mapState } from "vuex";
+import api from "../api";
+import UpcomingFeature from "../components/UpcomingFeature.vue";
+import { apiError } from "src/apiError";
+import logger from "src/logger";
+import requireLoggedIn from "src/mixins/requireLoggedIn";
 
 export default {
     name: "Me",
@@ -76,22 +76,22 @@ export default {
             loaded: false,
             author: {},
             tab: "profile",
-        }
+        };
     },
     watch: {
         creatorTab: function(val) {
-            this.fetchCreatorTab(val)
+            this.fetchCreatorTab(val);
         }
     },
     methods: {
         goToAuthorPage() {
             if (this.user.isAuthor && this.user.authorId) {
-                this.$router.push("/author/"+this.user.authorId)
+                this.$router.push("/author/"+this.user.authorId);
             }
         },
         goToUserPage() {
             if (this.user.id) {
-                this.$router.push("/user/"+this.user.id)
+                this.$router.push("/user/"+this.user.id);
             }
         },
         tabChange(val) {
@@ -101,10 +101,10 @@ export default {
             logger(r);
             
             if (r.isLoggedIn) {
-                this.user = r.user
-                this.user.isAuthor = this.user.isAuthor == "1"
+                this.user = r.user;
+                this.user.isAuthor = this.user.isAuthor == "1";
                 if (this.user.isAuthor) {
-                    this.author = r.author
+                    this.author = r.author;
                 }
             }
         },
@@ -112,31 +112,31 @@ export default {
             api.get("/user/info", {
                 detailed: true
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                this.setData(res.data)
-            })
+                this.setData(res.data);
+            });
         }
     },
     beforeRouteEnter (to, from, next) {
         api.get("/user/info", {
             detailed: true
         }).catch(err => {
-            apiError()
-            next()
+            apiError();
+            next();
         }).then(res => {
-            next(vm => vm.setData(res.data))
-        })
+            next(vm => vm.setData(res.data));
+        });
     },
     beforeRouteUpdate (to, from, next) {
         api.get("/user/info", {
             detailed: true
         }).then(res => {
-            this.setData(res.data)
-            next()
-        })
+            this.setData(res.data);
+            next();
+        });
     }
-}
+};
 </script>
 
 <style>

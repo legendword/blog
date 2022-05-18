@@ -71,14 +71,14 @@
 </template>
 
 <script>
-import PostListItem from "../components/PostListItem.vue"
-import api from "../api"
-import SearchBar from "../components/SearchBar.vue"
-import AuthorCard from "../components/AuthorCard.vue"
-import UserCard from "../components/UserCard.vue"
-import CollectionListItem from "../components/CollectionListItem.vue"
-import { apiError } from "src/apiError"
-import logger from "src/logger"
+import PostListItem from "../components/PostListItem.vue";
+import api from "../api";
+import SearchBar from "../components/SearchBar.vue";
+import AuthorCard from "../components/AuthorCard.vue";
+import UserCard from "../components/UserCard.vue";
+import CollectionListItem from "../components/CollectionListItem.vue";
+import { apiError } from "src/apiError";
+import logger from "src/logger";
 export default {
     name: "Search",
     meta: {
@@ -109,41 +109,41 @@ export default {
             },
             resultPerPage: 10,
             isLoading: false
-        }
+        };
     },
     computed: {
         searchquery () {
-            return this.$route.query.s
+            return this.$route.query.s;
         }
     },
     watch: {
         tab: function () {
-            this.$router.replace("/search/"+this.tab+this.$route.fullPath.substring(this.$route.path.length))
-            this.newSearch(this.actualQuery)
+            this.$router.replace("/search/"+this.tab+this.$route.fullPath.substring(this.$route.path.length));
+            this.newSearch(this.actualQuery);
         }
     },
     methods: {
         changePage(val) {
-            this.newSearch(this.actualQuery)
+            this.newSearch(this.actualQuery);
         },
         newSearch(val) {
-            this.actualQuery = val
-            let currentTab = this.tab
-            logger(currentTab)
-            this.isLoading = true
+            this.actualQuery = val;
+            let currentTab = this.tab;
+            logger(currentTab);
+            this.isLoading = true;
             api.get("/search/"+currentTab, {
                 query: val,
                 page: this.pagination[currentTab].page
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
-                    this.resultList[currentTab] = r.result
+                    this.resultList[currentTab] = r.result;
                     if (r.resultCount) {
-                        let resultCount = parseInt(r.resultCount)
-                        this.pagination[currentTab].maxPages = Math.floor(resultCount / this.resultPerPage) + (resultCount % this.resultPerPage == 0 ? 0 : 1)
+                        let resultCount = parseInt(r.resultCount);
+                        this.pagination[currentTab].maxPages = Math.floor(resultCount / this.resultPerPage) + (resultCount % this.resultPerPage == 0 ? 0 : 1);
                     }
                 }
                 else {
@@ -152,20 +152,20 @@ export default {
                         message: r.msg,
                         position: "top",
                         timeout: 2000
-                    })
+                    });
                 }
-                this.isLoading = false
-            })
+                this.isLoading = false;
+            });
         }
     },
     created() {
-        let tab = this.$route.params.tab
+        let tab = this.$route.params.tab;
         if (tab) {
-            this.tab = tab
+            this.tab = tab;
         }
-        this.newSearch(this.searchquery)
+        this.newSearch(this.searchquery);
     }
-}
+};
 </script>
 
 <style>

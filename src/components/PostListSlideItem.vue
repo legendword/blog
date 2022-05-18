@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { formatViews, formatTimeElapsed } from "src/util"
+import { formatViews, formatTimeElapsed } from "src/util";
 export default {
     name: "PostListSlideItem",
     props: {
@@ -44,20 +44,20 @@ export default {
                 cancel: true,
                 persistent: true
             }).onOk(() => {
-                reset()
-                this.$emit("deletePost")
+                reset();
+                this.$emit("deletePost");
             }).onCancel(() => {
-                reset()
-            })
+                reset();
+            });
         },
         calcTimeElapsed(n) {
-            return formatTimeElapsed(n)
+            return formatTimeElapsed(n);
         },
         calcNumber(n) {
-            return formatViews(n)
+            return formatViews(n);
         }
     }
-}
+};
 </script>
 
 <style>

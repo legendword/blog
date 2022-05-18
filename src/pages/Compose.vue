@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
-import LogIn from "../components/LogIn.vue"
-import api from "../api"
-import { apiError } from "src/apiError"
-import Editor from "src/components/post/Editor.vue"
-import logger from "src/logger"
+import { mapState } from "vuex";
+import LogIn from "../components/LogIn.vue";
+import api from "../api";
+import { apiError } from "src/apiError";
+import Editor from "src/components/post/Editor.vue";
+import logger from "src/logger";
 export default {
     name: "Compose",
     components: {
@@ -36,12 +36,12 @@ export default {
     data() {
         return {
             safeToLeave: false
-        }
+        };
     },
     computed: mapState(["user", "isLoggedIn"]),
     methods: {
         submitPost() {
-            let post = {...this.$refs.editor.values}
+            let post = {...this.$refs.editor.values};
             // logger(post)
             // return
 
@@ -49,15 +49,15 @@ export default {
                 this.$q.notify({
                     type: "warning",
                     message: this.$t("compose.fieldRequired")
-                })
-                return
+                });
+                return;
             }
             if (post.title.length > 50 || post.description.length > 100) {
                 this.$q.notify({
                     type: "warning",
                     message: this.$t("compose.exceedsMaxLength"),
-                })
-                return
+                });
+                return;
             }
             api.post("/posts", {
                 title: post.title,
@@ -67,31 +67,31 @@ export default {
                 tags: post.tags,
                 showTOC: post.showTOC ? 1 : 0
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
                     this.$q.notify({
                         color: "positive",
                         message: this.$t("compose.postIsPublished"),
-                    })
+                    });
                     //after post publish
-                    this.safeToLeave = true
+                    this.safeToLeave = true;
                     // #todo: provide popup to copy link
-                    this.$router.push("/me")
+                    this.$router.push("/me");
                 }
                 else {
                     this.$q.notify({
                         color: "negative",
                         message: r.msg,
-                    })
+                    });
                 }
-            })
+            });
         }
     },
     created() {
-        this.$store.commit("setBarTitle", this.$t("compose.barTitle"))
+        this.$store.commit("setBarTitle", this.$t("compose.barTitle"));
     },
     beforeRouteLeave(to, from, next) {
         if (this.safeToLeave) next();
@@ -102,13 +102,13 @@ export default {
                 cancel: true,
                 persistent: true
             }).onOk(() => {
-                next()
+                next();
             }).onCancel(() => {
-                next(false)
-            })
+                next(false);
+            });
         }
     }
-}
+};
 </script>
 
 <style lang="scss">

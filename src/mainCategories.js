@@ -19,7 +19,7 @@ export const mainCategories = [
         color: "#fd5b0f",
         icon: "auto_stories"
     }
-]
+];
 export const otherCategories = [
     "changelog", "support"
-]
+];

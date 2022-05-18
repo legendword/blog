@@ -59,12 +59,12 @@
 </template>
 
 <script>
-import SearchBar from "src/components/SearchBar.vue"
-import { mapState } from "vuex"
-import api from "../api"
-import { apiError } from "../apiError"
-import LogIn from "../components/LogIn"
-import mainMenuItems from "../mainMenu"
+import SearchBar from "src/components/SearchBar.vue";
+import { mapState } from "vuex";
+import api from "../api";
+import { apiError } from "../apiError";
+import LogIn from "../components/LogIn";
+import mainMenuItems from "../mainMenu";
 export default {
     name: "MainLayout",
     components: {
@@ -89,44 +89,44 @@ export default {
             menuBadges: {
                 following: 0
             }
-        }
+        };
     },
     computed: {
         barTitle() {
-            return this.$route.meta.customBarTitle ? this.$store.state.barTitle : "Legendword Blog"
+            return this.$route.meta.customBarTitle ? this.$store.state.barTitle : "Legendword Blog";
         },
         canGoBack() {
-            return !this.menuLinks.includes(this.$route.path)
+            return !this.menuLinks.includes(this.$route.path);
         },
         ...mapState(["user","isLoggedIn","miniDrawerMode"])
     },
     methods: {
         scrollBackTop() {
-            window.scrollTo({top:0,left:0,behavior:"smooth"})
+            window.scrollTo({top:0,left:0,behavior:"smooth"});
         },
         signIn() {
-            this.logInDialog = true
+            this.logInDialog = true;
         },
         signOut() {
-            let params = {}
+            let params = {};
             if (this.$q.localStorage.has("identifier") && this.$q.localStorage.has("token")) {
                 params = {
                     token: this.$q.localStorage.getItem("token"),
                     identifier: this.$q.localStorage.getItem("identifier")
-                }
+                };
             }
             api.post("/user/signOut", params).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
                     this.$q.notify({
                         color: "primary",
                         message: this.$t("logIn.signOutSuccessMsg"),
                         position: "top",
                         timeout: 2000
-                    })
-                    this.$store.commit("setAuthorization", null)
+                    });
+                    this.$store.commit("setAuthorization", null);
                     // delete api.instance.defaults.headers.common["Authorization"]
-                    this.$store.commit("userLogOut")
+                    this.$store.commit("userLogOut");
                 }
                 else {
                     this.$q.notify({
@@ -134,25 +134,25 @@ export default {
                         message: r.msg,
                         position: "top",
                         timeout: 2000
-                    })
+                    });
                 }
-                this.$store.commit("setAuthorization", null)
+                this.$store.commit("setAuthorization", null);
                 // delete api.instance.defaults.headers.common["Authorization"]
-                this.$q.localStorage.remove("identifier")
-                this.$q.localStorage.remove("token")
-            })
+                this.$q.localStorage.remove("identifier");
+                this.$q.localStorage.remove("token");
+            });
         },
         routerGoBack() {
-            this.$router.go(-1)
+            this.$router.go(-1);
         },
         drawerMouseOver() {
-            this.miniDrawer = false
+            this.miniDrawer = false;
         },
         drawerMouseOut() {
-            this.miniDrawer = this.miniDrawerMode
+            this.miniDrawer = this.miniDrawerMode;
         },
         toggleDrawer() {
-            this.leftDrawer = !this.leftDrawer
+            this.leftDrawer = !this.leftDrawer;
         }
     },
     watch: {
@@ -160,23 +160,23 @@ export default {
     },
     created() {
         if (window.history && window.history.length) {
-            this.$store.commit("setHistoryLength", window.history.length)
+            this.$store.commit("setHistoryLength", window.history.length);
         }
-        this.menuLinks = mainMenuItems.map(v => v.link)
+        this.menuLinks = mainMenuItems.map(v => v.link);
         api.get("/badges").then(res => {
-            let r = res.data
+            let r = res.data;
             if (r.success) {
-                this.menuBadges = r.badges
+                this.menuBadges = r.badges;
                 //clear badge of current path
-                let itm = this.menuItems.find(v => v.link == this.$route.path)
+                let itm = this.menuItems.find(v => v.link == this.$route.path);
                 if (itm && itm.badge) {
-                    this.menuBadges[itm.badge] = 0
+                    this.menuBadges[itm.badge] = 0;
                 }
             }
-        })
+        });
     },
     beforeRouteEnter (to, from, next) {
-        next()
+        next();
         /*
         api.get("/user/info", {
             detailed: true
@@ -189,13 +189,13 @@ export default {
         */
     },
     beforeRouteUpdate(to, from, next) {
-        let itm = this.menuItems.find(v => v.link == to.path)
+        let itm = this.menuItems.find(v => v.link == to.path);
         if (itm && itm.badge) {
-            this.menuBadges[itm.badge] = 0
+            this.menuBadges[itm.badge] = 0;
         }
-        next()
+        next();
     }
-}
+};
 </script>
 
 <style scoped>

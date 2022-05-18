@@ -65,13 +65,13 @@
 </template>
 
 <script>
-import { apiError } from "src/apiError"
-import api from "../api"
-import PostCard from "../components/PostCard"
-import PostCardCompact from "../components/PostCardCompact"
-import SearchBar from "../components/SearchBar"
-import { mainCategories, otherCategories } from "../mainCategories"
-import logger from "src/logger"
+import { apiError } from "src/apiError";
+import api from "../api";
+import PostCard from "../components/PostCard";
+import PostCardCompact from "../components/PostCardCompact";
+import SearchBar from "../components/SearchBar";
+import { mainCategories, otherCategories } from "../mainCategories";
+import logger from "src/logger";
 export default {
     name: "Home",
     meta: {
@@ -86,11 +86,11 @@ export default {
             postCount: 0,
             postPage: 1,
             postPerPage: 6
-        }
+        };
     },
     computed: {
         maxPages () {
-            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1)
+            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1);
         }
     },
     components: {
@@ -100,27 +100,27 @@ export default {
     },
     watch: {
         postPage(val) {
-            this.getPosts()
+            this.getPosts();
         }
     },
     methods: {
         goToGitHub() {
-            location.href = "https://github.com/legendword/blog"
+            location.href = "https://github.com/legendword/blog";
         },
         getPosts() {
-            this.postLoading = true
+            this.postLoading = true;
             api.get("/posts", {
                 count: this.postPerPage,
                 page: this.postPage
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
-                    logger(r)
-                    this.postList = r.posts
+                    logger(r);
+                    this.postList = r.posts;
                     if (r.postCount !== undefined) {
-                        this.postCount = parseInt(r.postCount)
+                        this.postCount = parseInt(r.postCount);
                     }
                 }
                 else {
@@ -129,16 +129,16 @@ export default {
                         message: r.msg,
                         position: "top",
                         timeout: 2000
-                    })
+                    });
                 }
-                this.postLoading = false
-            })
+                this.postLoading = false;
+            });
         }
     },
     created() {
-        this.getPosts()
+        this.getPosts();
     }
-}
+};
 </script>
 
 <style scoped>

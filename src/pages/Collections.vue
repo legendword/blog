@@ -57,22 +57,22 @@
 </template>
 
 <script>
-import UpcomingFeature from "src/components/UpcomingFeature.vue"
-import api from "../api"
-import { apiError } from "src/apiError"
-import logger from "src/logger"
+import UpcomingFeature from "src/components/UpcomingFeature.vue";
+import api from "../api";
+import { apiError } from "src/apiError";
+import logger from "src/logger";
 const titlePrefix = {
     browse: "Browse",
     favorites: "Favorite",
     mine: "My"
-}
+};
 export default {
     components: { UpcomingFeature },
     name: "Collections",
     meta() {
         return {
             title: `${titlePrefix[this.currentMenu]} Collections`
-        }
+        };
     },
     data() {
         return {
@@ -87,14 +87,14 @@ export default {
                 favorites: [],
                 mine: []
             }
-        }
+        };
     },
     watch: {
         currentMenu: function(val) {
             if (this.$route.path != "/collections/"+val) {
-                this.$router.replace("/collections/"+val)
+                this.$router.replace("/collections/"+val);
             }
-            this.getContent(val)
+            this.getContent(val);
         }
     },
     methods: {
@@ -110,15 +110,15 @@ export default {
                 cancel: true,
                 persistent: true
             }).onOk(val => {
-                logger(val)
+                logger(val);
                 api.post("/collections", {
                     title: val
                 }).catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
+                    let r = res.data;
                     if (r.success) {
-                        this.getContent(this.currentMenu)
+                        this.getContent(this.currentMenu);
                     }
                     else {
                         this.$q.notify({
@@ -126,13 +126,13 @@ export default {
                             message: r.msg,
                             position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
-                })
-            })
+                });
+            });
         },
         deleteCollection(id, {reset}) {
-            let index = this.list.mine.findIndex(v => v.id == id)
+            let index = this.list.mine.findIndex(v => v.id == id);
             if (index != -1) {
                 this.$q.dialog({
                     title: this.$t("collections.deleteCollectionDialog.title"),
@@ -141,30 +141,30 @@ export default {
                     persistent: true
                 }).onOk(() => {
                     api.delete("/collections/"+id).catch(err => {
-                        apiError()
+                        apiError();
                     }).then(res => {
-                        let r = res.data
+                        let r = res.data;
                         if (r.success) {
-                            reset()
-                            this.list.mine.splice(index, 1)
+                            reset();
+                            this.list.mine.splice(index, 1);
                         }
                         else {
-                            reset()
+                            reset();
                             this.$q.notify({
                                 color: "negative",
                                 message: r.msg,
                                 position: "top",
                                 timeout: 2000
-                            })
+                            });
                         }
-                    })
+                    });
                 }).onCancel(() => {
-                    reset()
-                })
+                    reset();
+                });
             }
         },
         goToCollection(id) {
-            this.$router.push("/collection/"+id)
+            this.$router.push("/collection/"+id);
         },
         getContent(menu) {
             if (menu == "browse") {
@@ -176,12 +176,12 @@ export default {
             else if (menu == "mine") {
                 //todo not logged in
                 api.get("/collections/mine").catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
+                    let r = res.data;
                     if (r.success) {
-                        logger(r)
-                        this.list.mine = r.collections
+                        logger(r);
+                        this.list.mine = r.collections;
                     }
                     else {
                         this.$q.notify({
@@ -189,22 +189,22 @@ export default {
                             message: r.msg,
                             position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
-                })
+                });
             }
         }
     },
     created() {
-        let tab = this.$route.params.tab
+        let tab = this.$route.params.tab;
         if (tab && this.menuList.findIndex(v => v.value == tab) != -1) {
-            this.currentMenu = tab
+            this.currentMenu = tab;
         }
     },
     mounted() {
-        this.getContent(this.currentMenu)
+        this.getContent(this.currentMenu);
     }
-}
+};
 </script>
 
 <style>

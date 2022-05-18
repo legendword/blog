@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { formatViews, formatTimeElapsed } from "src/util"
+import { formatViews, formatTimeElapsed } from "src/util";
 export default {
     name: "PostListItem",
     props: {
@@ -32,13 +32,13 @@ export default {
     },
     methods: {
         calcTimeElapsed(n) {
-            return formatTimeElapsed(n)
+            return formatTimeElapsed(n);
         },
         calcNumber(n) {
-            return formatViews(n)
+            return formatViews(n);
         }
     }
-}
+};
 </script>
 
 <style>

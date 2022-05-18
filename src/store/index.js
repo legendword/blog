@@ -1,7 +1,7 @@
-import Vue from "vue"
-import Vuex from "vuex"
+import Vue from "vue";
+import Vuex from "vuex";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 /*
  * If not building with SSR mode, you can
@@ -34,34 +34,34 @@ export default new Vuex.Store({
     },
     mutations: {
         setAuthorization(state, val) {
-            state.authorization = val
+            state.authorization = val;
         },
         setHistoryLength(state, val) {
-            state.historyLength = val
+            state.historyLength = val;
         },
         setBarTitle(state, val = "Legendword Blog") {
-            state.barTitle = val
+            state.barTitle = val;
         },
         newAccount(state, val) {
             state.newAccount = val;
         },
         setMiniDrawerMode (state, val) {
-            state.miniDrawerMode = val
+            state.miniDrawerMode = val;
         },
         userLogIn (state, val) {
-            state.user = val
-            state.isLoggedIn = true
+            state.user = val;
+            state.isLoggedIn = true;
         },
         userLogOut (state) {
-            state.isLoggedIn = false
-            state.user = null
+            state.isLoggedIn = false;
+            state.user = null;
         },
         userDataChange (state, val) {
             if (state.user != null) {
                 for (let i in val) {
-                    state.user[i] = val[i]
+                    state.user[i] = val[i];
                 }
             }
         }
     }
-})
+});

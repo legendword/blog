@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { formatTimeElapsed, formatViews } from "../util"
+import { formatTimeElapsed, formatViews } from "../util";
 export default {
     name: "PostCard",
     props: {
@@ -44,16 +44,16 @@ export default {
     },
     methods: {
         previewContent(str) { //no longer needed
-            return str ? str.replace(/[#_:=>\`\\\*]/ig,"").trim() : ""
+            return str ? str.replace(/[#_:=>\`\\\*]/ig,"").trim() : "";
         },
         calcNumber(n) {
-            return formatViews(n)
+            return formatViews(n);
         },
         calcTimeElapsed(tm) {
-            return formatTimeElapsed(tm)
+            return formatTimeElapsed(tm);
         }
     }
-}
+};
 </script>
 
 <style lang="scss">

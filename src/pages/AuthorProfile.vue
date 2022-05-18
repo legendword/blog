@@ -53,7 +53,7 @@
 <script>
 import api from "../api";
 import { mapState } from "vuex";
-import PostCard from "../components/PostCard.vue"
+import PostCard from "../components/PostCard.vue";
 import UpcomingFeature from "src/components/UpcomingFeature.vue";
 import { apiError } from "src/apiError";
 import AuthorInfoEdit from "src/components/dialogs/AuthorInfoEdit.vue";
@@ -67,7 +67,7 @@ export default {
     meta() {
         return {
             title: this.author.displayName ? this.author.displayName : null
-        }
+        };
     },
     data() {
         return {
@@ -81,70 +81,70 @@ export default {
             authorNotFound: false,
             tab: "profile",
             hoverUnfollow: false
-        }
+        };
     },
     computed: {
         authorId () {
-            return this.$route.params.id
+            return this.$route.params.id;
         },
         isLoggedIn () {
-            return this.$store.state.isLoggedIn
+            return this.$store.state.isLoggedIn;
         },
         maxPages () {
-            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1)
+            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1);
         }
     },
     methods: {
         changePage(val) {
-            this.tabChange(this.tab)
+            this.tabChange(this.tab);
         },
         followAuthor() {
             api.post("/authors/"+this.author.id+"/follow").catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
-                    this.author.followerCount = parseInt(this.author.followerCount) + parseInt(r.delta)
-                    this.author.isFollowing = !this.author.isFollowing
+                    this.author.followerCount = parseInt(this.author.followerCount) + parseInt(r.delta);
+                    this.author.isFollowing = !this.author.isFollowing;
                 }
                 else this.$q.notify({ color: "negative", message: r.msg, position: "top", timeout: 2000 });
-            })
+            });
         },
         tabChange(val) {
-            let newPath = "/author/"+this.$route.params.id+"/"+val
+            let newPath = "/author/"+this.$route.params.id+"/"+val;
             if (this.$route.path != newPath) {
-                this.$router.replace(newPath)
+                this.$router.replace(newPath);
             }
             if (val == "posts") {
                 api.get("/posts/author/"+this.author.id, {
                     page: this.postPage
                 }).catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
-                    logger(r)
+                    let r = res.data;
+                    logger(r);
                     if (r.error) {
                         this.$q.notify({
                             color: "negative",
                             message: r.msg,
                             position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
                     else if (r.success) {
-                        this.postList = r.posts
+                        this.postList = r.posts;
                         if (r.postCount) {
-                            this.postCount = parseInt(r.postCount)
+                            this.postCount = parseInt(r.postCount);
                         }
                     }
-                })
+                });
             }
         },
         scrollHandler(details) {
-            let el = this.$refs.tab.$el
-            let offset = el.offsetTop
-            let tabTop = el.getBoundingClientRect().top
+            let el = this.$refs.tab.$el;
+            let offset = el.offsetTop;
+            let tabTop = el.getBoundingClientRect().top;
         },
         enterProfileEdit() {
             this.$q.dialog({
@@ -154,31 +154,31 @@ export default {
                     displayName: this.author.displayName
                 }
             }).onOk((val) => {
-                logger(val)
-                this.author.displayName = val.displayName
-                this.$store.commit("setBarTitle", this.$t("barTitle.author") + " / " + this.author.displayName)
-            })
+                logger(val);
+                this.author.displayName = val.displayName;
+                this.$store.commit("setBarTitle", this.$t("barTitle.author") + " / " + this.author.displayName);
+            });
         },
         loadInfo() {
             api.get("/authors/"+this.$route.params.id).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                this.author = {}
-                this.isCurrentUser = false
-                this.authorNotFound = false
+                let r = res.data;
+                this.author = {};
+                this.isCurrentUser = false;
+                this.authorNotFound = false;
                 if (r.success) {
-                    logger(r.author)
-                    this.author = r.author
-                    this.isCurrentUser = this.$store.state.isLoggedIn && r.author.userId == this.$store.state.user.id
-                    this.$store.commit("setBarTitle", this.$t("barTitle.author") + " / " + this.author.displayName)
-                    this.tabChange(this.tab)
-                    this.loaded = true
+                    logger(r.author);
+                    this.author = r.author;
+                    this.isCurrentUser = this.$store.state.isLoggedIn && r.author.userId == this.$store.state.user.id;
+                    this.$store.commit("setBarTitle", this.$t("barTitle.author") + " / " + this.author.displayName);
+                    this.tabChange(this.tab);
+                    this.loaded = true;
                 }
                 else {
                     if (r.errorType) {
                         if (r.errorType == "NotFound") {
-                            this.$router.push("/404")
+                            this.$router.push("/404");
                         }
                     }
                     else {
@@ -187,21 +187,21 @@ export default {
                             message: r.msg,
                             position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
-                    this.$store.commit("setBarTitle")
+                    this.$store.commit("setBarTitle");
                 }
-            })
+            });
         }
     },
     created() {
-        let tab = this.$route.params.tab
+        let tab = this.$route.params.tab;
         if (["profile", "posts"].includes(tab)) {
-            this.tab = tab
+            this.tab = tab;
         }
-        this.loadInfo()
+        this.loadInfo();
     }
-}
+};
 </script>
 
 <style>

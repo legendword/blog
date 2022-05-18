@@ -167,13 +167,15 @@ export default {
             this.$router.push("/collection/"+id);
         },
         getContent(menu) {
+            /*
             if (menu == "browse") {
 
             }
             else if (menu == "favorites") {
 
             }
-            else if (menu == "mine") {
+            else if (menu == "mine") { */
+            if (menu == "mine") {
                 //todo not logged in
                 api.get("/collections/mine").catch(err => {
                     apiError();

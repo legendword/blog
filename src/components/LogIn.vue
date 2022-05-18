@@ -1,5 +1,5 @@
 <template>
-    <q-dialog v-model="open" persistent transition-show="scale" transition-hide="scale">
+    <q-dialog :value="open" @input="dialogValueChange" persistent transition-show="scale" transition-hide="scale">
         <q-card class="loginDialog" v-if="signUp">
             <q-card-section>
                 <div class="text-h6">{{ $t("logIn.newAccount") }}</div>
@@ -69,6 +69,9 @@ export default {
         };
     },
     methods: {
+        dialogValueChange(val) {
+            if (!val) $emit("closed");
+        },
         forgotPass() {
             this.$q.dialog({
                 title: this.$t("passwordRecovery.prompt.title"),

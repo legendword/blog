@@ -129,8 +129,11 @@ export default {
             }).then(res => {
                 let r = res.data;
                 if (r.success) {
+                    // ! directly mutating props
+                    /* eslint-disable */
                     this.comment.likes += r.delta;
                     this.comment.userLiked = !this.comment.userLiked;
+                    /* eslint-enable */
                 }
                 else {
                     logger(r);

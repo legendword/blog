@@ -74,7 +74,6 @@ export default {
             author: {},
             user: {},
             loaded: false,
-            author: {},
             tab: "profile",
         };
     },

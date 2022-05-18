@@ -15,6 +15,10 @@ module.exports = {
         "vue"
     ],
     "rules": {
+        "no-undef": "warn",
+        "no-unused-vars": "warn",
+        "vue/multi-word-component-names": "off",
+        "vue/no-unused-components": "warn",
         "indent": [
             "error",
             4

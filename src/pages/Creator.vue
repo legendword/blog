@@ -121,9 +121,6 @@ export default {
                     }
                 });
             }
-            else if (val === "posts") {
-                
-            }
         },
         setData(r) {
             logger(r);

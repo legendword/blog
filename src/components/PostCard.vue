@@ -43,9 +43,6 @@ export default {
         }
     },
     methods: {
-        previewContent(str) { //no longer needed
-            return str ? str.replace(/[#_:=>\`\\\*]/ig,"").trim() : "";
-        },
         calcNumber(n) {
             return formatViews(n);
         },

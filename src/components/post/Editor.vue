@@ -118,21 +118,21 @@
 </template>
 
 <script>
-import api from 'src/api'
-import TagSelector from '../form/TagSelector.vue'
-import Toc from './Toc.vue'
-import { apiError } from 'src/apiError'
-// import MarkDownItVue from 'markdown-it-vue'
-import 'src/css/markdown-it-vue.css'
-// import markdownItVueOptions from 'src/markdownItVueOptions'
-import markdownIt from 'markdown-it'
-import logger from 'src/logger'
-import TableOfContents from 'src/helpers/TableOfContents'
+import api from "src/api"
+import TagSelector from "../form/TagSelector.vue"
+import Toc from "./Toc.vue"
+import { apiError } from "src/apiError"
+// import MarkDownItVue from "markdown-it-vue"
+import "src/css/markdown-it-vue.css"
+// import markdownItVueOptions from "src/markdownItVueOptions"
+import markdownIt from "markdown-it"
+import logger from "src/logger"
+import TableOfContents from "src/helpers/TableOfContents"
 const emptyValues = {
-    title: '',
-    description: '',
-    content: '',
-    category: '',
+    title: "",
+    description: "",
+    content: "",
+    category: "",
     tags: [],
     showTOC: true
 }
@@ -142,19 +142,19 @@ const limits = {
     tags: 5
 }
 const editorActions = [
-    {type: 'btn', icon: 'format_bold', text: '**', mode: 'sandwich'},
-    {type: 'btn', icon: 'format_italic', text: '*', mode: 'sandwich'},
-    {type: 'btn', icon: 'format_underlined', text: '++', mode: 'sandwich'},
-    {type: 'btn', icon: 'format_strikethrough', text: '~~', mode: 'sandwich'},
-    {type: 'separator'},
-    {type: 'btn', icon: 'format_quote', text: '> ', mode: 'linebegin'},
-    {type: 'btn', icon: 'format_list_bulleted', text: '- ', mode: 'linebegin'},
-    {type: 'btn', icon: 'format_list_numbered', text: '1. ', mode: 'linebegin'},
-    {type: 'btn', icon: 'code', mode: 'code'},
-    {type: 'separator'}
+    {type: "btn", icon: "format_bold", text: "**", mode: "sandwich"},
+    {type: "btn", icon: "format_italic", text: "*", mode: "sandwich"},
+    {type: "btn", icon: "format_underlined", text: "++", mode: "sandwich"},
+    {type: "btn", icon: "format_strikethrough", text: "~~", mode: "sandwich"},
+    {type: "separator"},
+    {type: "btn", icon: "format_quote", text: "> ", mode: "linebegin"},
+    {type: "btn", icon: "format_list_bulleted", text: "- ", mode: "linebegin"},
+    {type: "btn", icon: "format_list_numbered", text: "1. ", mode: "linebegin"},
+    {type: "btn", icon: "code", mode: "code"},
+    {type: "separator"}
 ]
 export default {
-    name: 'Editor',
+    name: "Editor",
     components: {
         TagSelector,
         Toc
@@ -169,41 +169,41 @@ export default {
             limits: limits,
             categoryList: [],
 
-            tab: 'editor',
+            tab: "editor",
 
-            headingSizes: ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'],
+            headingSizes: ["H1", "H2", "H3", "H4", "H5", "H6"],
             editorActions: editorActions,
             editorActionsPerformed: {
                 didPerform: false,
                 selectionRange: [0, 0]
             },
             insertImage: {
-                tab: 'url',
-                url: '',
-                label: ''
+                tab: "url",
+                url: "",
+                label: ""
             },
             insertLink: {
-                tab: 'url',
-                url: '',
-                label: ''
+                tab: "url",
+                url: "",
+                label: ""
             },
 
             // markdownItVueOptions: markdownItVueOptions,
-            htmlPreview: '',
+            htmlPreview: "",
             headings: [],
             goToNthHeading: TableOfContents.goToNthHeading
         }
     },
     watch: {
         tab(val) {
-            if (val == 'preview') {
+            if (val == "preview") {
                 this.generatePreview()
             }
         }
     },
     created() {
-        logger('Editor created')
-        api.get('/categories', {
+        logger("Editor created")
+        api.get("/categories", {
             newpost: true
         }).catch(err => {
             apiError()
@@ -212,12 +212,12 @@ export default {
             if (r.success) {
                 this.categoryList = r.categories.map(v => ({
                     ...v,
-                    name: this.$t('categories.'+v.name)
+                    name: this.$t("categories."+v.name)
                 }))
             }
             else {
                 this.$q.notify({
-                    color: 'negative',
+                    color: "negative",
                     message: r.msg,
                 })
             }
@@ -246,55 +246,55 @@ export default {
         },
 
         headingAction(ind) {
-            let text = ''
+            let text = ""
             for (let i=0;i<=ind;i++) {
-                text += '#'
+                text += "#"
             }
-            text += ' '
+            text += " "
             this.performMultilineInsertion(text)
         },
         insertImageAction() {
-            if (this.insertImage.url != '') {
-                if (this.insertImage.label != '') {
-                    this.performInsertion('![' + this.insertImage.label + '](' + this.insertImage.url + ')')
+            if (this.insertImage.url != "") {
+                if (this.insertImage.label != "") {
+                    this.performInsertion("![" + this.insertImage.label + "](" + this.insertImage.url + ")")
                 }
                 else {
-                    this.performInsertion('![](' + this.insertImage.url + ')')  
+                    this.performInsertion("![](" + this.insertImage.url + ")")  
                 }
             }
         },
         insertLinkAction() {
-            if (this.insertLink.url != '') {
-                if (this.insertLink.label != '') {
-                    this.performInsertion('[' + this.insertLink.label + '](' + this.insertLink.url + ')')
+            if (this.insertLink.url != "") {
+                if (this.insertLink.label != "") {
+                    this.performInsertion("[" + this.insertLink.label + "](" + this.insertLink.url + ")")
                 }
                 else {
-                    this.performInsertion('<' + this.insertLink.url + '>')
+                    this.performInsertion("<" + this.insertLink.url + ">")
                 }
             }
         },
         beforeInsertImageShow() {
-            this.insertImage.tab = 'url'
-            this.insertImage.url = ''
-            this.insertImage.label = ''
+            this.insertImage.tab = "url"
+            this.insertImage.url = ""
+            this.insertImage.label = ""
         },
         beforeInsertLinkShow() {
-            this.insertLink.tab = 'url'
-            this.insertLink.url = ''
-            this.insertLink.label = ''
+            this.insertLink.tab = "url"
+            this.insertLink.url = ""
+            this.insertLink.label = ""
         },
         performMultilineInsertion(text) {
             let textarea = this.$refs.contentInput.$refs.input
             let start = textarea.selectionStart
             let end = textarea.selectionEnd
             let content = this.values.content
-            let newContent = ''
+            let newContent = ""
 
-            let f = [content.lastIndexOf('\n', start-1)+1]
-            let j = content.indexOf('\n', start)
+            let f = [content.lastIndexOf("\n", start-1)+1]
+            let j = content.indexOf("\n", start)
             while (j < end && j != -1) {
                 f.push(j+1)
-                j = content.indexOf('\n', j+1)
+                j = content.indexOf("\n", j+1)
             }
             let lastPos = 0
             for (let i of f) {
@@ -323,18 +323,18 @@ export default {
             let start = textarea.selectionStart
             let end = textarea.selectionEnd
             let content = this.values.content
-            let newContent = ''
+            let newContent = ""
             let newSelectionRange = [start, end]
             let mode,text
-            if (action.mode == 'code') { //code can be block or inline
-                mode = (content.indexOf('\n', start) == -1 || content.indexOf('\n', start) >= end) ? 'sandwich' : 'blocksandwich'
-                text = mode == 'sandwich' ? '`' : '```'
+            if (action.mode == "code") { //code can be block or inline
+                mode = (content.indexOf("\n", start) == -1 || content.indexOf("\n", start) >= end) ? "sandwich" : "blocksandwich"
+                text = mode == "sandwich" ? "`" : "```"
             }
             else {
                 mode = action.mode
                 text = action.text
             }
-            if (mode == 'sandwich') {
+            if (mode == "sandwich") {
                 newContent = content.substring(0, start) + text + content.substring(start, end) + text + content.substring(end)
                 //todo add proper sandwich to multiline selection
                 newSelectionRange[1] += text.length*2
@@ -343,11 +343,11 @@ export default {
                 this.editorActionsPerformed.didPerform = true
                 this.values.content = newContent
             }
-            else if (mode == 'blocksandwich') {
-                let lineStart = content.lastIndexOf('\n', start-1)+1
-                let lineEnd = content.indexOf('\n', end)
+            else if (mode == "blocksandwich") {
+                let lineStart = content.lastIndexOf("\n", start-1)+1
+                let lineEnd = content.indexOf("\n", end)
                 if (lineEnd == -1) lineEnd = content.length
-                newContent = content.substring(0, lineStart) + text + '\n' + content.substring(lineStart, lineEnd) + '\n' + text + content.substring(lineEnd)
+                newContent = content.substring(0, lineStart) + text + "\n" + content.substring(lineStart, lineEnd) + "\n" + text + content.substring(lineEnd)
                 newSelectionRange[0] = lineStart
                 newSelectionRange[1] = lineEnd
 
@@ -355,7 +355,7 @@ export default {
                 this.editorActionsPerformed.didPerform = true
                 this.values.content = newContent
             }
-            else if (mode == 'linebegin') {
+            else if (mode == "linebegin") {
                 this.performMultilineInsertion(text)
             }
         },

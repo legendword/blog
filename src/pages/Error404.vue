@@ -6,7 +6,7 @@
       </div>
 
       <div class="text-h2" style="opacity:.4">
-        {{ $t('fourOFour.msg') }}
+        {{ $t("fourOFour.msg") }}
       </div>
 
       <q-btn
@@ -24,9 +24,9 @@
 
 <script>
 export default {
-  name: 'Error404',
+  name: "Error404",
   meta: {
-    title: '404'
+    title: "404"
   },
 }
 </script>

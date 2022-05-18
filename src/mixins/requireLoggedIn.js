@@ -1,4 +1,4 @@
-import NeedToLogIn from '../components/NeedToLogIn.vue'
+import NeedToLogIn from "../components/NeedToLogIn.vue"
 
 const requireLoggedIn = {
     components: { NeedToLogIn },

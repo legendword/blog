@@ -1,8 +1,8 @@
 <template>
     <q-page class="q-pa-md q-pa-sm-lg">
-        <h4 class="q-mb-lg">{{$t('tagPage.title')}}: {{ $route.params.name }}</h4>
+        <h4 class="q-mb-lg">{{$t("tagPage.title")}}: {{ $route.params.name }}</h4>
         <div class="row justify-between q-mb-md">
-            <div class="text-h5">{{$t('general.posts')}}</div>
+            <div class="text-h5">{{$t("general.posts")}}</div>
             <div>
                 <q-btn-dropdown flat icon="sort" color="primary" :label="$t('general.sortBy')">
                     <q-list>
@@ -27,12 +27,12 @@
 </template>
 
 <script>
-import { apiError } from 'src/apiError'
-import api from '../api'
-import PostCard from '../components/PostCard'
-import logger from 'src/logger'
+import { apiError } from "src/apiError"
+import api from "../api"
+import PostCard from "../components/PostCard"
+import logger from "src/logger"
 export default {
-    name: 'Tag',
+    name: "Tag",
     components: {
         PostCard
     },
@@ -43,11 +43,11 @@ export default {
     },
     data() {
         return {
-            sortBy: 'timeDesc',
+            sortBy: "timeDesc",
             sortOptions: [
-                {label: this.$t('general.sort.timeDesc'), value: 'timeDesc'},
-                {label: this.$t('general.sort.timeAsc'), value: 'timeAsc'},
-                {label: this.$t('general.sort.viewsDesc'), value: 'viewsDesc'}
+                {label: this.$t("general.sort.timeDesc"), value: "timeDesc"},
+                {label: this.$t("general.sort.timeAsc"), value: "timeAsc"},
+                {label: this.$t("general.sort.viewsDesc"), value: "viewsDesc"}
             ],
             postList: [],
             postCount: 0,
@@ -69,7 +69,7 @@ export default {
             this.getPosts()
         },
         getPosts() {
-            api.get('/posts/tag/'+encodeURIComponent(this.$route.params.name), {
+            api.get("/posts/tag/"+encodeURIComponent(this.$route.params.name), {
                 sort: this.sortBy,
                 page: this.postPage
             }).catch(err => {
@@ -84,11 +84,11 @@ export default {
                     }
                 }
                 else {
-                    if (r.errorType && r.errorType == 'NotFound') {
-                        this.$router.push('/404')
+                    if (r.errorType && r.errorType == "NotFound") {
+                        this.$router.push("/404")
                     }
                     else {
-                        this.$q.notify({color: 'negative', message: r.msg, position: 'top', timeout: 2000})
+                        this.$q.notify({color: "negative", message: r.msg, position: "top", timeout: 2000})
                     }
                 }
             })

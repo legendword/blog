@@ -7,12 +7,12 @@
                 <q-btn color="primary" flat dense :label="collection.username" :to="'/user/'+collection.userId" />
             </span>
             <span class="q-pr-md">
-                {{ $t('collection.lastUpdated')+':' }} {{ collection.updateTime ? formatTime(collection.updateTime) : '' }}
+                {{ $t("collection.lastUpdated")+":" }} {{ collection.updateTime ? formatTime(collection.updateTime) : "" }}
             </span>
         </div>
         <div class="row justify-between items-center q-mb-lg">
             <div class="text-h6">
-                {{ collection.postCount }} {{ $tc('computed.posts', collection.postCount) }}
+                {{ collection.postCount }} {{ $tc("computed.posts", collection.postCount) }}
             </div>
             <div v-show="isLoggedIn && user.id == collection.userId">
                 <q-btn color="accent" flat :label="$t('collection.editInfo')" @click="editCollectionInfo" />
@@ -32,16 +32,16 @@
 </template>
 
 <script>
-import api from '../api'
-import { formatTimeElapsed } from '../util'
-import { mapState } from 'vuex'
-import PostListItem from '../components/PostListItem.vue'
-import PostListSlideItem from '../components/PostListSlideItem.vue'
-import { apiError } from 'src/apiError'
-import CollectionInfoEdit from 'src/components/dialogs/CollectionInfoEdit.vue'
-import logger from 'src/logger'
+import api from "../api"
+import { formatTimeElapsed } from "../util"
+import { mapState } from "vuex"
+import PostListItem from "../components/PostListItem.vue"
+import PostListSlideItem from "../components/PostListSlideItem.vue"
+import { apiError } from "src/apiError"
+import CollectionInfoEdit from "src/components/dialogs/CollectionInfoEdit.vue"
+import logger from "src/logger"
 export default {
-    name: 'Collection',
+    name: "Collection",
     components: {
         PostListItem,
         PostListSlideItem
@@ -60,12 +60,12 @@ export default {
             managePostMode: false
         }
     },
-    computed: mapState(['isLoggedIn', 'user']),
+    computed: mapState(["isLoggedIn", "user"]),
     methods: {
         deletePost(pid) {
             let index = this.collection.posts.findIndex(v => v.postId == pid)
             if (index == -1) return
-            api.delete('/collections/'+this.collection.id+'/posts', {
+            api.delete("/collections/"+this.collection.id+"/posts", {
                 postId: pid
             }).catch(err => {
                 apiError()
@@ -77,7 +77,7 @@ export default {
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg
                     })
                 }
@@ -90,14 +90,14 @@ export default {
                 initialValues: {
                     title: this.collection.title,
                     description: this.collection.description,
-                    isPublic: this.collection.isPublic == '1'
+                    isPublic: this.collection.isPublic == "1"
                 },
                 id: this.collection.id
             }).onOk((val) => {
                 logger(val)
                 this.collection.title = val.title
                 this.collection.description = val.description
-                this.collection.isPublic = val.isPublic ? '1' : '0'
+                this.collection.isPublic = val.isPublic ? "1" : "0"
             })
         },
         formatTime(tm) {
@@ -106,35 +106,35 @@ export default {
         setData(r) {
             if (r.success) {
                 logger(r)
-                for (let i of ['postCount', 'updateTime']) {
+                for (let i of ["postCount", "updateTime"]) {
                     r.collection[i] = parseInt(r.collection[i])
                 }
                 this.collection = r.collection
-                this.$store.commit('setBarTitle', this.$t('collection.title') + ' / ' + r.collection.title)
+                this.$store.commit("setBarTitle", this.$t("collection.title") + " / " + r.collection.title)
             }
             else {
-                if (r.errorType && r.errorType == 'NotFound') {
-                    this.$router.push('/404')
+                if (r.errorType && r.errorType == "NotFound") {
+                    this.$router.push("/404")
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg
                     })
                 }
-                this.$store.commit('setBarTitle')
+                this.$store.commit("setBarTitle")
             }
         }
     },
     beforeRouteEnter (to, from, next) {
-        api.get('/collections/'+to.params.id).catch(err => {
+        api.get("/collections/"+to.params.id).catch(err => {
             apiError()
         }).then(res => {
             next(vm => vm.setData(res.data))
         })
     },
     beforeRouteUpdate (to, from, next) {
-        api.get('/collections/'+to.params.id).catch(err => {
+        api.get("/collections/"+to.params.id).catch(err => {
             apiError()
         }).then(res => {
             this.setData(res.data)

@@ -1,7 +1,7 @@
 <template>
     <q-page class="q-pa-md q-pa-sm-lg">
         <search-bar in-search-page :initial-query="searchquery" @search="newSearch"></search-bar>
-        <div class="q-my-md text-h5 text-weight-regular">{{ $t('search.searchResultFor') }} <span class="text-weight-bold">{{ actualQuery }}</span></div>
+        <div class="q-my-md text-h5 text-weight-regular">{{ $t("search.searchResultFor") }} <span class="text-weight-bold">{{ actualQuery }}</span></div>
         <q-tabs v-model="tab" align="left" no-caps class="bg-secondary text-white shadow-2">
             <q-tab name="posts" :label="$t('general.posts')" />
             <q-tab name="collections" :label="$t('general.collections')" />
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                     <div class="text-h6 q-pl-md" v-else>
-                        {{ $t('search.noResultsFound') }}
+                        {{ $t("search.noResultsFound") }}
                     </div>
                 </div>
             </q-tab-panel>
@@ -36,7 +36,7 @@
                         <CollectionListItem v-for="item in resultList.collections" :key="item.id" :collection="item" showUser></CollectionListItem>
                     </q-list>
                     <div class="text-h6 q-pl-md" v-else>
-                        {{ $t('search.noResultsFound') }}
+                        {{ $t("search.noResultsFound") }}
                     </div>
                 </div>
             </q-tab-panel>
@@ -49,7 +49,7 @@
                         <AuthorCard v-for="item in resultList.authors" :key="item.id" :author="item"></AuthorCard>
                     </div>
                     <div class="text-h6 q-pl-md" v-else>
-                        {{ $t('search.noResultsFound') }}
+                        {{ $t("search.noResultsFound") }}
                     </div>
                 </div>
             </q-tab-panel>
@@ -62,7 +62,7 @@
                         <UserCard v-for="item in resultList.users" :key="item.id" :user="item"></UserCard>
                     </div>
                     <div class="text-h6 q-pl-md" v-else>
-                        {{ $t('search.noResultsFound') }}
+                        {{ $t("search.noResultsFound") }}
                     </div>
                 </div>
             </q-tab-panel>
@@ -71,18 +71,18 @@
 </template>
 
 <script>
-import PostListItem from '../components/PostListItem.vue'
-import api from '../api'
-import SearchBar from '../components/SearchBar.vue'
-import AuthorCard from '../components/AuthorCard.vue'
-import UserCard from '../components/UserCard.vue'
-import CollectionListItem from '../components/CollectionListItem.vue'
-import { apiError } from 'src/apiError'
-import logger from 'src/logger'
+import PostListItem from "../components/PostListItem.vue"
+import api from "../api"
+import SearchBar from "../components/SearchBar.vue"
+import AuthorCard from "../components/AuthorCard.vue"
+import UserCard from "../components/UserCard.vue"
+import CollectionListItem from "../components/CollectionListItem.vue"
+import { apiError } from "src/apiError"
+import logger from "src/logger"
 export default {
-    name: 'Search',
+    name: "Search",
     meta: {
-        title: 'Search'
+        title: "Search"
     },
     components: {
         SearchBar,
@@ -93,8 +93,8 @@ export default {
     },
     data() {
         return {
-            actualQuery: '',
-            tab: 'posts',
+            actualQuery: "",
+            tab: "posts",
             resultList: {
                 posts: [],
                 authors: [],
@@ -118,7 +118,7 @@ export default {
     },
     watch: {
         tab: function () {
-            this.$router.replace('/search/'+this.tab+this.$route.fullPath.substring(this.$route.path.length))
+            this.$router.replace("/search/"+this.tab+this.$route.fullPath.substring(this.$route.path.length))
             this.newSearch(this.actualQuery)
         }
     },
@@ -131,7 +131,7 @@ export default {
             let currentTab = this.tab
             logger(currentTab)
             this.isLoading = true
-            api.get('/search/'+currentTab, {
+            api.get("/search/"+currentTab, {
                 query: val,
                 page: this.pagination[currentTab].page
             }).catch(err => {
@@ -148,9 +148,9 @@ export default {
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg,
-                        position: 'top',
+                        position: "top",
                         timeout: 2000
                     })
                 }

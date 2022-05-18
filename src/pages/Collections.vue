@@ -7,13 +7,13 @@
         <div class="row">
             <div class="col-auto col-md-2">
                 <q-list separator class="q-pr-md">
-                    <q-item-label header>{{$t('collections.menuHeader')}}</q-item-label>
+                    <q-item-label header>{{$t("collections.menuHeader")}}</q-item-label>
                     <q-item v-for="item in menuList" :key="item.value" clickable v-ripple :active="currentMenu == item.value" @click="menuChange(item.value)">
                         <q-item-section avatar>
                             <q-icon :name="item.icon" />
                         </q-item-section>
                         <q-item-section>
-                            {{$t('collections.menu.'+item.value)}}
+                            {{$t("collections.menu."+item.value)}}
                         </q-item-section>
                     </q-item>
                 </q-list>
@@ -21,16 +21,16 @@
         </div> -->
         <q-tab-panels v-model="currentMenu" animated>
             <q-tab-panel name="browse">
-                <div class="text-h5">{{$t('collections.title.browse')}}</div>
+                <div class="text-h5">{{$t("collections.title.browse")}}</div>
                 <upcoming-feature class="q-ma-md" version="0.5" />
             </q-tab-panel>
             <q-tab-panel name="favorites">
-                <div class="text-h5">{{$t('collections.title.favorites')}}</div>
+                <div class="text-h5">{{$t("collections.title.favorites")}}</div>
                 <upcoming-feature class="q-ma-md" version="0.5.x" />
             </q-tab-panel>
             <q-tab-panel name="mine">
                 <div class="q-my-md flex justify-between q-mx-md">
-                    <div class="text-h5">{{$t('collections.title.mine')}}</div>
+                    <div class="text-h5">{{$t("collections.title.mine")}}</div>
                     <div>
                         <q-btn-group flat>
                             <q-btn flat color="primary" :label="$q.screen.lt.sm?'':$t('collections.newCollection')" icon="add" @click="newCollection" />
@@ -46,7 +46,7 @@
                         <q-item>
                             <q-item-section>
                                 <q-item-label class="text-subtitle2 collectionItemTitle">{{ item.title }}</q-item-label>
-                                <q-item-label caption class="collectionItemInfo">{{ item.postCount }} {{ $tc('computed.posts', parseInt(item.postCount)) }}</q-item-label>
+                                <q-item-label caption class="collectionItemInfo">{{ item.postCount }} {{ $tc("computed.posts", parseInt(item.postCount)) }}</q-item-label>
                             </q-item-section>
                         </q-item>
                     </q-slide-item>
@@ -57,18 +57,18 @@
 </template>
 
 <script>
-import UpcomingFeature from 'src/components/UpcomingFeature.vue'
-import api from '../api'
-import { apiError } from 'src/apiError'
-import logger from 'src/logger'
+import UpcomingFeature from "src/components/UpcomingFeature.vue"
+import api from "../api"
+import { apiError } from "src/apiError"
+import logger from "src/logger"
 const titlePrefix = {
-    browse: 'Browse',
-    favorites: 'Favorite',
-    mine: 'My'
+    browse: "Browse",
+    favorites: "Favorite",
+    mine: "My"
 }
 export default {
     components: { UpcomingFeature },
-    name: 'Collections',
+    name: "Collections",
     meta() {
         return {
             title: `${titlePrefix[this.currentMenu]} Collections`
@@ -77,11 +77,11 @@ export default {
     data() {
         return {
             menuList: [
-                {value: 'browse', icon: 'ion-compass'},
-                {value: 'favorites', icon: 'ion-heart'},
-                {value: 'mine', icon: 'person'},
+                {value: "browse", icon: "ion-compass"},
+                {value: "favorites", icon: "ion-heart"},
+                {value: "mine", icon: "person"},
             ],
-            currentMenu: 'browse',
+            currentMenu: "browse",
             list: {
                 browse: [],
                 favorites: [],
@@ -91,8 +91,8 @@ export default {
     },
     watch: {
         currentMenu: function(val) {
-            if (this.$route.path != '/collections/'+val) {
-                this.$router.replace('/collections/'+val)
+            if (this.$route.path != "/collections/"+val) {
+                this.$router.replace("/collections/"+val)
             }
             this.getContent(val)
         }
@@ -100,18 +100,18 @@ export default {
     methods: {
         newCollection() {
             this.$q.dialog({
-                title: this.$t('collections.newCollection'),
+                title: this.$t("collections.newCollection"),
                 prompt: {
-                    model: '',
-                    label: this.$t('collections.newCollectionDialog.name'),
+                    model: "",
+                    label: this.$t("collections.newCollectionDialog.name"),
                     isValid: val => val.length > 0 && val.length <= 50,
-                    type: 'text'
+                    type: "text"
                 },
                 cancel: true,
                 persistent: true
             }).onOk(val => {
                 logger(val)
-                api.post('/collections', {
+                api.post("/collections", {
                     title: val
                 }).catch(err => {
                     apiError()
@@ -122,9 +122,9 @@ export default {
                     }
                     else {
                         this.$q.notify({
-                            color: 'negative',
+                            color: "negative",
                             message: r.msg,
-                            position: 'top',
+                            position: "top",
                             timeout: 2000
                         })
                     }
@@ -135,12 +135,12 @@ export default {
             let index = this.list.mine.findIndex(v => v.id == id)
             if (index != -1) {
                 this.$q.dialog({
-                    title: this.$t('collections.deleteCollectionDialog.title'),
-                    message: this.$t('collections.deleteCollectionDialog.msg'),
+                    title: this.$t("collections.deleteCollectionDialog.title"),
+                    message: this.$t("collections.deleteCollectionDialog.msg"),
                     cancel: true,
                     persistent: true
                 }).onOk(() => {
-                    api.delete('/collections/'+id).catch(err => {
+                    api.delete("/collections/"+id).catch(err => {
                         apiError()
                     }).then(res => {
                         let r = res.data
@@ -151,9 +151,9 @@ export default {
                         else {
                             reset()
                             this.$q.notify({
-                                color: 'negative',
+                                color: "negative",
                                 message: r.msg,
-                                position: 'top',
+                                position: "top",
                                 timeout: 2000
                             })
                         }
@@ -164,18 +164,18 @@ export default {
             }
         },
         goToCollection(id) {
-            this.$router.push('/collection/'+id)
+            this.$router.push("/collection/"+id)
         },
         getContent(menu) {
-            if (menu == 'browse') {
+            if (menu == "browse") {
 
             }
-            else if (menu == 'favorites') {
+            else if (menu == "favorites") {
 
             }
-            else if (menu == 'mine') {
+            else if (menu == "mine") {
                 //todo not logged in
-                api.get('/collections/mine').catch(err => {
+                api.get("/collections/mine").catch(err => {
                     apiError()
                 }).then(res => {
                     let r = res.data
@@ -185,9 +185,9 @@ export default {
                     }
                     else {
                         this.$q.notify({
-                            color: 'negative',
+                            color: "negative",
                             message: r.msg,
-                            position: 'top',
+                            position: "top",
                             timeout: 2000
                         })
                     }

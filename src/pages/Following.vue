@@ -2,7 +2,7 @@
     <q-page>
         <need-to-log-in v-if="!isLoggedIn" />
         <div v-else class="q-pa-lg">
-            <h4 class="q-mb-lg">{{ $t('followingPage.newPosts') }}</h4>
+            <h4 class="q-mb-lg">{{ $t("followingPage.newPosts") }}</h4>
             <div class="row q-col-gutter-md">
                 <q-intersection class="col-12 wideCard" v-for="item in postList" :key="item.postId">
                     <post-card :post="item"></post-card>
@@ -16,15 +16,15 @@
 </template>
 
 <script>
-import api from '../api'
-import PostCard from '../components/PostCard.vue'
-import { apiError } from 'src/apiError'
-import requireLoggedIn from 'src/mixins/requireLoggedIn'
+import api from "../api"
+import PostCard from "../components/PostCard.vue"
+import { apiError } from "src/apiError"
+import requireLoggedIn from "src/mixins/requireLoggedIn"
 
 export default {
-    name: 'Following',
+    name: "Following",
     meta: {
-        title: 'Feed'
+        title: "Feed"
     },
     components: {
         PostCard
@@ -48,7 +48,7 @@ export default {
             this.getPosts()
         },
         getPosts() {
-            api.get('/posts/following', {
+            api.get("/posts/following", {
                 page: this.postPage
             }).catch(err => {
                 apiError()
@@ -62,9 +62,9 @@ export default {
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg,
-                        position: 'top',
+                        position: "top",
                         timeout: 2000
                     })
                 }

@@ -1,8 +1,8 @@
 <template>
     <q-page class="q-pa-md q-pa-sm-lg">
-        <h4 class="q-mb-lg">{{$t('category.title')}}: {{ $te('categories.'+$route.params.name) ? $t('categories.'+$route.params.name) : $route.params.name }}</h4>
+        <h4 class="q-mb-lg">{{$t("category.title")}}: {{ $te("categories."+$route.params.name) ? $t("categories."+$route.params.name) : $route.params.name }}</h4>
         <div class="row justify-between q-mb-md">
-            <div class="text-h5">{{$t('general.posts')}}</div>
+            <div class="text-h5">{{$t("general.posts")}}</div>
             <div>
                 <q-btn-dropdown flat icon="sort" color="primary" :label="$t('general.sortBy')">
                     <q-list>
@@ -27,28 +27,28 @@
 </template>
 
 <script>
-import { apiError } from 'src/apiError'
-import api from '../api'
-import PostCard from '../components/PostCard'
-import logger from 'src/logger'
+import { apiError } from "src/apiError"
+import api from "../api"
+import PostCard from "../components/PostCard"
+import logger from "src/logger"
 export default {
-    name: 'Category',
+    name: "Category",
     components: {
         PostCard
     },
     meta() {
         return {
-            title: `Category: ${this.$te('categories.'+this.$route.params.name) ? this.$t('categories.'+this.$route.params.name) : this.$route.params.name}`
+            title: `Category: ${this.$te("categories."+this.$route.params.name) ? this.$t("categories."+this.$route.params.name) : this.$route.params.name}`
         }
     },
     data() {
         return {
             categoryNotFound: false,
-            sortBy: 'timeDesc',
+            sortBy: "timeDesc",
             sortOptions: [
-                {label: this.$t('general.sort.timeDesc'), value: 'timeDesc'},
-                {label: this.$t('general.sort.timeAsc'), value: 'timeAsc'},
-                {label: this.$t('general.sort.viewsDesc'), value: 'viewsDesc'}
+                {label: this.$t("general.sort.timeDesc"), value: "timeDesc"},
+                {label: this.$t("general.sort.timeAsc"), value: "timeAsc"},
+                {label: this.$t("general.sort.viewsDesc"), value: "viewsDesc"}
             ],
             postList: [],
             postCount: 0,
@@ -70,7 +70,7 @@ export default {
             this.getPosts()
         },
         getPosts() {
-            api.get('/posts/category/'+encodeURIComponent(this.$route.params.name), {
+            api.get("/posts/category/"+encodeURIComponent(this.$route.params.name), {
                 sort: this.sortBy,
                 page: this.postPage
             }).catch(err => {
@@ -85,11 +85,11 @@ export default {
                     }
                 }
                 else {
-                    if (r.errorType && r.errorType == 'NotFound') {
-                        this.$router.push('/404')
+                    if (r.errorType && r.errorType == "NotFound") {
+                        this.$router.push("/404")
                     }
                     else {
-                        this.$q.notify({color: 'negative', message: r.msg, position: 'top', timeout: 2000})
+                        this.$q.notify({color: "negative", message: r.msg, position: "top", timeout: 2000})
                     }
                 }
             })

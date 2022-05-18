@@ -3,7 +3,7 @@
         <div class="q-mt-lg row justify-between">
             <div>
                 <span class="text-h5">Comments</span>
-                <span class="q-ml-sm text-subtitle1 post-infoLine">{{commentCount ? '('+commentCount+')' : ''}}</span>
+                <span class="q-ml-sm text-subtitle1 post-infoLine">{{commentCount ? "("+commentCount+")" : ""}}</span>
             </div>
             <div>
                 <dropdown-select v-model="sortBy" :options="sortOptions" icon="sort" :label="$t('general.sortBy')" />
@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div v-else>
-                <div class="post-infoLine text-italic text-center">{{$t('post.commentLogIn')}}</div>
+                <div class="post-infoLine text-italic text-center">{{$t("post.commentLogIn")}}</div>
             </div>
         </div>
         <div class="q-mb-md">
@@ -31,12 +31,12 @@
 </template>
 
 <script>
-import { apiError } from 'src/apiError'
-import DropdownSelect from '../form/DropdownSelect.vue'
-import Comment from './Comment.vue'
-import api from 'src/api'
-import { mapState } from 'vuex'
-import logger from 'src/logger'
+import { apiError } from "src/apiError"
+import DropdownSelect from "../form/DropdownSelect.vue"
+import Comment from "./Comment.vue"
+import api from "src/api"
+import { mapState } from "vuex"
+import logger from "src/logger"
 export default {
     components: {
         DropdownSelect,
@@ -51,12 +51,12 @@ export default {
     data() {
         return {
             list: [],
-            sortBy: 'timeDesc',
+            sortBy: "timeDesc",
             sortOptions: [
-                {label: this.$t('general.sort.timeDesc'), value: 'timeDesc'},
-                {label: this.$t('general.sort.likesDesc'), value: 'likesDesc'}
+                {label: this.$t("general.sort.timeDesc"), value: "timeDesc"},
+                {label: this.$t("general.sort.likesDesc"), value: "likesDesc"}
             ],
-            newComment: ''
+            newComment: ""
         }
     },
     watch: {
@@ -71,21 +71,21 @@ export default {
         commentCount() {
             return this.list.length ?? null
         },
-        ...mapState(['isLoggedIn', 'user'])
+        ...mapState(["isLoggedIn", "user"])
     },
     created() {
         this.parse()
     },
     methods: {
         updateList() {
-            this.$emit('update')
+            this.$emit("update")
         },
         submit() {
-            if (this.newComment == '') {
-                this.$q.notify({ color: 'warning', message: this.$t('post.emptyCommentMsg') });
+            if (this.newComment == "") {
+                this.$q.notify({ color: "warning", message: this.$t("post.emptyCommentMsg") });
                 return;
             }
-            api.post('/comments', {
+            api.post("/comments", {
                 postId: this.postId,
                 content: this.newComment
             }).catch(err => {
@@ -94,12 +94,12 @@ export default {
                 let r = res.data
                 logger(r)
                 if (r.success) {
-                    this.$q.notify({ color: 'positive', message: this.$t('post.commentSuccess') });
-                    this.newComment = ''
+                    this.$q.notify({ color: "positive", message: this.$t("post.commentSuccess") });
+                    this.newComment = ""
                     this.updateList()
-                    // #todo: don't update everything
+                    // todo: don't update everything
                 }
-                else this.$q.notify({ color: 'negative', message: r.msg });
+                else this.$q.notify({ color: "negative", message: r.msg });
             })
         },
         parse() {
@@ -107,7 +107,7 @@ export default {
             let childComments = []
             for (let i of this.comments) {
                 i.userLiked = this.likedComments && this.likedComments.includes(i.id)
-                for (let tmp of ['id', 'parentId', 'likes', 'publishTime']) {
+                for (let tmp of ["id", "parentId", "likes", "publishTime"]) {
                     i[tmp] = parseInt(i[tmp])
                 }
                 if (i.parentId == 0) { //no parent comment
@@ -131,7 +131,7 @@ export default {
             this.list = this.sort(comments)
         },
         sort(cm) {
-            if (this.sortBy == 'timeDesc') {
+            if (this.sortBy == "timeDesc") {
                 cm = cm.sort((a,b) => {
                     if (a.publishTime < b.publishTime) return 1;
                     else if (a.publishTime == b.publishTime) return 0;
@@ -146,7 +146,7 @@ export default {
                 }
                 return cm
             }
-            else if (this.sortBy == 'likesDesc') {
+            else if (this.sortBy == "likesDesc") {
                 cm = cm.sort((a,b) => {
                     if (a.likes < b.likes) return 1;
                     else if (a.likes == b.likes) return 0;

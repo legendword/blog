@@ -13,8 +13,8 @@
 <script>
 export default {
     model: {
-        prop: 'value',
-        event: 'input'
+        prop: "value",
+        event: "input"
     },
     props: {
         icon: String,

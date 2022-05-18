@@ -24,11 +24,11 @@
 </template>
 
 <script>
-import api from 'src/api'
-import { apiError } from 'src/apiError'
-import logger from 'src/logger'
+import api from "src/api"
+import { apiError } from "src/apiError"
+import logger from "src/logger"
 export default {
-    name: 'CreatorCommentList',
+    name: "CreatorCommentList",
     data() {
         return {
             comments: [],
@@ -43,7 +43,7 @@ export default {
     },
     methods: {
         loadComments() {
-            api.get('/comments/author', {
+            api.get("/comments/author", {
                 page: this.page,
             }).catch(err => {
                 apiError()
@@ -59,7 +59,7 @@ export default {
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg
                     })
                 }

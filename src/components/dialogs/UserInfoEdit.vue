@@ -2,7 +2,7 @@
     <q-dialog ref="dialog" @hide="onHideDialog">
         <q-card class="q-dialog-plugin" style="width: 800px; max-width: 80vw;">
             <q-card-section class="row items-center q-pb-none">
-                <div class="text-h6">{{$t('userProfile.editProfile')}}</div>
+                <div class="text-h6">{{$t("userProfile.editProfile")}}</div>
                 <q-space />
                 <q-btn icon="close" flat round dense @click="onClickCancel" />
             </q-card-section>
@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import api from 'src/api'
-import { apiError } from 'src/apiError'
+import api from "src/api"
+import { apiError } from "src/apiError"
 // following template https://v1.quasar.dev/quasar-plugins/dialog#invoking-custom-component
 export default {
     props: {
@@ -29,9 +29,9 @@ export default {
             values: {...this.initialValues},
             rules: {
                 username: [
-                    val => val && val.length > 0 || this.$t('forms.requiredField'),
-                    val => val.length <= 20 || this.$t('forms.maxChar', ['20']),
-                    val => /^[a-zA-Z ]+$/.test(val) || this.$t('forms.onlyLettersAndSpaces'),
+                    val => val && val.length > 0 || this.$t("forms.requiredField"),
+                    val => val.length <= 20 || this.$t("forms.maxChar", ["20"]),
+                    val => /^[a-zA-Z ]+$/.test(val) || this.$t("forms.onlyLettersAndSpaces"),
                     this.checkUsername
                 ],
             }
@@ -49,7 +49,7 @@ export default {
                             resolve(true)
                         }
                         else {
-                            resolve(this.$t('forms.nameTaken'))
+                            resolve(this.$t("forms.nameTaken"))
                         }
                     }
                     else {
@@ -66,7 +66,7 @@ export default {
             this.$refs.dialog.hide()
         },
         onHideDialog() {
-            this.$emit('hide')
+            this.$emit("hide")
         },
         onClickCancel() {
             this.hide()
@@ -88,29 +88,29 @@ export default {
         },
         realSubmit() {
             this.onSubmit().then((msg) => {
-                this.$emit('ok', {...this.values})
+                this.$emit("ok", {...this.values})
                 this.hide()
                 this.$q.notify({
-                    color: 'positive',
+                    color: "positive",
                     message: msg
                 })
             }, (msg) => {
                 this.$q.notify({
-                    color: 'negative',
+                    color: "negative",
                     message: msg
                 })
             })
         },
         onSubmit() {
             return new Promise((resolve, reject) => {
-                api.put('/user/info', {
+                api.put("/user/info", {
                     username: this.values.username
                 }).catch(err => {
                     apiError()
                 }).then(res => {
                     let r = res.data
                     if (r.success) {
-                        resolve(this.$t('userProfile.profileUpdated'))
+                        resolve(this.$t("userProfile.profileUpdated"))
                     }
                     else {
                         reject(r.msg)

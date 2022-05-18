@@ -14,10 +14,10 @@
 
 <script>
 export default {
-    name: 'TagSelector',
+    name: "TagSelector",
     model: {
-        prop: 'value',
-        event: 'input'
+        prop: "value",
+        event: "input"
     },
     props: {
         componentClass: String,
@@ -26,19 +26,19 @@ export default {
     },
     data() {
         return {
-            newTag: ''
+            newTag: ""
         }
     },
     methods: {
         removeTag(tag) {
-            this.$emit('input', this.value.filter(v => v != tag))
+            this.$emit("input", this.value.filter(v => v != tag))
         },
         addTag() {
             if (this.value.includes(this.newTag) || this.value.length == this.limit) {
                 return
             }
-            this.$emit('input', [...this.value, this.newTag])
-            this.newTag = ''
+            this.$emit("input", [...this.value, this.newTag])
+            this.newTag = ""
         },
         newTagKeydown(ev) {
             if (ev.keyCode == 13) { //Enter
@@ -46,7 +46,7 @@ export default {
             }
             else if (ev.keyCode == 8) { //Backspace
                 if (this.newTag.length == 0 && this.value.length > 0) {
-                    this.$emit('input', this.value.filter((v, ind, arr) => ind != arr.length - 1))
+                    this.$emit("input", this.value.filter((v, ind, arr) => ind != arr.length - 1))
                 }
             }
         }

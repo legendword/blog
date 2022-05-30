@@ -24,52 +24,52 @@
 </template>
 
 <script>
-import api from 'src/api'
-import { apiError } from 'src/apiError'
-import logger from 'src/logger'
+import api from "src/api";
+import { apiError } from "src/apiError";
+import logger from "src/logger";
 export default {
-    name: 'CreatorCommentList',
+    name: "CreatorCommentList",
     data() {
         return {
             comments: [],
             page: 1,
             maxPages: 0
-        }
+        };
     },
     watch: {
         page() {
-            this.loadComments()
+            this.loadComments();
         }
     },
     methods: {
         loadComments() {
-            api.get('/comments/author', {
+            api.get("/comments/author", {
                 page: this.page,
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
-                    this.comments = r.comments
+                    this.comments = r.comments;
                     if (r.commentCount) {
-                        let commentCount = parseInt(r.commentCount)
-                        this.maxPages = Math.floor(commentCount / 10) + (commentCount % 10 == 0 ? 0 : 1)
+                        let commentCount = parseInt(r.commentCount);
+                        this.maxPages = Math.floor(commentCount / 10) + (commentCount % 10 == 0 ? 0 : 1);
                     }
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg
-                    })
+                    });
                 }
-            })
+            });
         }
     },
     created() {
-        this.loadComments()
+        this.loadComments();
     }
-}
+};
 </script>
 
 <style>

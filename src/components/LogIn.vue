@@ -1,14 +1,14 @@
 <template>
-    <q-dialog v-model="open" persistent transition-show="scale" transition-hide="scale">
+    <q-dialog :value="open" @input="dialogValueChange" persistent transition-show="scale" transition-hide="scale">
         <q-card class="loginDialog" v-if="signUp">
             <q-card-section>
-                <div class="text-h6">{{ $t('logIn.newAccount') }}</div>
+                <div class="text-h6">{{ $t("logIn.newAccount") }}</div>
             </q-card-section>
             <q-card-section>
                 <q-form class="q-gutter-md q-px-md">
                     <q-input type="email" v-model="email" lazy-rules :rules="emailRules" :label="$t('general.email')"></q-input>
                     <q-input v-model="password" type="password" lazy-rules :rules="passwordRules" :label="$t('general.password')"></q-input>
-                    <p><span style="line-height: 36px;padding-right: 5px;">{{ $t('logIn.alreadyAccountPrompt') }}</span> <q-btn :label="$t('logIn.alreadyAccountSignIn')" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
+                    <p><span style="line-height: 36px;padding-right: 5px;">{{ $t("logIn.alreadyAccountPrompt") }}</span> <q-btn :label="$t('logIn.alreadyAccountSignIn')" color="primary" flat @click="toggleSignUp"></q-btn>.</p>
                 </q-form>
             </q-card-section>
             <q-card-actions align="right" class="q-pa-lg">
@@ -18,7 +18,7 @@
         </q-card>
         <q-card class="loginDialog" v-else>
             <q-card-section>
-                <div class="text-h6">{{ $t('logIn.signIn') }}</div>
+                <div class="text-h6">{{ $t("logIn.signIn") }}</div>
             </q-card-section>
             <q-card-section>
                 <q-form class="q-gutter-md q-px-md">
@@ -40,11 +40,11 @@
 </template>
 
 <script>
-import { apiError } from 'src/apiError'
-import api from '../api'
-import logger from 'src/logger'
+import { apiError } from "src/apiError";
+import api from "../api";
+import logger from "src/logger";
 export default {
-    name: 'LogIn',
+    name: "LogIn",
     props: {
         open: {
             type: Boolean,
@@ -57,138 +57,141 @@ export default {
     data() {
         return {
             signUp: false,
-            email: '',
-            password: '',
+            email: "",
+            password: "",
             rememberme: false,
             emailRules: [
-                val => val && val.length > 0 || this.$t('forms.requiredField')
+                val => val && val.length > 0 || this.$t("forms.requiredField")
             ],
             passwordRules: [
-                val => val && val.length > 0 || this.$t('forms.requiredField')
+                val => val && val.length > 0 || this.$t("forms.requiredField")
             ]
-        }
+        };
     },
     methods: {
+        dialogValueChange(val) {
+            if (!val) $emit("closed");
+        },
         forgotPass() {
             this.$q.dialog({
-                title: this.$t('passwordRecovery.prompt.title'),
-                message: this.$t('passwordRecovery.prompt.msg'),
+                title: this.$t("passwordRecovery.prompt.title"),
+                message: this.$t("passwordRecovery.prompt.msg"),
                 prompt: {
                     model: this.email,
-                    type: 'text'
+                    type: "text"
                 },
                 cancel: true,
                 persistent: true
             }).onOk(data => {
-                api.post('/user/recoverPassword', {
+                api.post("/user/recoverPassword", {
                     email: data
                 }).catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
-                    logger(r)
+                    let r = res.data;
+                    logger(r);
                     if (r.success) {
                         this.$q.dialog({
-                            title: this.$t('passwordRecovery.prompt.title'),
-                            message: this.$t('passwordRecovery.prompt.successMsg')
-                        })
+                            title: this.$t("passwordRecovery.prompt.title"),
+                            message: this.$t("passwordRecovery.prompt.successMsg")
+                        });
                     }
                     else {
                         this.$q.notify({
-                            color: 'negative',
+                            color: "negative",
                             message: r.msg,
-                            position: 'top',
+                            position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
-                })
-            })
+                });
+            });
         },
         toggleSignUp() {
-            this.signUp = !this.signUp
+            this.signUp = !this.signUp;
         },
         resetFields() {
-            this.password = this.email = ''
-            this.signUp = false
+            this.password = this.email = "";
+            this.signUp = false;
         },
         backToHome() {
-            this.resetFields()
+            this.resetFields();
             if (this.noBackToHome) {
-                this.$emit('closed')
+                this.$emit("closed");
             }
             else {
-                if (this.$route.path!='/') this.$router.push('/')
-                this.$emit('closed')
+                if (this.$route.path!="/") this.$router.push("/");
+                this.$emit("closed");
             }
         },
         submitSignUp() {
-            api.post('/user/signUp', {
+            api.post("/user/signUp", {
                 email: this.email,
                 password: this.password
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
-                    this.$store.commit('newAccount', this.email)
-                    this.resetFields()
-                    this.$emit('closed')
-                    this.$router.push('/newAccount')
+                    this.$store.commit("newAccount", this.email);
+                    this.resetFields();
+                    this.$emit("closed");
+                    this.$router.push("/newAccount");
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg,
-                        position: 'top',
+                        position: "top",
                         timeout: 2000
-                    })
+                    });
                 }
-            })
+            });
         },
         submitLogIn() {
-            api.post('/user/signIn', {
+            api.post("/user/signIn", {
                 email: this.email,
                 password: this.password,
                 rememberme: this.rememberme
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 logger(r);
                 if (r.invalid) {
                     this.$q.notify({
-                        color: 'negative',
-                        message: this.$t('logIn.incorrect'),
-                        position: 'top',
+                        color: "negative",
+                        message: this.$t("logIn.incorrect"),
+                        position: "top",
                         timeout: 2000
-                    })
+                    });
                 }
                 else if (r.success) {
                     if (r.jwt) {
-                        // api.instance.defaults.headers.common['Authorization'] = 'Bearer ' + r.jwt
-                        this.$store.commit('setAuthorization', 'Bearer ' + r.jwt)
+                        // api.instance.defaults.headers.common["Authorization"] = "Bearer " + r.jwt
+                        this.$store.commit("setAuthorization", "Bearer " + r.jwt);
                     }
-                    this.$store.commit('userLogIn', r.user)
+                    this.$store.commit("userLogIn", r.user);
                     if (r.identifier && r.token) {
-                        this.$q.localStorage.set('token', r.token)
-                        this.$q.localStorage.set('identifier', r.identifier)
+                        this.$q.localStorage.set("token", r.token);
+                        this.$q.localStorage.set("identifier", r.identifier);
                     }
-                    this.resetFields()
-                    this.$emit('closed')
+                    this.resetFields();
+                    this.$emit("closed");
                     //this.$router.go(0)
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg,
-                        position: 'top',
+                        position: "top",
                         timeout: 2000
-                    })
+                    });
                 }
-            })
+            });
         }
     }
-}
+};
 </script>
 
 <style scoped>

@@ -1,7 +1,7 @@
 <template>
     <q-page class="q-pa-lg">
         <q-banner class="bg-grey-3 q-my-md" v-show="isLoggedIn && user.isAuthor == '0'">
-            {{ $t('compose.notAuthorMsg') }}
+            {{ $t("compose.notAuthorMsg") }}
             <!-- #todo: becomeAnAuthor -->
         </q-banner>
         <div v-show="isLoggedIn && user.isAuthor == '1'">
@@ -18,48 +18,48 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import LogIn from '../components/LogIn.vue'
-import api from '../api'
-import { apiError } from 'src/apiError'
-import Editor from 'src/components/post/Editor.vue'
-import logger from 'src/logger'
+import { mapState } from "vuex";
+import LogIn from "../components/LogIn.vue";
+import api from "../api";
+import { apiError } from "src/apiError";
+import Editor from "src/components/post/Editor.vue";
+import logger from "src/logger";
 export default {
-    name: 'Compose',
+    name: "Compose",
     components: {
         LogIn,
         Editor
     },
     meta: {
-        title: 'Compose'
+        title: "Compose"
     },
     data() {
         return {
             safeToLeave: false
-        }
+        };
     },
-    computed: mapState(['user', 'isLoggedIn']),
+    computed: mapState(["user", "isLoggedIn"]),
     methods: {
         submitPost() {
-            let post = {...this.$refs.editor.values}
+            let post = {...this.$refs.editor.values};
             // logger(post)
             // return
 
-            if (post.title.length == 0 || post.content.length == 0 || post.description.length == 0 || post.category == '') {
+            if (post.title.length == 0 || post.content.length == 0 || post.description.length == 0 || post.category == "") {
                 this.$q.notify({
-                    type: 'warning',
-                    message: this.$t('compose.fieldRequired')
-                })
-                return
+                    type: "warning",
+                    message: this.$t("compose.fieldRequired")
+                });
+                return;
             }
             if (post.title.length > 50 || post.description.length > 100) {
                 this.$q.notify({
-                    type: 'warning',
-                    message: this.$t('compose.exceedsMaxLength'),
-                })
-                return
+                    type: "warning",
+                    message: this.$t("compose.exceedsMaxLength"),
+                });
+                return;
             }
-            api.post('/posts', {
+            api.post("/posts", {
                 title: post.title,
                 description: post.description,
                 content: post.content,
@@ -67,48 +67,48 @@ export default {
                 tags: post.tags,
                 showTOC: post.showTOC ? 1 : 0
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
                     this.$q.notify({
-                        color: 'positive',
-                        message: this.$t('compose.postIsPublished'),
-                    })
+                        color: "positive",
+                        message: this.$t("compose.postIsPublished"),
+                    });
                     //after post publish
-                    this.safeToLeave = true
+                    this.safeToLeave = true;
                     // #todo: provide popup to copy link
-                    this.$router.push('/me')
+                    this.$router.push("/me");
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg,
-                    })
+                    });
                 }
-            })
+            });
         }
     },
     created() {
-        this.$store.commit('setBarTitle', this.$t('compose.barTitle'))
+        this.$store.commit("setBarTitle", this.$t("compose.barTitle"));
     },
     beforeRouteLeave(to, from, next) {
         if (this.safeToLeave) next();
         else {
             this.$q.dialog({
-                title: 'Confirm',
-                message: 'Do you really want to leave? Your changes will be lost.',
+                title: "Confirm",
+                message: "Do you really want to leave? Your changes will be lost.",
                 cancel: true,
                 persistent: true
             }).onOk(() => {
-                next()
+                next();
             }).onCancel(() => {
-                next(false)
-            })
+                next(false);
+            });
         }
     }
-}
+};
 </script>
 
 <style lang="scss">

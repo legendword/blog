@@ -149,17 +149,17 @@
 </template>
 
 <script>
-import AuthorCard from '../components/AuthorCard.vue'
-import UserCard from '../components/UserCard.vue'
-import { mapState } from 'vuex'
-import api from '../api'
-import NeedToLogIn from '../components/NeedToLogIn.vue'
-import UpcomingFeature from '../components/UpcomingFeature.vue'
-import { formatTimeElapsed } from '../util'
-import { apiError } from 'src/apiError'
-import logger from 'src/logger'
+import AuthorCard from "../components/AuthorCard.vue";
+import UserCard from "../components/UserCard.vue";
+import { mapState } from "vuex";
+import api from "../api";
+import NeedToLogIn from "../components/NeedToLogIn.vue";
+import UpcomingFeature from "../components/UpcomingFeature.vue";
+import { formatTimeElapsed } from "../util";
+import { apiError } from "src/apiError";
+import logger from "src/logger";
 export default {
-    name: 'Me',
+    name: "Me",
     components: {
         NeedToLogIn,
         AuthorCard,
@@ -170,8 +170,8 @@ export default {
         return {
             author: {},
             user: {},
-            creatorTab: 'overview',
-            creatorTabs: ['overview', 'posts', 'comments'],
+            creatorTab: "overview",
+            creatorTabs: ["overview", "posts", "comments"],
             creatorBadges: {
                 comments: 0
             },
@@ -192,181 +192,181 @@ export default {
             },
             creatorPostLoading: false,
             creatorCommentLoading: false
-        }
+        };
     },
     computed: {
-        ...mapState(['isLoggedIn'])
+        ...mapState(["isLoggedIn"])
     },
     watch: {
         creatorTab: function(val) {
-            this.fetchCreatorTab(val)
+            this.fetchCreatorTab(val);
         }
     },
     methods: {
         formatTime(n) {
-            return formatTimeElapsed(parseInt(n))
+            return formatTimeElapsed(parseInt(n));
         },
         creatorPageChange(val) {
-            this.fetchCreatorTab(this.creatorTab)
+            this.fetchCreatorTab(this.creatorTab);
         },
         fetchCreatorTab(val) {
             if (this.creatorBadges[val]) {
-                this.creatorBadges[val] = 0
+                this.creatorBadges[val] = 0;
             }
-            if (val == 'overview') {
-                api.get('/authors/stats').catch(err => {
-                    apiError()
+            if (val == "overview") {
+                api.get("/authors/stats").catch(err => {
+                    apiError();
                 }).then(res => {
-                    let r = res.data
-                    logger(r)
+                    let r = res.data;
+                    logger(r);
                     if (r.success) {
-                        let stats = []
+                        let stats = [];
                         for (let i in r.stats) {
                             stats.push({
                                 label: i,
                                 value: parseInt(r.stats[i])
-                            })
+                            });
                         }
-                        this.creator.stats = stats
+                        this.creator.stats = stats;
                     }
                     else {
-                        logger(r)
+                        logger(r);
                         this.$q.notify({
-                            color: 'negative',
+                            color: "negative",
                             message: r.msg ? r.msg : r,
-                            position: 'top',
+                            position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
-                })
+                });
             }
-            else if (val == 'posts') {
-                this.creatorPostLoading = true
-                api.get('/posts/author/'+this.author.id, {
+            else if (val == "posts") {
+                this.creatorPostLoading = true;
+                api.get("/posts/author/"+this.author.id, {
                     page: this.creatorPagination.posts.current
                 }).catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
+                    let r = res.data;
                     if (r.success) {
-                        this.creator.posts = r.posts
+                        this.creator.posts = r.posts;
                         if (r.postCount) {
-                            let postCount = parseInt(r.postCount)
-                            this.creatorPagination.posts.max = Math.floor(postCount / 10) + (postCount % 10 == 0 ? 0 : 1)
+                            let postCount = parseInt(r.postCount);
+                            this.creatorPagination.posts.max = Math.floor(postCount / 10) + (postCount % 10 == 0 ? 0 : 1);
                         }
                     }
                     else {
                         this.$q.notify({
-                            color: 'negative',
+                            color: "negative",
                             message: r.msg,
-                            position: 'top',
+                            position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
-                    this.creatorPostLoading = false
-                })
+                    this.creatorPostLoading = false;
+                });
             }
-            else if (val == 'comments') {
-                this.creatorCommentLoading = true
-                api.get('/comments/author', {
+            else if (val == "comments") {
+                this.creatorCommentLoading = true;
+                api.get("/comments/author", {
                     page: this.creatorPagination.comments.current
                 }).catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
-                    logger(r)
+                    let r = res.data;
+                    logger(r);
                     if (r.success) {
-                        this.creator.comments = r.comments
+                        this.creator.comments = r.comments;
                         if (r.commentCount) {
-                            let commentCount = parseInt(r.commentCount)
-                            this.creatorPagination.comments.max = Math.floor(commentCount / 10) + (commentCount % 10 == 0 ? 0 : 1)
+                            let commentCount = parseInt(r.commentCount);
+                            this.creatorPagination.comments.max = Math.floor(commentCount / 10) + (commentCount % 10 == 0 ? 0 : 1);
                         }
                     }
                     else {
                         this.$q.notify({
-                            color: 'negative',
+                            color: "negative",
                             message: r.msg,
-                            position: 'top',
+                            position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
-                    this.creatorCommentLoading = false
-                })
+                    this.creatorCommentLoading = false;
+                });
             }
         },
         removePost(postId, postTitle) {
             this.$q.dialog({
-                title: this.$t('me.removePostDialog.title'),
-                message: this.$t('me.removePostDialog.msg') + postTitle,
+                title: this.$t("me.removePostDialog.title"),
+                message: this.$t("me.removePostDialog.msg") + postTitle,
                 cancel: true,
                 persistent: true
             }).onOk(() => {
-                api.delete('/posts/'+postId).catch(err => {
-                    apiError()
+                api.delete("/posts/"+postId).catch(err => {
+                    apiError();
                 }).then(res => {
-                    let r = res.data
+                    let r = res.data;
                     if (r.success) {
                         this.$q.notify({
-                            color: 'positive',
-                            message: this.$t('me.removePostDialog.success'),
-                            position: 'top',
+                            color: "positive",
+                            message: this.$t("me.removePostDialog.success"),
+                            position: "top",
                             timeout: 2000
-                        })
-                        this.fetchCreatorTab('posts')
+                        });
+                        this.fetchCreatorTab("posts");
                     }
                     else {
                         this.$q.notify({
-                            color: 'negative',
+                            color: "negative",
                             message: r.msg,
-                            position: 'top',
+                            position: "top",
                             timeout: 2000
-                        })
+                        });
                     }
-                })
-            })
+                });
+            });
         },
         setData(r) {
-            logger(r)
+            logger(r);
             if (r.isLoggedIn) {
-                this.user = r.user
-                this.user.isAuthor = this.user.isAuthor == '1'
+                this.user = r.user;
+                this.user.isAuthor = this.user.isAuthor == "1";
                 if (this.user.isAuthor) {
-                    this.author = r.author
-                    this.fetchCreatorTab(this.creatorTab)
+                    this.author = r.author;
+                    this.fetchCreatorTab(this.creatorTab);
 
-                    api.get('/badges').then(res => {
-                        let r = res.data
+                    api.get("/badges").then(res => {
+                        let r = res.data;
                         if (r.success) {
-                            this.creatorBadges.comments = r.badges.comments
-                            logger(this.creatorBadges['comments'])
+                            this.creatorBadges.comments = r.badges.comments;
+                            logger(this.creatorBadges["comments"]);
                         }
-                    })
+                    });
                 }
             }
             else {
-                this.$q.notify({ color: 'negative', message: 'Not Logged In', position: 'top', timeout: 2000 });
+                this.$q.notify({ color: "negative", message: "Not Logged In", position: "top", timeout: 2000 });
             }
         }
     },
     beforeRouteEnter (to, from, next) {
-        api.get('/user/info', {
+        api.get("/user/info", {
             detailed: true
         }).catch(err => {
-            apiError()
-            next()
+            apiError();
+            next();
         }).then(res => {
-            next(vm => vm.setData(res.data))
-        })
+            next(vm => vm.setData(res.data));
+        });
     },
     beforeRouteUpdate (to, from, next) {
-        api.get('/user/info', {
+        api.get("/user/info", {
             detailed: true
         }).then(res => {
-            this.setData(res.data)
-            next()
-        })
+            this.setData(res.data);
+            next();
+        });
     }
-}
+};
 </script>
 
 <style>

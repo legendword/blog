@@ -1,11 +1,11 @@
 <template>
-    <div class="q-mt-md text-center text-grey-4 loading-text">{{ $t('general.loading') }}</div>
+    <div class="q-mt-md text-center text-grey-4 loading-text">{{ $t("general.loading") }}</div>
 </template>
 
 <script>
 export default {
-    name: 'LoadingMessage'
-}
+    name: "LoadingMessage"
+};
 </script>
 
 <style>

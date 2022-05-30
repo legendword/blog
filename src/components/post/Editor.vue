@@ -118,43 +118,43 @@
 </template>
 
 <script>
-import api from 'src/api'
-import TagSelector from '../form/TagSelector.vue'
-import Toc from './Toc.vue'
-import { apiError } from 'src/apiError'
-// import MarkDownItVue from 'markdown-it-vue'
-import 'src/css/markdown-it-vue.css'
-// import markdownItVueOptions from 'src/markdownItVueOptions'
-import markdownIt from 'markdown-it'
-import logger from 'src/logger'
-import TableOfContents from 'src/helpers/TableOfContents'
+import api from "src/api";
+import TagSelector from "../form/TagSelector.vue";
+import Toc from "./Toc.vue";
+import { apiError } from "src/apiError";
+// import MarkDownItVue from "markdown-it-vue"
+import "src/css/markdown-it-vue.css";
+// import markdownItVueOptions from "src/markdownItVueOptions"
+import markdownIt from "markdown-it";
+import logger from "src/logger";
+import TableOfContents from "src/helpers/TableOfContents";
 const emptyValues = {
-    title: '',
-    description: '',
-    content: '',
-    category: '',
+    title: "",
+    description: "",
+    content: "",
+    category: "",
     tags: [],
     showTOC: true
-}
+};
 const limits = {
     title: 50,
     description: 100,
     tags: 5
-}
+};
 const editorActions = [
-    {type: 'btn', icon: 'format_bold', text: '**', mode: 'sandwich'},
-    {type: 'btn', icon: 'format_italic', text: '*', mode: 'sandwich'},
-    {type: 'btn', icon: 'format_underlined', text: '++', mode: 'sandwich'},
-    {type: 'btn', icon: 'format_strikethrough', text: '~~', mode: 'sandwich'},
-    {type: 'separator'},
-    {type: 'btn', icon: 'format_quote', text: '> ', mode: 'linebegin'},
-    {type: 'btn', icon: 'format_list_bulleted', text: '- ', mode: 'linebegin'},
-    {type: 'btn', icon: 'format_list_numbered', text: '1. ', mode: 'linebegin'},
-    {type: 'btn', icon: 'code', mode: 'code'},
-    {type: 'separator'}
-]
+    {type: "btn", icon: "format_bold", text: "**", mode: "sandwich"},
+    {type: "btn", icon: "format_italic", text: "*", mode: "sandwich"},
+    {type: "btn", icon: "format_underlined", text: "++", mode: "sandwich"},
+    {type: "btn", icon: "format_strikethrough", text: "~~", mode: "sandwich"},
+    {type: "separator"},
+    {type: "btn", icon: "format_quote", text: "> ", mode: "linebegin"},
+    {type: "btn", icon: "format_list_bulleted", text: "- ", mode: "linebegin"},
+    {type: "btn", icon: "format_list_numbered", text: "1. ", mode: "linebegin"},
+    {type: "btn", icon: "code", mode: "code"},
+    {type: "separator"}
+];
 export default {
-    name: 'Editor',
+    name: "Editor",
     components: {
         TagSelector,
         Toc
@@ -169,76 +169,76 @@ export default {
             limits: limits,
             categoryList: [],
 
-            tab: 'editor',
+            tab: "editor",
 
-            headingSizes: ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'],
+            headingSizes: ["H1", "H2", "H3", "H4", "H5", "H6"],
             editorActions: editorActions,
             editorActionsPerformed: {
                 didPerform: false,
                 selectionRange: [0, 0]
             },
             insertImage: {
-                tab: 'url',
-                url: '',
-                label: ''
+                tab: "url",
+                url: "",
+                label: ""
             },
             insertLink: {
-                tab: 'url',
-                url: '',
-                label: ''
+                tab: "url",
+                url: "",
+                label: ""
             },
 
             // markdownItVueOptions: markdownItVueOptions,
-            htmlPreview: '',
+            htmlPreview: "",
             headings: [],
             goToNthHeading: TableOfContents.goToNthHeading
-        }
+        };
     },
     watch: {
         tab(val) {
-            if (val == 'preview') {
-                this.generatePreview()
+            if (val == "preview") {
+                this.generatePreview();
             }
         }
     },
     created() {
-        logger('Editor created')
-        api.get('/categories', {
+        logger("Editor created");
+        api.get("/categories", {
             newpost: true
         }).catch(err => {
-            apiError()
+            apiError();
         }).then(res => {
-            let r = res.data
+            let r = res.data;
             if (r.success) {
                 this.categoryList = r.categories.map(v => ({
                     ...v,
-                    name: this.$t('categories.'+v.name)
-                }))
+                    name: this.$t("categories."+v.name)
+                }));
             }
             else {
                 this.$q.notify({
-                    color: 'negative',
+                    color: "negative",
                     message: r.msg,
-                })
+                });
             }
-        })
+        });
     },
     updated() {
         if (this.editorActionsPerformed.didPerform) {
-            let textarea = this.$refs.contentInput.$refs.input
+            let textarea = this.$refs.contentInput.$refs.input;
             // textarea.setSelectionRange(this.editorActionsPerformed.selectionRange[0], this.editorActionsPerformed.selectionRange[1])
-            textarea.setSelectionRange(this.editorActionsPerformed.selectionRange[1], this.editorActionsPerformed.selectionRange[1])
-            textarea.focus()
+            textarea.setSelectionRange(this.editorActionsPerformed.selectionRange[1], this.editorActionsPerformed.selectionRange[1]);
+            textarea.focus();
             // logger(textarea.selectionStart, textarea.selectionEnd)
-            this.editorActionsPerformed.didPerform = false
+            this.editorActionsPerformed.didPerform = false;
         }
     },
     methods: {
         generatePreview() {
             let md = markdownIt({
                 linkify: true
-            })
-            this.htmlPreview = md.render(this.values.content)
+            });
+            this.htmlPreview = md.render(this.values.content);
             // logger(this.htmlPreview)
             let toc = new TableOfContents(this.values.content);
             this.headings = toc.getHeadings();
@@ -246,121 +246,121 @@ export default {
         },
 
         headingAction(ind) {
-            let text = ''
+            let text = "";
             for (let i=0;i<=ind;i++) {
-                text += '#'
+                text += "#";
             }
-            text += ' '
-            this.performMultilineInsertion(text)
+            text += " ";
+            this.performMultilineInsertion(text);
         },
         insertImageAction() {
-            if (this.insertImage.url != '') {
-                if (this.insertImage.label != '') {
-                    this.performInsertion('![' + this.insertImage.label + '](' + this.insertImage.url + ')')
+            if (this.insertImage.url != "") {
+                if (this.insertImage.label != "") {
+                    this.performInsertion("![" + this.insertImage.label + "](" + this.insertImage.url + ")");
                 }
                 else {
-                    this.performInsertion('![](' + this.insertImage.url + ')')  
+                    this.performInsertion("![](" + this.insertImage.url + ")");  
                 }
             }
         },
         insertLinkAction() {
-            if (this.insertLink.url != '') {
-                if (this.insertLink.label != '') {
-                    this.performInsertion('[' + this.insertLink.label + '](' + this.insertLink.url + ')')
+            if (this.insertLink.url != "") {
+                if (this.insertLink.label != "") {
+                    this.performInsertion("[" + this.insertLink.label + "](" + this.insertLink.url + ")");
                 }
                 else {
-                    this.performInsertion('<' + this.insertLink.url + '>')
+                    this.performInsertion("<" + this.insertLink.url + ">");
                 }
             }
         },
         beforeInsertImageShow() {
-            this.insertImage.tab = 'url'
-            this.insertImage.url = ''
-            this.insertImage.label = ''
+            this.insertImage.tab = "url";
+            this.insertImage.url = "";
+            this.insertImage.label = "";
         },
         beforeInsertLinkShow() {
-            this.insertLink.tab = 'url'
-            this.insertLink.url = ''
-            this.insertLink.label = ''
+            this.insertLink.tab = "url";
+            this.insertLink.url = "";
+            this.insertLink.label = "";
         },
         performMultilineInsertion(text) {
-            let textarea = this.$refs.contentInput.$refs.input
-            let start = textarea.selectionStart
-            let end = textarea.selectionEnd
-            let content = this.values.content
-            let newContent = ''
+            let textarea = this.$refs.contentInput.$refs.input;
+            let start = textarea.selectionStart;
+            let end = textarea.selectionEnd;
+            let content = this.values.content;
+            let newContent = "";
 
-            let f = [content.lastIndexOf('\n', start-1)+1]
-            let j = content.indexOf('\n', start)
+            let f = [content.lastIndexOf("\n", start-1)+1];
+            let j = content.indexOf("\n", start);
             while (j < end && j != -1) {
-                f.push(j+1)
-                j = content.indexOf('\n', j+1)
+                f.push(j+1);
+                j = content.indexOf("\n", j+1);
             }
-            let lastPos = 0
+            let lastPos = 0;
             for (let i of f) {
-                newContent += content.substring(lastPos, i) + text
-                lastPos = i
+                newContent += content.substring(lastPos, i) + text;
+                lastPos = i;
             }
-            newContent += content.substring(lastPos)
+            newContent += content.substring(lastPos);
 
-            this.editorActionsPerformed.selectionRange = [f[0], end + f.length * text.length]
-            this.editorActionsPerformed.didPerform = true
-            this.values.content = newContent
+            this.editorActionsPerformed.selectionRange = [f[0], end + f.length * text.length];
+            this.editorActionsPerformed.didPerform = true;
+            this.values.content = newContent;
         },
         performInsertion(text) {
-            let textarea = this.$refs.contentInput.$refs.input
-            let end = textarea.selectionEnd
-            let content = this.values.content
-            let newContent = content.substring(0, end) + text + content.substring(end)
-            this.editorActionsPerformed.selectionRange = [end + text.length, end + text.length]
-            this.editorActionsPerformed.didPerform = true
-            this.values.content = newContent
+            let textarea = this.$refs.contentInput.$refs.input;
+            let end = textarea.selectionEnd;
+            let content = this.values.content;
+            let newContent = content.substring(0, end) + text + content.substring(end);
+            this.editorActionsPerformed.selectionRange = [end + text.length, end + text.length];
+            this.editorActionsPerformed.didPerform = true;
+            this.values.content = newContent;
         },
         performEditorAction(action) {
-            logger(action)
-            let textarea = this.$refs.contentInput.$refs.input
+            logger(action);
+            let textarea = this.$refs.contentInput.$refs.input;
             //logger(textarea.selectionStart, textarea.selectionEnd)
-            let start = textarea.selectionStart
-            let end = textarea.selectionEnd
-            let content = this.values.content
-            let newContent = ''
-            let newSelectionRange = [start, end]
-            let mode,text
-            if (action.mode == 'code') { //code can be block or inline
-                mode = (content.indexOf('\n', start) == -1 || content.indexOf('\n', start) >= end) ? 'sandwich' : 'blocksandwich'
-                text = mode == 'sandwich' ? '`' : '```'
+            let start = textarea.selectionStart;
+            let end = textarea.selectionEnd;
+            let content = this.values.content;
+            let newContent = "";
+            let newSelectionRange = [start, end];
+            let mode,text;
+            if (action.mode == "code") { //code can be block or inline
+                mode = (content.indexOf("\n", start) == -1 || content.indexOf("\n", start) >= end) ? "sandwich" : "blocksandwich";
+                text = mode == "sandwich" ? "`" : "```";
             }
             else {
-                mode = action.mode
-                text = action.text
+                mode = action.mode;
+                text = action.text;
             }
-            if (mode == 'sandwich') {
-                newContent = content.substring(0, start) + text + content.substring(start, end) + text + content.substring(end)
+            if (mode == "sandwich") {
+                newContent = content.substring(0, start) + text + content.substring(start, end) + text + content.substring(end);
                 //todo add proper sandwich to multiline selection
-                newSelectionRange[1] += text.length*2
+                newSelectionRange[1] += text.length*2;
 
-                this.editorActionsPerformed.selectionRange = newSelectionRange
-                this.editorActionsPerformed.didPerform = true
-                this.values.content = newContent
+                this.editorActionsPerformed.selectionRange = newSelectionRange;
+                this.editorActionsPerformed.didPerform = true;
+                this.values.content = newContent;
             }
-            else if (mode == 'blocksandwich') {
-                let lineStart = content.lastIndexOf('\n', start-1)+1
-                let lineEnd = content.indexOf('\n', end)
-                if (lineEnd == -1) lineEnd = content.length
-                newContent = content.substring(0, lineStart) + text + '\n' + content.substring(lineStart, lineEnd) + '\n' + text + content.substring(lineEnd)
-                newSelectionRange[0] = lineStart
-                newSelectionRange[1] = lineEnd
+            else if (mode == "blocksandwich") {
+                let lineStart = content.lastIndexOf("\n", start-1)+1;
+                let lineEnd = content.indexOf("\n", end);
+                if (lineEnd == -1) lineEnd = content.length;
+                newContent = content.substring(0, lineStart) + text + "\n" + content.substring(lineStart, lineEnd) + "\n" + text + content.substring(lineEnd);
+                newSelectionRange[0] = lineStart;
+                newSelectionRange[1] = lineEnd;
 
-                this.editorActionsPerformed.selectionRange = newSelectionRange
-                this.editorActionsPerformed.didPerform = true
-                this.values.content = newContent
+                this.editorActionsPerformed.selectionRange = newSelectionRange;
+                this.editorActionsPerformed.didPerform = true;
+                this.values.content = newContent;
             }
-            else if (mode == 'linebegin') {
-                this.performMultilineInsertion(text)
+            else if (mode == "linebegin") {
+                this.performMultilineInsertion(text);
             }
         },
     }
-}
+};
 </script>
 
 <style lang="scss">

@@ -23,7 +23,7 @@
                         <span class="q-my-auto vertical-middle">{{ calcNumber(post.views) }}</span>
 
                         <span class="q-pl-sm">
-                            <q-chip class="q-ma-none" outline color="primary">{{$t('categories.'+post.category)}}</q-chip>
+                            <q-chip class="q-ma-none" outline color="primary">{{$t("categories."+post.category)}}</q-chip>
                         </span>
                     </div>
                 </div>
@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import { formatTimeElapsed, formatViews } from '../util'
+import { formatTimeElapsed, formatViews } from "../util";
 export default {
-    name: 'PostCard',
+    name: "PostCard",
     props: {
         post: {
             type: Object,
@@ -43,17 +43,14 @@ export default {
         }
     },
     methods: {
-        previewContent(str) { //no longer needed
-            return str ? str.replace(/[#_:=>\`\\\*]/ig,'').trim() : ''
-        },
         calcNumber(n) {
-            return formatViews(n)
+            return formatViews(n);
         },
         calcTimeElapsed(tm) {
-            return formatTimeElapsed(tm)
+            return formatTimeElapsed(tm);
         }
     }
-}
+};
 </script>
 
 <style lang="scss">

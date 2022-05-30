@@ -9,32 +9,32 @@
 
 <script>
 export default {
-    name: 'SearchBar',
+    name: "SearchBar",
     props: {
         inSearchPage: Boolean,
         initialQuery: String
     },
     data() {
         return {
-            searchquery: this.initialQuery ? this.initialQuery : ''
-        }
+            searchquery: this.initialQuery ? this.initialQuery : ""
+        };
     },
     methods: {
         searchKeyDown(ev) {
             if (ev.keyCode == 13) {
-                ev.preventDefault()
-                this.search()
+                ev.preventDefault();
+                this.search();
             }
         },
         search() {
-            if (this.searchquery.length == 0) return
+            if (this.searchquery.length == 0) return;
             if (this.inSearchPage) {
-                this.$emit('search', this.searchquery)
+                this.$emit("search", this.searchquery);
             }
             else {
-                this.$router.push('/search?s=' + this.searchquery)
+                this.$router.push("/search?s=" + this.searchquery);
             }
         }
     }
-}
+};
 </script>

@@ -2,7 +2,7 @@
     <q-dialog ref="dialog" @hide="onHideDialog">
         <q-card class="q-dialog-plugin" style="width: 700px; max-width: 80vw;">
             <q-card-section class="row items-center q-pb-none">
-                <div class="text-h6">{{$t('collection.editInfo')}}</div>
+                <div class="text-h6">{{$t("collection.editInfo")}}</div>
                 <q-space />
                 <q-btn icon="close" flat round dense @click="onClickCancel" />
             </q-card-section>
@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import api from 'src/api'
-import { apiError } from 'src/apiError'
+import api from "src/api";
+import { apiError } from "src/apiError";
 // following template https://v1.quasar.dev/quasar-plugins/dialog#invoking-custom-component
 export default {
     props: {
@@ -30,61 +30,61 @@ export default {
     data() {
         return {
             values: {...this.initialValues}
-        }
+        };
     },
     methods: {
         show() {
-            this.$refs.dialog.show()
+            this.$refs.dialog.show();
         },
         hide() {
-            this.$refs.dialog.hide()
+            this.$refs.dialog.hide();
         },
         onHideDialog() {
-            this.$emit('hide')
+            this.$emit("hide");
         },
         onClickCancel() {
-            this.hide()
+            this.hide();
         },
         onClickOK() {
             this.onSubmit().then((msg) => {
-                this.$emit('ok', {...this.values})
-                this.hide()
+                this.$emit("ok", {...this.values});
+                this.hide();
                 this.$q.notify({
-                    color: 'positive',
+                    color: "positive",
                     message: msg
-                })
+                });
             }, (msg) => {
                 this.$q.notify({
-                    color: 'negative',
+                    color: "negative",
                     message: msg
-                })
-            })
+                });
+            });
         },
         onSubmit() {
             return new Promise((resolve, reject) => {
                 if (this.values.title.length == 0) {
-                    reject(this.$t('collection.editInfoDialog.mustHaveTitle'))
+                    reject(this.$t("collection.editInfoDialog.mustHaveTitle"));
                 }
-                api.put('/collections/'+this.id, {
+                api.put("/collections/"+this.id, {
                     title: this.values.title,
-                    description: this.values.description ? this.values.description : '',
+                    description: this.values.description ? this.values.description : "",
                     isPublic: this.values.isPublic ? 1 : 0
                 }).catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
+                    let r = res.data;
                     if (r.success) {
-                        resolve(this.$t('collection.editInfoDialog.updated'))
+                        resolve(this.$t("collection.editInfoDialog.updated"));
                     }
                     else {
-                        reject(r.msg)
+                        reject(r.msg);
                     }
-                })
-            })
+                });
+            });
             
         }
     }
-}
+};
 </script>
 
 <style>

@@ -33,21 +33,21 @@
 </template>
 
 <script>
-import PostDelete from '../dialogs/PostDelete.vue'
-import { apiError } from 'src/apiError'
-import api from 'src/api'
-import logger from 'src/logger'
+import PostDelete from "../dialogs/PostDelete.vue";
+import { apiError } from "src/apiError";
+import api from "src/api";
+import logger from "src/logger";
 export default {
-    name: 'CreatorPostList',
+    name: "CreatorPostList",
     components: { PostDelete },
     data() {
         return {
             posts: [],
             columns: [
-                { name: 'title', label: 'Title', field: 'title', align: 'left', style: 'font-weight: 500;' },
-                { name: 'publishTime', label: 'Date', field: 'publishTimeStr', align: 'left' },
-                { name: 'views', label: 'Views', field: 'views', align: 'right' },
-                { name: 'actions', label: 'Actions', align: 'left', style: 'width: 100px;' }
+                { name: "title", label: "Title", field: "title", align: "left", style: "font-weight: 500;" },
+                { name: "publishTime", label: "Date", field: "publishTimeStr", align: "left" },
+                { name: "views", label: "Views", field: "views", align: "right" },
+                { name: "actions", label: "Actions", align: "left", style: "width: 100px;" }
             ],
             pagination: {
                 page: 1,
@@ -56,11 +56,11 @@ export default {
             },
             loading: true,
             initialLoaded: false
-        }
+        };
     },
     methods: {
         deletePost(post) {
-            logger(post)
+            logger(post);
             this.$q.dialog({
                 component: PostDelete,
                 parent: this,
@@ -68,50 +68,50 @@ export default {
             }).onOk(() => {
                 this.onRequest({
                     pagination: this.pagination
-                })
-            })
+                });
+            });
         },
         onRequest(props, initial = false) {
-            const { page, rowsPerPage } = props.pagination
-            this.loading = true
+            const { page, rowsPerPage } = props.pagination;
+            this.loading = true;
 
-            api.get('/creator/posts', {
+            api.get("/creator/posts", {
                 page: page,
                 count: rowsPerPage
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
-                    this.posts = r.posts
+                    this.posts = r.posts;
                     if (r.postCount) {
-                        this.pagination.rowsNumber = parseInt(r.postCount)
+                        this.pagination.rowsNumber = parseInt(r.postCount);
                     }
 
-                    this.pagination.page = page
-                    this.pagination.rowsPerPage = rowsPerPage
+                    this.pagination.page = page;
+                    this.pagination.rowsPerPage = rowsPerPage;
 
                     if (initial) {
-                        this.initialLoaded = true
+                        this.initialLoaded = true;
                     }
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg
-                    })
+                    });
                 }
-                this.loading = false
-            })
+                this.loading = false;
+            });
         }
     },
     created() {
         this.onRequest({
             pagination: this.pagination
-        }, true)
+        }, true);
     }
-}
+};
 </script>
 
 <style lang="scss">

@@ -6,6 +6,7 @@
   "author": "Legendword <zwh@legendword.com>",
   "private": true,
   "scripts": {
+    "lint": "eslint src --ext .js,.vue --fix",
     "test": "echo \"See package.json => scripts for available tests.\" && exit 0",
     "test:unit": "jest --updateSnapshot",
     "test:unit:ci": "jest --ci",
@@ -37,8 +38,10 @@
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.1.1",
     "electron-packager": "^14.2.1",
+    "eslint": "^8.15.0",
     "eslint-plugin-cypress": "^2.11.1",
     "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-vue": "^9.0.0",
     "workbox-webpack-plugin": "^5.1.4"
   },
   "browserslist": [

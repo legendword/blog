@@ -18,21 +18,21 @@
 
 <script>
 export default {
-    name: 'Toc',
+    name: "Toc",
     props: {
         headings: Array
     },
     data() {
         return {
             selected: null
-        }
+        };
     },
     watch: {
         selected(val) {
-            if (val) this.$emit('select', val);
+            if (val) this.$emit("select", val);
         }
     }
-}
+};
 </script>
 
 <style>

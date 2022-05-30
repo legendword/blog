@@ -2,7 +2,7 @@
     <q-card class="q-ma-md">
         <q-card-section>
             <div class="text-h6">Upcoming Feature</div>
-            <div class="text-subtitle2">{{version ? 'Coming in v'+version : ''}}</div>
+            <div class="text-subtitle2">{{version ? "Coming in v"+version : ""}}</div>
         </q-card-section>
         <q-card-section>
             <div>This feature is currently unavailable. It is on the development schedule and will be released as soon as possible.</div>
@@ -15,7 +15,7 @@
 
 <script>
 export default {
-    name: 'UpcomingFeature',
+    name: "UpcomingFeature",
     props: {
         version: String
     },
@@ -24,7 +24,7 @@ export default {
             location.href = "https://github.com/legendword/blog";
         }
     }
-}
+};
 </script>
 
 <style>

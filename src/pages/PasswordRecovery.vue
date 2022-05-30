@@ -1,16 +1,16 @@
 <template>
     <q-page class="q-pa-lg text-center">
         <div v-if="finished">
-            <h5>{{ $t('passwordRecovery.title') }}</h5>
-            <p class="text-subtitle1">{{ $t('passwordRecovery.finishedMsg') }}</p>
+            <h5>{{ $t("passwordRecovery.title") }}</h5>
+            <p class="text-subtitle1">{{ $t("passwordRecovery.finishedMsg") }}</p>
             <div>
                 <q-btn class="q-mt-lg" flat color="primary" :label="$t('newAccount.backToHome')" @click="backHome"></q-btn>
             </div>
         </div>
         <div v-else-if="loaded">
             <div v-if="success">
-                <h5>{{ $t('passwordRecovery.title') }}</h5>
-                <p class="text-subtitle1">{{ $t('passwordRecovery.msg.before') }}<strong>{{ $route.query.email }}</strong>{{ $t('passwordRecovery.msg.after') }}</p>
+                <h5>{{ $t("passwordRecovery.title") }}</h5>
+                <p class="text-subtitle1">{{ $t("passwordRecovery.msg.before") }}<strong>{{ $route.query.email }}</strong>{{ $t("passwordRecovery.msg.after") }}</p>
                 <div>
                     <q-input :type="showPass?'text':'password'" v-model="pass" :label="$t('passwordRecovery.input.password')" lazy-rules :rules="passRules">
                         <template v-slot:append>
@@ -30,109 +30,109 @@
                 </div>
             </div>
             <div v-else>
-                <h5>{{ $t('passwordRecovery.failedTitle') }}</h5>
-                <p class="text-subtitle1">{{ $t('passwordRecovery.failedMsg') }}</p>
+                <h5>{{ $t("passwordRecovery.failedTitle") }}</h5>
+                <p class="text-subtitle1">{{ $t("passwordRecovery.failedMsg") }}</p>
             </div>
         </div>
     </q-page>
 </template>
 
 <script>
-import { apiError } from 'src/apiError'
-import api from '../api'
-import logger from 'src/logger'
+import { apiError } from "src/apiError";
+import api from "../api";
+import logger from "src/logger";
 export default {
-    name: 'PasswordRecovery',
+    name: "PasswordRecovery",
     meta: {
-        title: 'Recover Password'
+        title: "Recover Password"
     },
     data() {
         return {
             loaded: false,
             success: true,
             finished: false,
-            pass: '',
-            passConfirm: '',
+            pass: "",
+            passConfirm: "",
             showPass: false,
             passRules: [
-                val => val && val.length > 0 || this.$t('forms.requiredField')
+                val => val && val.length > 0 || this.$t("forms.requiredField")
             ],
             passConfirmRules: [
-                val => val && val.length > 0 || this.$t('forms.requiredField'),
-                val => val == this.pass || this.$t('passwordRecovery.passwordsDontMatch')
+                val => val && val.length > 0 || this.$t("forms.requiredField"),
+                val => val == this.pass || this.$t("passwordRecovery.passwordsDontMatch")
             ]
-        }
+        };
     },
     methods: {
         submitPass() {
-            if (this.pass.length == 0 || this.passConfirm.length == 0) return
+            if (this.pass.length == 0 || this.passConfirm.length == 0) return;
             if (this.pass != this.passConfirm) {
                 this.$q.notify({
-                    color: 'negative',
-                    message: this.$t('passwordRecovery.passwordsDontMatch'),
-                    position: 'top',
+                    color: "negative",
+                    message: this.$t("passwordRecovery.passwordsDontMatch"),
+                    position: "top",
                     timeout: 2000
-                })
-                return
+                });
+                return;
             }
-            api.put('/user/recoverPassword', {
+            api.put("/user/recoverPassword", {
                 email: this.$route.query.email,
                 code: this.$route.query.code,
                 password: this.pass
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
-                    this.finished = true
+                    this.finished = true;
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg,
-                        position: 'top',
+                        position: "top",
                         timeout: 2000
-                    })
-                    this.finished = false
+                    });
+                    this.finished = false;
                 }
-            })
+            });
         },
         backHome() {
-            this.$router.push('/')
+            this.$router.push("/");
         }
     },
     created() {
         if (!this.$route.query.email || !this.$route.query.code) {
-            this.success = false
-            this.loaded = true
+            this.success = false;
+            this.loaded = true;
         }
         else {
-            api.get('/user/recoverPassword', {
+            api.get("/user/recoverPassword", {
                 email: this.$route.query.email,
                 code: this.$route.query.code
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
-                    this.success = true
+                    this.success = true;
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg,
-                        position: 'top',
+                        position: "top",
                         timeout: 2000
-                    })
-                    this.success = false
+                    });
+                    this.success = false;
                 }
-                this.loaded = true
-            })
+                this.loaded = true;
+            });
         }
     }
-}
+};
 </script>
 
 <style>

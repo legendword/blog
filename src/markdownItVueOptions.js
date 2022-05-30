@@ -4,5 +4,5 @@ const markdownItVueOptions = {
         tocLastLevel: 3,
         anchorLink: false
     }
-}
-export default markdownItVueOptions
+};
+export default markdownItVueOptions;

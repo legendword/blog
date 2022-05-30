@@ -12,18 +12,18 @@
                         <q-avatar>
                             <q-icon :name="item.icon" />
                         </q-avatar>
-                        <div class="text-h6 ellipsis">{{$t('categories.'+item.name)}}</div>
+                        <div class="text-h6 ellipsis">{{$t("categories."+item.name)}}</div>
                     </q-card-section>
                 </q-card>
             </div>
             <div class="col-12 flex items-center">
-                <div class="q-pr-md">{{$t('indexPage.otherCategories')}}: </div>
+                <div class="q-pr-md">{{$t("indexPage.otherCategories")}}: </div>
                 <div>
-                    <q-chip class="q-ma-none q-mr-sm" clickable outline color="primary" v-for="item in otherCategories" :key="item" @click="$router.push('/category/'+item)">{{$t('categories.'+item)}}</q-chip>
+                    <q-chip class="q-ma-none q-mr-sm" clickable outline color="primary" v-for="item in otherCategories" :key="item" @click="$router.push('/category/'+item)">{{$t("categories."+item)}}</q-chip>
                 </div>
             </div>
         </div>
-        <h4 class="q-mb-lg">{{ $t('indexPage.allPosts') }}</h4>
+        <h4 class="q-mb-lg">{{ $t("indexPage.allPosts") }}</h4>
         <template v-if="postLoading">
             <div class="row q-col-gutter-md">
                 <div class="col-12 col-sm-6 col-lg-4" v-for="i in postPerPage" :key="i">
@@ -65,17 +65,17 @@
 </template>
 
 <script>
-import { apiError } from 'src/apiError'
-import api from '../api'
-import PostCard from '../components/PostCard'
-import PostCardCompact from '../components/PostCardCompact'
-import SearchBar from '../components/SearchBar'
-import { mainCategories, otherCategories } from '../mainCategories'
-import logger from 'src/logger'
+import { apiError } from "src/apiError";
+import api from "../api";
+import PostCard from "../components/PostCard";
+import PostCardCompact from "../components/PostCardCompact";
+import SearchBar from "../components/SearchBar";
+import { mainCategories, otherCategories } from "../mainCategories";
+import logger from "src/logger";
 export default {
-    name: 'Home',
+    name: "Home",
     meta: {
-        title: 'Home'
+        title: "Home"
     },
     data() {
         return {
@@ -86,11 +86,11 @@ export default {
             postCount: 0,
             postPage: 1,
             postPerPage: 6
-        }
+        };
     },
     computed: {
         maxPages () {
-            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1)
+            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1);
         }
     },
     components: {
@@ -100,45 +100,45 @@ export default {
     },
     watch: {
         postPage(val) {
-            this.getPosts()
+            this.getPosts();
         }
     },
     methods: {
         goToGitHub() {
-            location.href = 'https://github.com/legendword/blog'
+            location.href = "https://github.com/legendword/blog";
         },
         getPosts() {
-            this.postLoading = true
-            api.get('/posts', {
+            this.postLoading = true;
+            api.get("/posts", {
                 count: this.postPerPage,
                 page: this.postPage
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
-                    logger(r)
-                    this.postList = r.posts
+                    logger(r);
+                    this.postList = r.posts;
                     if (r.postCount !== undefined) {
-                        this.postCount = parseInt(r.postCount)
+                        this.postCount = parseInt(r.postCount);
                     }
                 }
                 else {
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg,
-                        position: 'top',
+                        position: "top",
                         timeout: 2000
-                    })
+                    });
                 }
-                this.postLoading = false
-            })
+                this.postLoading = false;
+            });
         }
     },
     created() {
-        this.getPosts()
+        this.getPosts();
     }
-}
+};
 </script>
 
 <style scoped>

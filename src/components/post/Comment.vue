@@ -22,7 +22,7 @@
                     <q-menu>
                         <q-list style="min-width: 100px;">
                             <q-item clickable v-close-popup @click="deleteComment">
-                                <q-item-section>{{$t('post.deleteComment.btn')}}</q-item-section>
+                                <q-item-section>{{$t("post.deleteComment.btn")}}</q-item-section>
                             </q-item>
                         </q-list>
                     </q-menu>
@@ -67,13 +67,13 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { formatTimeElapsed } from 'src/util'
-import { apiError } from 'src/apiError'
-import api from 'src/api'
-import logger from 'src/logger'
+import { mapState } from "vuex";
+import { formatTimeElapsed } from "src/util";
+import { apiError } from "src/apiError";
+import api from "src/api";
+import logger from "src/logger";
 export default {
-    name: 'comment',
+    name: "comment",
     props: {
         isReply: Boolean,
         comment: Object,
@@ -82,95 +82,98 @@ export default {
     },
     computed: {
         timeElapsed() {
-            return formatTimeElapsed(this.comment.publishTime)
+            return formatTimeElapsed(this.comment.publishTime);
         },
-        ...mapState(['isLoggedIn', 'user'])
+        ...mapState(["isLoggedIn", "user"])
     },
     data() {
         return {
-            newReply: '',
+            newReply: "",
             isReplying: false
-        }
+        };
     },
     methods: {
         submitReply() {
             if (!this.isReplying) {
                 return;
             }
-            if (this.newReply == '') {
-                this.$q.notify({ color: 'warning', message: this.$t('post.emptyCommentMsg') })
-                return
+            if (this.newReply == "") {
+                this.$q.notify({ color: "warning", message: this.$t("post.emptyCommentMsg") });
+                return;
             }
-            api.post('/comments', {
+            api.post("/comments", {
                 postId: this.postId,
                 content: this.newReply,
                 parentId: this.comment.id
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
-                logger(r)
+                let r = res.data;
+                logger(r);
                 if (r.success) {
-                    this.$q.notify({ color: 'positive', message: this.$t('post.commentSuccess') });
-                    this.newReply = ''
-                    this.isReplying = false
+                    this.$q.notify({ color: "positive", message: this.$t("post.commentSuccess") });
+                    this.newReply = "";
+                    this.isReplying = false;
 
-                    this.$emit('update')
+                    this.$emit("update");
                     // #todo: instead of re-fetching the entire comment section, just append to this.comment.replies
                 }
                 else {
-                    this.$q.notify({ color: 'negative', message: r.msg });
+                    this.$q.notify({ color: "negative", message: r.msg });
                 }
-            })
+            });
         },
         likeComment() {
-            api.post('/comments/'+this.comment.id+'/like').catch(err => {
-                apiError()
+            api.post("/comments/"+this.comment.id+"/like").catch(err => {
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
-                    this.comment.likes += r.delta
-                    this.comment.userLiked = !this.comment.userLiked
+                    // ! directly mutating props
+                    /* eslint-disable */
+                    this.comment.likes += r.delta;
+                    this.comment.userLiked = !this.comment.userLiked;
+                    /* eslint-enable */
                 }
                 else {
-                    logger(r)
+                    logger(r);
                     this.$q.notify({
-                        color: 'negative',
+                        color: "negative",
                         message: r.msg,
-                    })
+                    });
                 }
-            })
+            });
         },
         deleteComment() {
             this.$q.dialog({
-                title: this.$t('post.deleteComment.title'),
-                message: this.$t('post.deleteComment.msg'),
+                title: this.$t("post.deleteComment.title"),
+                message: this.$t("post.deleteComment.msg"),
                 persistent: true,
                 cancel: true
             }).onOk(() => {
-                api.delete('/comments/'+this.comment.id).catch(err => {
-                    apiError()
+                api.delete("/comments/"+this.comment.id).catch(err => {
+                    apiError();
                 }).then(res => {
-                    let r = res.data
+                    let r = res.data;
                     if (r.success) {
                         this.$q.notify({
-                            color: 'positive',
-                            message: this.$t('post.deleteComment.success'),
-                        })
-                        this.$emit('update')
+                            color: "positive",
+                            message: this.$t("post.deleteComment.success"),
+                        });
+                        this.$emit("update");
                     }
                     else {
-                        logger(r)
+                        logger(r);
                         this.$q.notify({
-                            color: 'negative',
+                            color: "negative",
                             message: r.msg,
-                        })
+                        });
                     }
-                })
-            })
+                });
+            });
         }
     }
-}
+};
 </script>
 
 <style lang="scss">

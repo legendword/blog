@@ -6,7 +6,7 @@
                 <q-list padding>
                     <q-item v-for="item in tabs" :key="item" clickable v-ripple :active="tab === item" @click="tab = item" class="sidebar-item" active-class="sidebar-item active">
                         <q-item-section>
-                            {{ $t('general.'+item) }}
+                            {{ $t("general."+item) }}
                         </q-item-section>
                     </q-item>
                 </q-list>
@@ -44,21 +44,21 @@
 </template>
 
 <script>
-import api from 'src/api'
-import { apiError } from 'src/apiError'
-import logger from 'src/logger'
-import CreatorPostList from 'src/components/lists/CreatorPostList.vue'
-import UpcomingFeature from 'src/components/UpcomingFeature.vue'
-import requireLoggedIn from '../mixins/requireLoggedIn'
-import CreatorCommentList from 'src/components/lists/CreatorCommentList.vue'
+import api from "src/api";
+import { apiError } from "src/apiError";
+import logger from "src/logger";
+import CreatorPostList from "src/components/lists/CreatorPostList.vue";
+import UpcomingFeature from "src/components/UpcomingFeature.vue";
+import requireLoggedIn from "../mixins/requireLoggedIn";
+import CreatorCommentList from "src/components/lists/CreatorCommentList.vue";
 
-const tabs = ['overview', 'posts', 'drafts', 'comments']
+const tabs = ["overview", "posts", "drafts", "comments"];
 
 export default {
-    name: 'Creator',
+    name: "Creator",
     components: { CreatorPostList, UpcomingFeature, CreatorCommentList },
     meta: {
-        title: 'Creator Dashboard'
+        title: "Creator Dashboard"
     },
     mixins: [requireLoggedIn],
     data() {
@@ -78,93 +78,90 @@ export default {
                 comments: 0
             },
             loaded: false
-        }
+        };
     },
     watch: {
         tab: {
             handler: function(val) {
-                this.tabChange(val)
+                this.tabChange(val);
             }
         }
     },
     methods: {
         editPost(id) {
-            logger(id)
+            logger(id);
         },
         tabChange(val) {
             let newPath = `/creator/${val}`;
             if (this.$route.path !== newPath) {
-                this.$router.replace(newPath)
+                this.$router.replace(newPath);
             }
-            if (val === 'overview') {
-                api.get('/creator/stats').catch(err => {
-                    apiError()
+            if (val === "overview") {
+                api.get("/creator/stats").catch(err => {
+                    apiError();
                 }).then(res => {
-                    let r = res.data
-                    logger(r)
+                    let r = res.data;
+                    logger(r);
                     if (r.success) {
-                        let stats = []
+                        let stats = [];
                         for (let i in r.stats) {
                             stats.push({
                                 label: i,
                                 value: parseInt(r.stats[i])
-                            })
+                            });
                         }
-                        this.overview.stats = stats
+                        this.overview.stats = stats;
                     }
                     else {
-                        logger(r)
+                        logger(r);
                         this.$q.notify({
-                            color: 'negative',
+                            color: "negative",
                             message: r.msg ? r.msg : r,
-                        })
+                        });
                     }
-                })
-            }
-            else if (val === 'posts') {
-                
+                });
             }
         },
         setData(r) {
-            logger(r)
+            logger(r);
             if (r.isLoggedIn) {
-                this.user = r.user
-                this.user.isAuthor = this.user.isAuthor == '1'
+                this.user = r.user;
+                this.user.isAuthor = this.user.isAuthor == "1";
                 if (this.user.isAuthor) {
-                    this.author = r.author
-                    this.loaded = true
-                    this.tabChange(this.tab) // trigger immediate tabChange here instead of in watch
+                    this.author = r.author;
+                    this.loaded = true;
+                    this.tabChange(this.tab); // trigger immediate tabChange here instead of in watch
 
-                    api.get('/badges').then(res => {
-                        let r = res.data
+                    api.get("/badges").then(res => {
+                        let r = res.data;
                         if (r.success) {
-                            this.badges.comments = r.badges.comments
-                            // logger(this.badges['comments'])
+                            this.badges.comments = r.badges.comments;
+                            // logger(this.badges["comments"])
                         }
-                    })
+                    });
                 }
                 else {
-                    this.$q.notify({ color: 'negative', message: 'You\'re not an author.' });
+                    this.$q.notify({ color: "negative", message: "You're not an author." });
                 }
             }
             else {
-                this.$q.notify({ color: 'negative', message: 'Not Logged In' });
+                this.$q.notify({ color: "negative", message: "Not Logged In" });
             }
         },
         init() {
-            api.get('/user/info', {
+            api.get("/user/info", {
                 detailed: true
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                this.setData(res.data)
-            })
+                this.setData(res.data);
+            });
         }
     },
     created() {
-        this.init()
+        this.init();
     }
-}
+};
 </script>
 
 <style lang="scss">

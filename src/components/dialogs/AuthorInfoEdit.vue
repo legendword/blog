@@ -2,7 +2,7 @@
     <q-dialog ref="dialog" @hide="onHideDialog">
         <q-card class="q-dialog-plugin" style="width: 800px; max-width: 80vw;">
             <q-card-section class="row items-center q-pb-none">
-                <div class="text-h6">{{$t('userProfile.editProfile')}}</div>
+                <div class="text-h6">{{$t("userProfile.editProfile")}}</div>
                 <q-space />
                 <q-btn icon="close" flat round dense @click="onClickCancel" />
             </q-card-section>
@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import api from 'src/api'
-import { apiError } from 'src/apiError'
+import api from "src/api";
+import { apiError } from "src/apiError";
 // following template https://v1.quasar.dev/quasar-plugins/dialog#invoking-custom-component
 export default {
     props: {
@@ -29,13 +29,13 @@ export default {
             values: {...this.initialValues},
             rules: {
                 displayName: [
-                    val => val && val.length > 0 || this.$t('forms.requiredField'),
-                    val => val.length <= 20 || this.$t('forms.maxChar', ['20']),
-                    val => /^[a-zA-Z ]+$/.test(val) || this.$t('forms.onlyLettersAndSpaces'),
+                    val => val && val.length > 0 || this.$t("forms.requiredField"),
+                    val => val.length <= 20 || this.$t("forms.maxChar", ["20"]),
+                    val => /^[a-zA-Z ]+$/.test(val) || this.$t("forms.onlyLettersAndSpaces"),
                     this.checkDisplayName
                 ],
             }
-        }
+        };
     },
     methods: {
         checkDisplayName(val) {
@@ -43,89 +43,89 @@ export default {
                 api.get("/util/name/author", {
                     name: val
                 }).then(res => {
-                    let r = res.data
+                    let r = res.data;
                     if (r.success) {
                         if (r.result == true) {
-                            resolve(true)
+                            resolve(true);
                         }
                         else {
-                            resolve(this.$t('forms.nameTaken'))
+                            resolve(this.$t("forms.nameTaken"));
                         }
                     }
                     else {
-                        reject(r)
+                        reject(r);
                     }
-                })
-            })
+                });
+            });
         },
         show() {
-            this.$refs.dialog.show()
+            this.$refs.dialog.show();
         },
         hide() {
-            this.$refs.dialog.hide()
+            this.$refs.dialog.hide();
         },
         onHideDialog() {
-            this.$emit('hide')
+            this.$emit("hide");
         },
         onClickCancel() {
-            this.hide()
+            this.hide();
         },
         onClickOK() {
-            let vld = this.$refs.displayName.validate()
+            let vld = this.$refs.displayName.validate();
             if (vld.then) {
                 vld.then(outcome => {
                     if (outcome === true) {
-                        this.realSubmit()
+                        this.realSubmit();
                     }
-                })
+                });
             }
             else {
                 if (vld === true) {
-                    this.realSubmit()
+                    this.realSubmit();
                 }
             }
         },
         realSubmit() {
             this.onSubmit().then((msg) => {
-                this.$emit('ok', {...this.values})
-                this.hide()
+                this.$emit("ok", {...this.values});
+                this.hide();
                 this.$q.notify({
-                    color: 'positive',
+                    color: "positive",
                     message: msg
-                })
+                });
             }, (msg) => {
                 this.$q.notify({
-                    color: 'negative',
+                    color: "negative",
                     message: msg
-                })
-            })
+                });
+            });
         },
         onSubmit() {
             return new Promise((resolve, reject) => {
-                api.put('/user/authorInfo', {
+                api.put("/user/authorInfo", {
                     displayName: this.values.displayName
                 }).catch(err => {
-                    apiError()
+                    apiError();
                 }).then(res => {
-                    let r = res.data
+                    let r = res.data;
                     if (r.success) {
-                        resolve(this.$t('authorProfile.profileUpdated'))
+                        resolve(this.$t("authorProfile.profileUpdated"));
                         // this.$q.notify({
-                        //     color: 'positive',
-                        //     message: this.$t('authorProfile.profileUpdated'),
-                        //     caption: this.$t('authorProfile.profileUpdatedCaption'),
-                        //     position: 'top',
+                        //     color: "positive",
+                        //     message: this.$t("authorProfile.profileUpdated"),
+                        //     caption: this.$t("authorProfile.profileUpdatedCaption"),
+                        //     position: "top",
                         //     timeout: 2000
                         // })
                     }
                     else {
-                        reject(r.msg)
+                        reject(r.msg);
                     }
-                })
-            })
+                });
+            });
         }
     }
-}
+};
 </script>
 
 <style>

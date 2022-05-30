@@ -1,8 +1,8 @@
 <template>
     <q-page class="q-pa-md q-pa-sm-lg">
-        <h4 class="q-mb-lg">{{$t('tagPage.title')}}: {{ $route.params.name }}</h4>
+        <h4 class="q-mb-lg">{{$t("tagPage.title")}}: {{ $route.params.name }}</h4>
         <div class="row justify-between q-mb-md">
-            <div class="text-h5">{{$t('general.posts')}}</div>
+            <div class="text-h5">{{$t("general.posts")}}</div>
             <div>
                 <q-btn-dropdown flat icon="sort" color="primary" :label="$t('general.sortBy')">
                     <q-list>
@@ -27,77 +27,77 @@
 </template>
 
 <script>
-import { apiError } from 'src/apiError'
-import api from '../api'
-import PostCard from '../components/PostCard'
-import logger from 'src/logger'
+import { apiError } from "src/apiError";
+import api from "../api";
+import PostCard from "../components/PostCard";
+import logger from "src/logger";
 export default {
-    name: 'Tag',
+    name: "Tag",
     components: {
         PostCard
     },
     meta() {
         return {
             title: `Tag: ${this.$route.params.name}`
-        }
+        };
     },
     data() {
         return {
-            sortBy: 'timeDesc',
+            sortBy: "timeDesc",
             sortOptions: [
-                {label: this.$t('general.sort.timeDesc'), value: 'timeDesc'},
-                {label: this.$t('general.sort.timeAsc'), value: 'timeAsc'},
-                {label: this.$t('general.sort.viewsDesc'), value: 'viewsDesc'}
+                {label: this.$t("general.sort.timeDesc"), value: "timeDesc"},
+                {label: this.$t("general.sort.timeAsc"), value: "timeAsc"},
+                {label: this.$t("general.sort.viewsDesc"), value: "viewsDesc"}
             ],
             postList: [],
             postCount: 0,
             postPage: 1,
             postPerPage: 10
-        }
+        };
     },
     computed: {
         maxPages () {
-            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1)
+            return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1);
         }
     },
     methods: {
         changePage(val) {
-            this.getPosts()
+            this.getPosts();
         },
         changeSortBy(value) {
-            this.sortBy = value
-            this.getPosts()
+            this.sortBy = value;
+            this.getPosts();
         },
         getPosts() {
-            api.get('/posts/tag/'+encodeURIComponent(this.$route.params.name), {
+            api.get("/posts/tag/"+encodeURIComponent(this.$route.params.name), {
                 sort: this.sortBy,
                 page: this.postPage
             }).catch(err => {
-                apiError()
+                apiError();
             }).then(res => {
-                let r = res.data
+                let r = res.data;
                 if (r.success) {
-                    this.postList = r.posts
+                    this.postList = r.posts;
                     if (this.postPage == 1) {
-                        logger(r)
-                        this.postCount = parseInt(r.postCount)
+                        logger(r);
+                        this.postCount = parseInt(r.postCount);
                     }
                 }
                 else {
-                    if (r.errorType && r.errorType == 'NotFound') {
-                        this.$router.push('/404')
+                    if (r.errorType && r.errorType == "NotFound") {
+                        this.$router.push("/404");
                     }
                     else {
-                        this.$q.notify({color: 'negative', message: r.msg, position: 'top', timeout: 2000})
+                        this.$q.notify({color: "negative", message: r.msg, position: "top", timeout: 2000});
                     }
                 }
-            })
+            });
         }
     },
     mounted() {
-        this.getPosts()
+        this.getPosts();
     }
-}
+};
 </script>
 
 <style>

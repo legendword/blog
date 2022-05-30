@@ -25,15 +25,9 @@ const routes = [
             { path: "settings", component: () => import("pages/Settings.vue") },
             { path: "following", component: () => import("pages/Following.vue") },
             { path: "category/:name", component: () => import("pages/Category.vue") },
-            { path: "tag/:name", component: () => import("pages/Tag.vue") }
+            { path: "tag/:name", component: () => import("pages/Tag.vue") },
+            { path: "*", component: () => import("pages/Error404.vue") },
         ]
-    },
-
-    // Always leave this as last one,
-    // but you can also remove it
-    {
-        path: "*",
-        component: () => import("pages/Error404.vue")
     }
 ];
 

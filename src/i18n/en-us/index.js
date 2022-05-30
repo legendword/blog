@@ -239,6 +239,14 @@ export default {
         noResultsFound: "No Results Found."
     },
     fourOFour: {
+        customMsg: {
+            collection: "The collection you are looking for does not exist, or it is private.",
+            category: "The category you are looking for does not exist.",
+            tag: "The tag you are looking for does not exist.",
+            user: "We cannot find this user.",
+            author: "We cannot find this author.",
+            post: "The blog post you are looking for does not exist, or has been removed."
+        },
         msg: "Oops. Nothing here...",
         goHome: "Back Home"
     },

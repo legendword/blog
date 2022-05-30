@@ -178,7 +178,7 @@ export default {
                 else {
                     if (r.errorType) {
                         if (r.errorType == "NotFound") {
-                            this.$router.push("/404");
+                            this.$router.replace("/404?type=author");
                         }
                     }
                     else {

@@ -114,7 +114,7 @@ export default {
             }
             else {
                 if (r.errorType && r.errorType == "NotFound") {
-                    this.$router.push("/404");
+                    this.$router.replace("/404?type=collection");
                 }
                 else {
                     this.$q.notify({

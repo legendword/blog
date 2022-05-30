@@ -85,7 +85,7 @@ export default {
                 }
                 else {
                     if (r.errorType && r.errorType == "NotFound") {
-                        this.$router.push("/404");
+                        this.$router.replace("/404?type=tag");
                     }
                     else {
                         this.$q.notify({color: "negative", message: r.msg, position: "top", timeout: 2000});

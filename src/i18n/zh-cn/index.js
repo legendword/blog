@@ -239,6 +239,14 @@ export default {
         noResultsFound: "什么也没找到..."
     },
     fourOFour: {
+        customMsg: {
+            collection: "你想要找的收藏夹不存在，或者它的主人把它藏了起来...",
+            category: "该分类不存在",
+            tag: "该标签不存在",
+            user: "无法找到该用户",
+            author: "无法找到该作者",
+            post: "你想要找的文章不存在，或者它的主人把它删除了..."
+        },
         msg: "糟糕，这里什么也没有...",
         goHome: "回到首页"
     },

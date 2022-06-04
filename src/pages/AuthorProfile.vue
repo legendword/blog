@@ -32,7 +32,12 @@
                             <q-btn color="primary" v-show="isCurrentUser" @click="enterProfileEdit">{{ $t("authorProfile.editProfile") }}</q-btn>
                         </div>
                     </div>
-                    <upcoming-feature version="0.4"></upcoming-feature>
+                    <q-card>
+                        <q-card-section>
+                            <div class="text-body1" v-if="author.description">{{ author.description }}</div>
+                            <div class="text-body1 text-grey-8" v-else><i>{{ author.displayName }} has not added a description.</i></div>
+                        </q-card-section>
+                    </q-card>
                 </q-tab-panel>
                 <q-tab-panel name="posts">
                     <div class="text-h6 q-my-md">
@@ -151,12 +156,13 @@ export default {
                 component: AuthorInfoEdit,
                 parent: this,
                 initialValues: {
-                    displayName: this.author.displayName
+                    displayName: this.author.displayName,
+                    description: this.author.description
                 }
             }).onOk((val) => {
                 logger(val);
-                this.author.displayName = val.displayName;
                 this.$store.commit("setBarTitle", this.$t("barTitle.author") + " / " + this.author.displayName);
+                this.loadInfo();
             });
         },
         loadInfo() {

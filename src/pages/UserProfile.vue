@@ -54,7 +54,12 @@
                             <q-btn flat color="primary" :label="$t('compose.becomeAuthor')" @click="becomeAnAuthor" />
                         </template>
                     </q-banner>
-                    <upcoming-feature version="0.4"></upcoming-feature>
+                    <q-card>
+                        <q-card-section>
+                            <div class="text-body1" v-if="user.description">{{ user.description }}</div>
+                            <div class="text-body1 text-grey-8" v-else><i>This user is too lazy to add a description of themselves.</i></div>
+                        </q-card-section>
+                    </q-card>
                 </q-tab-panel>
                 <q-tab-panel name="collections">
                     <div class="text-h6 q-my-md">
@@ -190,7 +195,8 @@ export default {
                 component: UserInfoEdit,
                 parent: this,
                 initialValues: {
-                    username: this.currentUser.username
+                    username: this.currentUser.username,
+                    description: this.user.description
                 }
             }).onOk((val) => {
                 logger(val);
@@ -198,6 +204,7 @@ export default {
                     username: val.username
                 });
                 this.$store.commit("setBarTitle", this.$t("barTitle.user") + " / " + val.username);
+                this.loadInfo();
             });
         },
         tabChange(val) {

@@ -18,6 +18,7 @@ export default {
         yes: "确认",
         username: "用户名",
         displayName: "作者名",
+        description: "简介",
         sortBy: "排序",
         sort: {
             timeDesc: "最新发布",

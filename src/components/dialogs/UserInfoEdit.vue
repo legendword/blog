@@ -8,6 +8,7 @@
             </q-card-section>
             <q-card-section>
                 <q-input class="q-mt-md" outlined debounce="500" v-model="values.username" lazy-rules :rules="rules.username" :label="$t('general.username')" ref="username"></q-input>
+                <q-input class="q-mt-xs" outlined autogrow v-model="values.description" maxlength="1000" counter :label="$t('general.description')"></q-input>
             </q-card-section>
             <q-card-actions align="right" class="q-pr-lg q-pb-lg">
                 <q-btn flat :label="$t('general.submit')" color="primary" size="md" @click="onClickOK" />
@@ -26,7 +27,11 @@ export default {
     },
     data() {
         return {
-            values: {...this.initialValues},
+            values: {
+                username: "",
+                description: "",
+                ...this.initialValues
+            },
             rules: {
                 username: [
                     val => val && val.length > 0 || this.$t("forms.requiredField"),
@@ -40,6 +45,9 @@ export default {
     methods: {
         checkUsername(val) {
             return new Promise((resolve, reject) => {
+                if (this.initialValues && this.initialValues.username && val === this.initialValues.username) {
+                    resolve(true);
+                }
                 api.get("/util/name/user", {
                     name: val
                 }).then(res => {
@@ -104,7 +112,8 @@ export default {
         onSubmit() {
             return new Promise((resolve, reject) => {
                 api.put("/user/info", {
-                    username: this.values.username
+                    username: this.values.username,
+                    description: this.values.description
                 }).catch(err => {
                     apiError();
                 }).then(res => {

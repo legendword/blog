@@ -18,6 +18,7 @@ export default {
         yes: "Yes",
         username: "Username",
         displayName: "Display Name",
+        description: "Description",
         sortBy: "Sort By",
         sort: {
             timeDesc: "Date Published (Newest)",

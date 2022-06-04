@@ -2,7 +2,7 @@
 
 ## 1. Authentication
 
-### 1.1 `POST /user/signIn`
+### 1.1 POST /user/signIn
 
 Sign in using email and password.
 
@@ -30,7 +30,7 @@ Sign in using email and password.
 - **identifier**: String? - the identifier for automatic sign-in, if argument rememberme is true
 - **token**: String? - the token for automatic sign-in; store both this and the identifier in localStorage/cookies
 
-### 1.2 `POST /user/tokenSignIn`
+### 1.2 POST /user/tokenSignIn
 
 Sign in using token and identifier. Meant for automatic sign-in using stored information.
 
@@ -48,11 +48,11 @@ Sign in using token and identifier. Meant for automatic sign-in using stored inf
 - **user**: Object - same as 1.1
 - **token**: String - new token for automatic sign-in; update the stored token with this, but keep the identifier
 
-### 1.3 `POST /user/signOut`
+### 1.3 POST /user/signOut
 
-Deprecated: this will always return `{success:true}`. Destroy stored JWT at client-side instead. (#todo: invalidate token-identifier pair if exists)
+*Deprecated: this will always return `{success:true}`. Destroy stored JWT at client-side instead.* (#todo: invalidate token-identifier pair if exists)
 
-### 1.4 `POST /user/signUp`
+### 1.4 POST /user/signUp
 
 Creates a new account.
 
@@ -68,7 +68,7 @@ Creates a new account.
 
 > Remember to prompt the user that a verification email has been sent to the email address if response is success.
 
-### 1.5 `POST /user/verifyEmail`
+### 1.5 POST /user/verifyEmail
 
 Verify the email address to complete registration.
 
@@ -86,7 +86,7 @@ Verify the email address to complete registration.
 
 There are 3 steps: sending recovery email, verifying recovery email code, and setting new password. They share the same endpoint with different HTTP methods.
 
-#### 1.6.1 `POST /user/recoverPassword`
+#### 1.6.1 POST /user/recoverPassword
 
 Send a password recovery email to the address.
 
@@ -99,7 +99,7 @@ Send a password recovery email to the address.
 - **success**: Boolean
 - **msg**: String? - error message
 
-#### 1.6.2 `GET /user/recoverPassword`
+#### 1.6.2 GET /user/recoverPassword
 
 Check if the recovery code from the email is valid.
 
@@ -113,7 +113,7 @@ Check if the recovery code from the email is valid.
 - **success**: Boolean
 - **msg**: String? - error message
 
-#### 1.6.3 `PUT /user/recoverPassword`
+#### 1.6.3 PUT /user/recoverPassword
 
 Set a new password.
 
@@ -128,9 +128,9 @@ Set a new password.
 - **success**: Boolean
 - **msg**: String? - error message
 
-## 2. Settings
+## 2. User Related Operations
 
-### 2.1 `PUT /user/settings`
+### 2.1 PUT /user/settings
 
 Edits a value in user settings.
 
@@ -144,7 +144,7 @@ Edits a value in user settings.
 - **success**: Boolean
 - **msg**: String? - error message
 
-### 2.2 `PUT /user/info`
+### 2.2 PUT /user/info
 
 Edit the user profile.
 
@@ -157,7 +157,7 @@ Edit the user profile.
 - **success**: Boolean
 - **msg**: String? - error message
 
-### 2.3 `PUT /user/authorInfo`
+### 2.3 PUT /user/authorInfo
 
 Edit the author profile associated with the user.
 
@@ -170,7 +170,7 @@ Edit the author profile associated with the user.
 - **success**: Boolean
 - **msg**: String? - error message
 
-### 2.4 `POST /user/becomeAuthor`
+### 2.4 POST /user/becomeAuthor
 
 Request to become an author. Creates an author account associated with the current user.
 
@@ -184,22 +184,74 @@ None.
 - **msg**: String? - error message
 - **authorId**: Integer
 
-## 3. Posts
+### 2.5 GET /user/info
 
-### 3.1 `GET /posts`
-
-Query a list of newest posts by publication date.
+Fetch verbose information of current user.
 
 #### Arguments
 
-- **count**: Integer? - number of results per page, default 10.
+- **detailed**: Boolean - whether to return detailed information
+
+#### Response
+
+- **isLoggedIn**: Boolean - if not logged in, this will be the only property returned by the request
+- **user**: Object
+  - **id**: Integer
+  - **username**: String
+  - **email**: String
+  - **accessLevel**: Integer
+  - **isAuthor**: Integer{0, 1} - maps to a boolean
+  - **followerCount**: Integer
+  - **followingCount**: Integer
+  - **authorId**: Integer? - the id of the author, if user is an author
+  - **settings**: Object? - only returned when **detailed** argument is true
+    - **locale**: String - the user preferred locale code
+    - ...and more
+- **author**: Object? - only returned when **detailed** argument is true
+  - **id**: Integer
+  - **displayName**: String
+  - **followerCount**: Integer
+  - **postCount**: Integer
+  - **joinTime**: Integer{timestamp}
+  - **joinTimeStr**: String
+
+### 2.6 GET /user/authorInfo
+
+Fetch verbose information of the author of current user.
+
+#### Arguments
+
+None
+#### Response
+
+- **success**: Boolean
+- **msg**: String?
+- **hasAuthor**: Boolean
+- **author**: Object? - only returned when **detailed** argument is true
+  - **id**: Integer
+  - **userId**: Integer
+  - **displayName**: String
+  - **followerCount**: Integer
+  - **postCount**: Integer
+  - **joinTime**: Integer{timestamp}
+
+
+## 3. Posts
+
+### 3.1 GET /posts
+
+Query a list of the newest posts by publication date.
+
+#### Arguments
+
+- **count**: Integer? - number of results per page, default 10
 - **page**: Integer? - page number, starts from 1, default 1
 
 #### Response
 
 - **success**: Boolean
 - **msg**: String? - error message
-- **posts**: Array\<Objects\>
+- **posts**: Array\<Object\>
   - **authorId**: Integer
   - **authorName**: String
   - **category**: String{categories}
@@ -213,7 +265,7 @@ Query a list of newest posts by publication date.
   - **views**: Integer
 - **postCount**: Integer? - total number of posts, only returns when argument page is 1
 
-### 3.2 `GET /posts/author/:id`
+### 3.2 GET /posts/author/:id
 
 Query a list of newest posts from an author.
 
@@ -225,7 +277,7 @@ See 3.1
 
 See 3.1
 
-### 3.3 `GET /posts/category/:name`
+### 3.3 GET /posts/category/:name
 
 Query a list of posts from a category.
 
@@ -240,7 +292,7 @@ Query a list of posts from a category.
 See 3.1
 
 
-### 3.4 `GET /posts/tag/:name`
+### 3.4 GET /posts/tag/:name
 
 Query a list of posts with a tag.
 
@@ -252,27 +304,27 @@ See 3.3
 
 See 3.1
 
-### 3.5 `GET /posts/following`
+### 3.5 GET /posts/following
 
-Query a list of newest posts from authors the user follows.
+Query a list of the newest posts from authors followed by the current user.
 
 Backend implementation should also maintain the largest postId in this list per user for calculating the number of new posts in `GET /badges`.
 
 #### Arguments
 
-None.
+See 3.1
 
 #### Response
 
 See 3.1
 
-### 3.6 `GET /posts/:id`
+### 3.6 GET /posts/:id
 
 Fetch a specific post.
 
 #### Arguments
 
-None.
+None
 
 #### Response
 
@@ -309,9 +361,26 @@ None.
     - **publishTime**: String
     - **publishTimeStr**: String
   - **isFollowing**: Boolean? - is the current user following the author
-  - **likedComments**: Array\<Objects\>? - list of comments the current user liked
+  - **likedComments**: Array\<Object\>? - list of comments the current user liked
     - **id**: the comment id
 
+### 3.7 POST /posts
+
+Publish a new blog post.
+
+#### Arguments
+
+- **title**: String
+- **description**: String
+- **content**: String
+- **category**: Integer
+- **tags**: Array\<String\>
+- **showTOC**: Integer{0, 1} - maps to a Boolean
+
+#### Response
+
+- **success**: Boolean
+- **msg**: String? - error message
 
 > Work In Progress...
 > `GET /user/info`

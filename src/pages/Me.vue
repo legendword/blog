@@ -38,8 +38,18 @@
                 </q-tabs>
                 <q-tab-panels v-model="tab" animated>
                     <q-tab-panel name="profile">
-                        <div class="text-h6 q-my-md">Profile</div>
-                        <upcoming-feature version="0.4"></upcoming-feature>
+                        <div class="text-h6 q-my-md">
+                            {{ $t("userProfile.profile") }}
+                            <div class="float-right">
+                                <q-btn color="primary" @click="enterProfileEdit">{{ $t("userProfile.editProfile") }}</q-btn>
+                            </div>
+                        </div>
+                        <q-card>
+                            <q-card-section>
+                                <div class="text-body1" v-if="user.description">{{ user.description }}</div>
+                                <div class="text-body1 text-grey-8" v-else><i>You have not added a description yet.</i></div>
+                            </q-card-section>
+                        </q-card>
                     </q-tab-panel>
                     <q-tab-panel name="commented">
                         <div class="text-h6 q-my-md">Commented</div>
@@ -59,6 +69,7 @@
 import { mapState } from "vuex";
 import api from "../api";
 import UpcomingFeature from "../components/UpcomingFeature.vue";
+import UserInfoEdit from "../components/dialogs/UserInfoEdit.vue";
 import { apiError } from "src/apiError";
 import logger from "src/logger";
 import requireLoggedIn from "src/mixins/requireLoggedIn";
@@ -92,6 +103,22 @@ export default {
             if (this.user.id) {
                 this.$router.push("/user/"+this.user.id);
             }
+        },
+        enterProfileEdit() {
+            this.$q.dialog({
+                component: UserInfoEdit,
+                parent: this,
+                initialValues: {
+                    username: this.user.username,
+                    description: this.user.description
+                }
+            }).onOk((val) => {
+                logger(val);
+                this.$store.commit("userDataChange", {
+                    username: val.username
+                });
+                this.init();
+            });
         },
         tabChange(val) {
 

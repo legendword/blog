@@ -69,7 +69,7 @@ export default {
     },
     computed: {
         commentCount() {
-            return this.list.length ?? null;
+            return this.list.length || null;
         },
         ...mapState(["isLoggedIn", "user"])
     },

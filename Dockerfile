@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-RUN npx quasar build
+RUN npx --no-install quasar build
 
 # Stage 2: Serve with nginx
 FROM nginx:alpine

@@ -1,0 +1,16 @@
+.git
+.gitignore
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+node_modules
+dist
+
+# Logs / caches / IDE / OS
+*.log
+.eslintcache
+coverage
+.DS_Store
+.vscode
+.idea

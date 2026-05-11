@@ -1,0 +1,7 @@
+services:
+  blog-frontend:
+    build: .
+    container_name: blog-frontend
+    ports:
+      - "5080:80"
+    restart: unless-stopped

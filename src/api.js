@@ -1,7 +1,7 @@
 import axios from "axios";
 import store from "src/store";
 
-const baseURL = "https://analycube.com:8001"; //8002 dev, 8001 prod
+const baseURL = "/api"; //proxied through nginx
 
 var api;
 axios.defaults.withCredentials = true;

@@ -48,7 +48,7 @@ export default {
     },
     meta() {
         return {
-            title: this.collection.title ?? null
+            title: this.collection.title || null
         };
     },
     data() {

@@ -57,22 +57,44 @@ Download **Legendword.Blog-[version]-linux-x64.zip** and unzip it. Run `Legendwo
 
 ## Debugging/Developing the project on your local machine
 
+### Requirements
+
+Node.js 22.22 or newer (24 and 26 are supported as well) and npm.
+
 ### Libraries Used
 
-This project uses [Quasar](https://quasar.dev/), [Quasar CLI](https://quasar.dev/quasar-cli/), [Axios](https://github.com/axios/axios), [Vue i18n](https://kazupon.github.io/vue-i18n/), and [MarkDownItVue](https://github.com/ravenq/markdown-it-vue).
+This project uses [Quasar 2](https://quasar.dev/) with [Quasar CLI (Vite)](https://quasar.dev/quasar-cli-vite/), [Vue 3](https://vuejs.org/), [Vue Router](https://router.vuejs.org/), [Pinia](https://pinia.vuejs.org/), [Axios](https://github.com/axios/axios) and [Vue i18n](https://vue-i18n.intlify.dev/).
+
+Posts are rendered with [markdown-it](https://github.com/markdown-it/markdown-it) and sanitized with [DOMPurify](https://github.com/cure53/DOMPurify); formulas, diagrams and charts use [KaTeX](https://katex.org/), [mermaid](https://mermaid.js.org/), [Apache ECharts](https://echarts.apache.org/) and [flowchart.js](https://flowchart.js.org/). See [docs/markdown.md](docs/markdown.md) for the supported syntax and for the rules to follow when changing the renderer.
 
 ### Install Dependencies
 ```bash
 npm install
 ```
 
+The lock files (`package-lock.json` here and in `src-pwa`, `src-electron` and `src-capacitor`) are committed. Use `npm ci` for reproducible installs and run `npm audit` after changing dependencies.
+
+The `overrides` entries in `package.json` and `src-pwa/package.json` pin patched releases of two transitive build/test packages (`glob`, `minimatch`). Remove them once `workbox-build` and `js-beautify` depend on fixed versions themselves.
+
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
-quasar dev
+npx quasar dev                    # web app
+npx quasar dev -m pwa             # progressive web app
+npx quasar dev -m electron        # desktop app
+npx quasar dev -m capacitor -T ios
 ```
 
+### Lint and test
+```bash
+npm run lint:check
+npm run test:unit
+npm run test:e2e:ci
+```
 
 ### Build the app for production
 ```bash
-quasar build
+npx quasar build                  # web app, output in dist/spa
+npx quasar build -m pwa
+npx quasar build -m electron
+npx quasar build -m capacitor -T ios
 ```

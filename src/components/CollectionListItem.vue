@@ -3,7 +3,7 @@
         <q-item-section>
             <q-item-label class="text-subtitle2 collectionItemTitle">{{ collection.title }}</q-item-label>
             <q-item-label caption class="collectionItemInfo">
-                <span>{{ collection.postCount }} {{ $tc("computed.posts", parseInt(collection.postCount)) }}</span>
+                <span>{{ collection.postCount }} {{ $t("computed.posts", Number(collection.postCount) || 0) }}</span>
                 <span v-show="showUser">{{ collection.username }}</span>
             </q-item-label>
         </q-item-section>

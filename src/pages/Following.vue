@@ -9,7 +9,7 @@
                 </q-intersection>
             </div>
             <div class="flex flex-center q-mt-md" v-show="postList.length > 0">
-                <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
+                <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @update:model-value="changePage"></q-pagination>
             </div>
         </div>
     </q-page>
@@ -18,18 +18,18 @@
 <script>
 import api from "../api";
 import PostCard from "../components/PostCard.vue";
-import { apiError } from "src/apiError";
-import requireLoggedIn from "src/mixins/requireLoggedIn";
+import { apiError } from "@/apiError";
+import requireLoggedIn from "@/mixins/requireLoggedIn";
+import { createMetaMixin } from "quasar";
 
 export default {
     name: "Following",
-    meta: {
-        title: "Feed"
-    },
     components: {
         PostCard
     },
-    mixins: [requireLoggedIn],
+    mixins: [requireLoggedIn, createMetaMixin({
+        title: "Feed"
+    })],
     data() {
         return {
             postList: [],

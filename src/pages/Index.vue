@@ -65,18 +65,19 @@
 </template>
 
 <script>
-import { apiError } from "src/apiError";
+import { apiError } from "@/apiError";
 import api from "../api";
-import PostCard from "../components/PostCard";
-import PostCardCompact from "../components/PostCardCompact";
-import SearchBar from "../components/SearchBar";
+import PostCard from "../components/PostCard.vue";
+import PostCardCompact from "../components/PostCardCompact.vue";
+import SearchBar from "../components/SearchBar.vue";
 import { mainCategories, otherCategories } from "../mainCategories";
-import logger from "src/logger";
+import logger from "@/logger";
+import { createMetaMixin } from "quasar";
 export default {
     name: "Home",
-    meta: {
+    mixins: [createMetaMixin({
         title: "Home"
-    },
+    })],
     data() {
         return {
             mainCategories: mainCategories,

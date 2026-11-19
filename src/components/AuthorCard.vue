@@ -9,8 +9,8 @@
                     <div class="col q-my-auto">
                         <div><strong>{{ author.displayName }}</strong> <q-chip size="sm" color="accent" text-color="white" icon="create" class="q-ml-sm">{{ $t("tag.author") }}</q-chip></div>
                         <div class="text-caption">
-                            <span class="q-pr-sm">{{ author.followerCount }} {{ $tc("computed.followers", author.followerCount) }}</span>
-                            <span class="q-pl-sm">{{ author.postCount }} {{ $tc("computed.posts", author.postCount) }}</span>
+                            <span class="q-pr-sm">{{ author.followerCount }} {{ $t("computed.followers", Number(author.followerCount) || 0) }}</span>
+                            <span class="q-pl-sm">{{ author.postCount }} {{ $t("computed.posts", Number(author.postCount) || 0) }}</span>
                         </div>
                     </div>
                 </div>

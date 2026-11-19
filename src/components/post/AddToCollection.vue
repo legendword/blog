@@ -19,9 +19,9 @@
 </template>
 
 <script>
-import api from "src/api";
-import { apiError } from "src/apiError";
-import { addToCollection, newCollection } from "src/helpers/collections";
+import api from "@/api";
+import { apiError } from "@/apiError";
+import { addToCollection, newCollection } from "@/helpers/collections";
 export default {
     props: {
         postId: Number

@@ -10,7 +10,7 @@
                 :no-nodes-label="''"
                 label-key="content"
                 default-expand-all
-                :selected.sync="selected"
+                v-model:selected="selected"
             />
         </q-card-section>
     </q-card>
@@ -22,6 +22,7 @@ export default {
     props: {
         headings: Array
     },
+    emits: ["select"],
     data() {
         return {
             selected: null

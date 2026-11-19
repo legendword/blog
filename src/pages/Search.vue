@@ -19,7 +19,7 @@
                             <PostListItem v-for="item in resultList.posts" :key="item.postId" :post="item"></PostListItem>
                         </q-list>
                         <div class="flex flex-center q-mt-md">
-                            <q-pagination v-model="pagination.posts.page" color="primary" :max="pagination.posts.maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
+                            <q-pagination v-model="pagination.posts.page" color="primary" :max="pagination.posts.maxPages" :max-pages="6" :boundary-numbers="true" @update:model-value="changePage"></q-pagination>
                         </div>
                     </div>
                     <div class="text-h6 q-pl-md" v-else>
@@ -77,13 +77,14 @@ import SearchBar from "../components/SearchBar.vue";
 import AuthorCard from "../components/AuthorCard.vue";
 import UserCard from "../components/UserCard.vue";
 import CollectionListItem from "../components/CollectionListItem.vue";
-import { apiError } from "src/apiError";
-import logger from "src/logger";
+import { apiError } from "@/apiError";
+import logger from "@/logger";
+import { createMetaMixin } from "quasar";
 export default {
-    name: "Search",
-    meta: {
+    name: "SearchPage",
+    mixins: [createMetaMixin({
         title: "Search"
-    },
+    })],
     components: {
         SearchBar,
         PostListItem,

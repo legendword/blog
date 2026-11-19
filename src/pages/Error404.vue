@@ -22,11 +22,12 @@
 </template>
 
 <script>
+import { createMetaMixin } from "quasar";
 export default {
     name: "Error404",
-    meta: {
+    mixins: [createMetaMixin({
         title: "404"
-    },
+    })],
     computed: {
         type() {
             return this.$route.query.type;

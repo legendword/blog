@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { useMainStore } from "@/stores/main";
 export default {
     name: "NewAccount",
     methods: {
@@ -19,7 +20,7 @@ export default {
     },
     computed: {
         newAccount () {
-            return this.$store.state.newAccount;
+            return useMainStore().newAccount;
         }
     }
 };

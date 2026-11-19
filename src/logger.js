@@ -1,5 +1,5 @@
-const nullFunction = (msg) => {
+const nullFunction = () => {
     return;
 };
-const logger = process.env.NODE_ENV == "development" ? console.log : nullFunction;
+const logger = import.meta.env.DEV ? console.log : nullFunction;
 export default logger;

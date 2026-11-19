@@ -38,7 +38,7 @@
                                     </div>
                                     <div class="col q-my-auto">
                                         <router-link :to="'/author/'+post.authorId" class="noLinkStyle"><strong>{{ post.authorName }}</strong></router-link>
-                                        <div class="text-caption">{{ post.followerCount }} {{ $tc("computed.followers", post.followerCount) }}</div>
+                                        <div class="text-caption">{{ post.followerCount }} {{ $t("computed.followers", Number(post.followerCount) || 0) }}</div>
                                     </div>
                                     <div class="col-auto q-my-auto" v-show="isLoggedIn">
                                         <q-btn flat :color="hoverUnfollow ? 'negative' : 'grey'" :label="hoverUnfollow ? $t('userAction.unfollow') : $t('userAction.following')" @mouseenter="hoverUnfollow = true" @mouseleave="hoverUnfollow = false" @click="followAuthor" v-if="post.isFollowing"></q-btn>
@@ -55,7 +55,7 @@
                         <toc :headings="headings" @select="goToNthHeading" />
                     </div>
                     <!-- post content -->
-                    <MarkDownItVue class="post-content q-pt-lg q-pb-md col-12 col-md-8" :content="post.content ? post.content : ''" :options="markdownItVueOptions"></MarkDownItVue>
+                    <markdown-view class="post-content q-pt-lg q-pb-md col-12 col-md-8" :content="post.content ? post.content : ''" />
                 </div>
                 <!-- comments -->
                 <div class="q-mt-xl">
@@ -72,41 +72,38 @@
 
 <script>
 import TableOfContents from "../helpers/TableOfContents";
-import MarkDownItVue from "markdown-it-vue";
-import "markdown-it-vue/dist/markdown-it-vue.css";
-import markdownItVueOptions from "../markdownItVueOptions";
+import MarkdownView from "@/components/post/MarkdownView.vue";
 import api from "../api";
-import { mapState } from "vuex";
+import { mapState } from "pinia";
 import { formatTimeElapsed } from "../util";
-import { scroll } from "quasar";
-import LoadingMessage from "src/components/LoadingMessage.vue";
-import { apiError } from "src/apiError";
-import AddToCollection from "src/components/post/AddToCollection.vue";
-import Comments from "src/components/post/Comments.vue";
-import Toc from "src/components/post/Toc.vue";
-import logger from "src/logger";
-// const { getScrollTarget, setScrollPosition } = scroll
+import LoadingMessage from "@/components/LoadingMessage.vue";
+import { apiError } from "@/apiError";
+import AddToCollection from "@/components/post/AddToCollection.vue";
+import Comments from "@/components/post/Comments.vue";
+import Toc from "@/components/post/Toc.vue";
+import logger from "@/logger";
+import { useMainStore } from "@/stores/main";
+import { createMetaMixin } from "quasar";
 export default {
     name: "Post",
     components: {
-        MarkDownItVue,
+        MarkdownView,
         LoadingMessage,
         AddToCollection,
         Comments,
         Toc
     },
-    meta() {
+    mixins: [createMetaMixin(function() {
         return {
             title: this.pageTitle,
             meta: {
-                description: this.postDescription
+                description: { name: "description", content: this.pageDescription }
             }
         };
-    },
+    })],
     data() {
         return {
             loaded: false,
-            markdownItVueOptions: markdownItVueOptions,
             post: {},
             postNotFound: false,
             hoverUnfollow: false,
@@ -120,7 +117,7 @@ export default {
         postId() {
             return parseInt(this.$route.params.id);
         },
-        ...mapState(["isLoggedIn", "user"])
+        ...mapState(useMainStore, ["isLoggedIn", "user"])
     },
     methods: {
         getPost() {
@@ -163,13 +160,12 @@ export default {
                     r.post.likedComments = [];
                 }
                 this.post = r.post;
-                this.$store.commit("setBarTitle", r.post.title);
+                useMainStore().setBarTitle(r.post.title);
                 this.pageTitle = r.post.title;
                 this.pageDescription = r.post.description;
 
                 let toc = new TableOfContents(this.post.content);
                 this.headings = toc.getHeadings();
-                console.log("toc", this.headings);
             }
             else {
                 if (r.errorType && r.errorType == "NotFound") {
@@ -181,7 +177,7 @@ export default {
                         message: r.msg
                     });
                 }
-                this.$store.commit("setBarTitle");
+                useMainStore().setBarTitle();
             }
         }
     },

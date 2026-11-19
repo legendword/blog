@@ -1,62 +1,66 @@
+import { defineBoot } from "#q-app";
 import { LocalStorage } from "quasar";
-import api from "src/api";
-import logger from "src/logger";
+import api from "@/api";
+import logger from "@/logger";
+import { i18n } from "@/boot/i18n";
+import { useMainStore } from "@/stores/main";
 
-// "async" is optional;
-// more info on params: https://quasar.dev/quasar-cli/boot-files
-export default async ({ app, router, store, Vue }) => {
-    router.beforeEach((to, from, next) => {
-        const hasToken = LocalStorage.has("identifier") && LocalStorage.has("token");
-        const hasUserInfo = store.state.isLoggedIn;
-        if (hasToken) {
-            let alive = (hasUserInfo ? api.get("/alive").then(res => {
-                let r = res.data;
-                logger(r);
-                if (r.success) {
-                    if (!r.isLoggedIn) return false;
-                    else return true;
-                }
-                return false;
-            }) : Promise.resolve(false));
-            alive.then(isLoggedIn => {
-                if (!isLoggedIn) {
-                    const identifier = LocalStorage.getItem("identifier");
-                    const token = LocalStorage.getItem("token");
-                    return api.post("/user/tokenSignIn", {
-                        identifier: identifier,
-                        token: token
-                    }).then(res => {
-                        let r = res.data;
-                        logger("signInWithToken", r);
-                        if (r.success) {
-                            logger("signInWithToken Success");
-                            if (r.jwt) {
-                                store.commit("setAuthorization", "Bearer " + r.jwt);
-                            }
-                            LocalStorage.set("token", r.token);
-                            store.commit("userLogIn", r.user);
-                            if (r.user.settings.locale != app.i18n.locale) { // #test
-                                app.i18n.locale = r.user.settings.locale;
-                            }
-                        }
-                        else {
-                            logger("signInWithToken Failed");
-                            LocalStorage.remove("identifier");
-                            LocalStorage.remove("token");
-                            store.commit("setAuthorization", null);
-                        }
-                    });
-                }
-                return Promise.resolve();
-            }).finally(() => {
-                next();
-            });
+// more info on params: https://v2.quasar.dev/quasar-cli-vite/boot-files
+export default defineBoot(({ router, store }) => {
+    const mainStore = useMainStore(store);
+
+    const isSessionAlive = async () => {
+        const res = await api.get("/alive");
+        let r = res.data;
+        logger(r);
+        return r.success ? !!r.isLoggedIn : false;
+    };
+
+    const signInWithToken = async () => {
+        const identifier = LocalStorage.getItem("identifier");
+        const token = LocalStorage.getItem("token");
+        const res = await api.post("/user/tokenSignIn", {
+            identifier: identifier,
+            token: token
+        });
+        let r = res.data;
+        logger("signInWithToken", r);
+        if (r.success) {
+            logger("signInWithToken Success");
+            if (r.jwt) {
+                mainStore.setAuthorization("Bearer " + r.jwt);
+            }
+            LocalStorage.setItem("token", r.token);
+            mainStore.userLogIn(r.user);
+            if (r.user.settings.locale != i18n.global.locale.value) { // #test
+                i18n.global.locale.value = r.user.settings.locale;
+            }
         }
         else {
-            if (hasUserInfo) {
-                api.get("/alive");
+            logger("signInWithToken Failed");
+            LocalStorage.removeItem("identifier");
+            LocalStorage.removeItem("token");
+            mainStore.setAuthorization(null);
+        }
+    };
+
+    router.beforeEach(async () => {
+        const hasToken = LocalStorage.hasItem("identifier") && LocalStorage.hasItem("token");
+        const hasUserInfo = mainStore.isLoggedIn;
+        if (hasToken) {
+            try {
+                const isLoggedIn = hasUserInfo ? await isSessionAlive() : false;
+                if (!isLoggedIn) {
+                    await signInWithToken();
+                }
             }
-            next();
+            catch (err) {
+                // network/API failure must never block navigation
+                logger(err);
+            }
+        }
+        else if (hasUserInfo) {
+            api.get("/alive").catch(() => {});
         }
     });
-};
+});

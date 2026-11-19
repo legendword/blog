@@ -21,26 +21,27 @@
             </q-intersection>
         </div>
         <div class="flex flex-center q-mt-md" v-show="postList.length > 0">
-            <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
+            <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @update:model-value="changePage"></q-pagination>
         </div>
     </q-page>
 </template>
 
 <script>
-import { apiError } from "src/apiError";
+import { apiError } from "@/apiError";
 import api from "../api";
-import PostCard from "../components/PostCard";
-import logger from "src/logger";
+import PostCard from "../components/PostCard.vue";
+import logger from "@/logger";
+import { createMetaMixin } from "quasar";
 export default {
     name: "Category",
     components: {
         PostCard
     },
-    meta() {
+    mixins: [createMetaMixin(function() {
         return {
             title: `Category: ${this.$te("categories."+this.$route.params.name) ? this.$t("categories."+this.$route.params.name) : this.$route.params.name}`
         };
-    },
+    })],
     data() {
         return {
             categoryNotFound: false,

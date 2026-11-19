@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import { apiError } from "src/apiError";
+import { apiError } from "@/apiError";
 import api from "../api";
-import logger from "src/logger";
+import logger from "@/logger";
 export default {
     name: "EmailVerification",
     data() {

@@ -24,14 +24,14 @@
                 </div>
                 <!-- Follower,Post,Following Count -->
                 <div class="row q-mt-md text-subtitle1 q-gutter-md">
-                    <div class="col-12 col-sm-auto q-my-none"><strong class="text-h6 text-primary">{{ user.followerCount }}</strong> {{ $tc("computed.followers", user.followerCount) }}</div>
+                    <div class="col-12 col-sm-auto q-my-none"><strong class="text-h6 text-primary">{{ user.followerCount }}</strong> {{ $t("computed.followers", Number(user.followerCount) || 0) }}</div>
                     <div class="col-12 col-sm-auto q-my-none"><strong class="text-h6 text-primary">{{ user.followingCount }}</strong> {{ $t("general.following") }}</div>
                 </div>
             </q-banner>
 
             <!-- Profile Tab -->
             <div class="q-pa-md">
-                <q-tabs v-model="tab" align="left" ref="tab" @input="tabChange">
+                <q-tabs v-model="tab" align="left" ref="tab" @update:model-value="tabChange">
                     <q-tab name="profile" class="q-px-lg">Profile</q-tab>
                     <q-tab name="commented" class="q-px-lg">Commented</q-tab>
                     <q-tab name="saved" class="q-px-lg">Saved</q-tab>
@@ -66,13 +66,17 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from "pinia";
 import api from "../api";
 import UpcomingFeature from "../components/UpcomingFeature.vue";
 import UserInfoEdit from "../components/dialogs/UserInfoEdit.vue";
-import { apiError } from "src/apiError";
-import logger from "src/logger";
-import requireLoggedIn from "src/mixins/requireLoggedIn";
+import { apiError } from "@/apiError";
+import logger from "@/logger";
+import requireLoggedIn from "@/mixins/requireLoggedIn";
+import { useMainStore } from "@/stores/main";
+
+// response fetched in beforeRouteEnter, before the component instance exists
+let preloaded = null;
 
 export default {
     name: "Me",
@@ -107,14 +111,15 @@ export default {
         enterProfileEdit() {
             this.$q.dialog({
                 component: UserInfoEdit,
-                parent: this,
-                initialValues: {
-                    username: this.user.username,
-                    description: this.user.description
+                componentProps: {
+                    initialValues: {
+                        username: this.user.username,
+                        description: this.user.description
+                    }
                 }
             }).onOk((val) => {
                 logger(val);
-                this.$store.commit("userDataChange", {
+                useMainStore().userDataChange({
                     username: val.username
                 });
                 this.init();
@@ -144,22 +149,27 @@ export default {
             });
         }
     },
-    beforeRouteEnter (to, from, next) {
-        api.get("/user/info", {
+    created() {
+        if (preloaded) {
+            this.setData(preloaded);
+            preloaded = null;
+        }
+    },
+    beforeRouteEnter () {
+        // fetch before the page is shown; created() picks the result up
+        return api.get("/user/info", {
             detailed: true
-        }).catch(err => {
-            apiError();
-            next();
         }).then(res => {
-            next(vm => vm.setData(res.data));
+            preloaded = res.data;
+        }, () => {
+            apiError();
         });
     },
-    beforeRouteUpdate (to, from, next) {
-        api.get("/user/info", {
+    beforeRouteUpdate () {
+        return api.get("/user/info", {
             detailed: true
         }).then(res => {
             this.setData(res.data);
-            next();
         });
     }
 };

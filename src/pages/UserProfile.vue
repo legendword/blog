@@ -22,21 +22,21 @@
                 </q-card-section>
                 <q-card-section class="col">
                     <div class="text-subtitle1 text-bold">{{ user.followerCount }}</div>
-                    <div class="text-body2">{{ $tc("computed.followers", user.followerCount) }}</div>
+                    <div class="text-body2">{{ $t("computed.followers", Number(user.followerCount) || 0) }}</div>
                 </q-card-section>
                 <q-card-section class="col">
                     <div class="text-subtitle1 text-bold">0</div>
-                    <div class="text-body2">{{ $tc("computed.collections", 0) }}</div>
+                    <div class="text-body2">{{ $t("computed.collections", Number(0) || 0) }}</div>
                 </q-card-section>
             </q-card> -->
             <div class="row q-my-md text-subtitle1 q-gutter-md">
                 <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.followingCount }}</span> {{ $t("general.following") }}</div>
-                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.followerCount }}</span> {{ $tc("computed.followers", user.followerCount) }}</div>
-                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.collectionCount }}</span> {{ $tc("computed.collections", user.collectionCount) }}</div>
+                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.followerCount }}</span> {{ $t("computed.followers", Number(user.followerCount) || 0) }}</div>
+                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ user.collectionCount }}</span> {{ $t("computed.collections", Number(user.collectionCount) || 0) }}</div>
             </div>
         </q-banner>
         <div class="q-pa-md">
-            <q-tabs v-model="tab" align="left" @input="tabChange">
+            <q-tabs v-model="tab" align="left" @update:model-value="tabChange">
                 <q-tab name="profile" :label="$t('userProfile.profile')" class="q-px-lg" />
                 <q-tab name="collections" :label="$t('userProfile.collections')" class="q-px-lg" />
             </q-tabs>
@@ -89,23 +89,25 @@
 
 <script>
 import api from "../api";
-import { mapState } from "vuex";
-import UpcomingFeature from "../components/UpcomingFeature";
-import CollectionListItem from "../components/CollectionListItem";
-import { apiError } from "src/apiError";
-import UserInfoEdit from "src/components/dialogs/UserInfoEdit.vue";
-import logger from "src/logger";
+import { mapState } from "pinia";
+import UpcomingFeature from "../components/UpcomingFeature.vue";
+import CollectionListItem from "../components/CollectionListItem.vue";
+import { apiError } from "@/apiError";
+import UserInfoEdit from "@/components/dialogs/UserInfoEdit.vue";
+import logger from "@/logger";
+import { useMainStore } from "@/stores/main";
+import { createMetaMixin } from "quasar";
 export default {
     name: "UserProfile",
     components: {
         UpcomingFeature,
         CollectionListItem
     },
-    meta() {
+    mixins: [createMetaMixin(function() {
         return {
             title: this.user.username ? this.user.username : null
         };
-    },
+    })],
     data() {
         return {
             loaded: false,
@@ -123,10 +125,10 @@ export default {
             return this.$route.params.id;
         },
         currentUser () {
-            return this.$store.state.user;
+            return useMainStore().user;
         },
         isLoggedIn () {
-            return this.$store.state.isLoggedIn;
+            return useMainStore().isLoggedIn;
         }
     },
     watch: {
@@ -176,7 +178,7 @@ export default {
                     });
                     this.user.isAuthor = true;
                     this.user.authorId = r.authorId;
-                    this.$store.commit("userDataChange", {
+                    useMainStore().userDataChange({
                         isAuthor: "1"
                     });
                 }
@@ -193,17 +195,18 @@ export default {
         enterProfileEdit() {
             this.$q.dialog({
                 component: UserInfoEdit,
-                parent: this,
-                initialValues: {
-                    username: this.currentUser.username,
-                    description: this.user.description
+                componentProps: {
+                    initialValues: {
+                        username: this.currentUser.username,
+                        description: this.user.description
+                    }
                 }
             }).onOk((val) => {
                 logger(val);
-                this.$store.commit("userDataChange", {
+                useMainStore().userDataChange({
                     username: val.username
                 });
-                this.$store.commit("setBarTitle", this.$t("barTitle.user") + " / " + val.username);
+                useMainStore().setBarTitle(this.$t("barTitle.user") + " / " + val.username);
                 this.loadInfo();
             });
         },
@@ -241,7 +244,7 @@ export default {
                     this.user = r.user;
                     this.user.isAuthor = this.user.isAuthor == "1";
                     this.isCurrentUser = r.isCurrentUser;
-                    this.$store.commit("setBarTitle", this.$t("barTitle.user") + " / " + this.user.username);
+                    useMainStore().setBarTitle(this.$t("barTitle.user") + " / " + this.user.username);
                     this.tabChange(this.tab);
                     this.loaded = true;
                 }
@@ -259,7 +262,7 @@ export default {
                             timeout: 2000
                         });
                     }
-                    this.$store.commit("setBarTitle");
+                    useMainStore().setBarTitle();
                 }
             });
         }

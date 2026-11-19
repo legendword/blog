@@ -46,7 +46,7 @@
                         <q-item>
                             <q-item-section>
                                 <q-item-label class="text-subtitle2 collectionItemTitle">{{ item.title }}</q-item-label>
-                                <q-item-label caption class="collectionItemInfo">{{ item.postCount }} {{ $tc("computed.posts", parseInt(item.postCount)) }}</q-item-label>
+                                <q-item-label caption class="collectionItemInfo">{{ item.postCount }} {{ $t("computed.posts", Number(item.postCount) || 0) }}</q-item-label>
                             </q-item-section>
                         </q-item>
                     </q-slide-item>
@@ -57,10 +57,11 @@
 </template>
 
 <script>
-import UpcomingFeature from "src/components/UpcomingFeature.vue";
+import UpcomingFeature from "@/components/UpcomingFeature.vue";
 import api from "../api";
-import { apiError } from "src/apiError";
-import logger from "src/logger";
+import { apiError } from "@/apiError";
+import logger from "@/logger";
+import { createMetaMixin } from "quasar";
 const titlePrefix = {
     browse: "Browse",
     favorites: "Favorite",
@@ -69,11 +70,11 @@ const titlePrefix = {
 export default {
     components: { UpcomingFeature },
     name: "Collections",
-    meta() {
+    mixins: [createMetaMixin(function() {
         return {
             title: `${titlePrefix[this.currentMenu]} Collections`
         };
-    },
+    })],
     data() {
         return {
             menuList: [

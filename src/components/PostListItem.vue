@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { formatViews, formatTimeElapsed } from "src/util";
+import { formatViews, formatTimeElapsed } from "@/util";
 export default {
     name: "PostListItem",
     props: {

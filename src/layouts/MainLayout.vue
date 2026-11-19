@@ -12,7 +12,7 @@
                     <q-item-section class="row">
                         <q-avatar color="primary" text-color="white" size="md">{{ user.username[0] }}</q-avatar>
                     </q-item-section>
-                    <q-menu fit anchor="bottom right" self="top right" content-class="bg-white text-primary text-weight-medium">
+                    <q-menu fit anchor="bottom right" self="top right" class="bg-white text-primary text-weight-medium">
                         <q-list style="min-width: 100px">
                             <q-item clickable v-close-popup to="/settings" exact>
                                 <q-item-section>{{ $t("layoutDrawer.settings") }}</q-item-section>
@@ -27,7 +27,7 @@
             </q-toolbar>
         </q-header>
 
-        <q-drawer content-class="bg-shade-light" show-if-above v-model="leftDrawer" :width="200" side="left" mini>
+        <q-drawer class="bg-shade-light" show-if-above v-model="leftDrawer" :width="200" side="left" mini>
             <q-scroll-area class="fit">
                 <q-list padding class="menu-list">
                     <q-item v-for="item in menuItems.filter(v => (!v.requireLogin || isLoggedIn) && (!v.requireAuthor || user.isAuthor == 1) )" :key="item.link" clickable v-ripple :to="item.link" :exact="item.exact ? true : false">
@@ -37,7 +37,7 @@
                             </q-icon>
                         </q-item-section>
 
-                        <q-tooltip content-class="bg-primary" anchor="center right" self="center left" :offset="[5, 0]">
+                        <q-tooltip class="bg-primary" anchor="center right" self="center left" :offset="[5, 0]">
                             {{ $t(item.name) }}
                         </q-tooltip>
 
@@ -59,25 +59,27 @@
 </template>
 
 <script>
-import SearchBar from "src/components/SearchBar.vue";
-import { mapState } from "vuex";
+import SearchBar from "@/components/SearchBar.vue";
+import { mapState } from "pinia";
 import api from "../api";
 import { apiError } from "../apiError";
-import LogIn from "../components/LogIn";
+import LogIn from "../components/LogIn.vue";
 import mainMenuItems from "../mainMenu";
+import { useMainStore } from "@/stores/main";
+import { createMetaMixin } from "quasar";
 export default {
     name: "MainLayout",
     components: {
         LogIn,
         SearchBar
     },
-    meta: {
+    mixins: [createMetaMixin({
         title: "Legendword Blog",
         titleTemplate: title => title === "Legendword Blog" ? title : `${title} - Legendword Blog`,
         meta: {
             description: { name: "description", content: "Distraction-free blogging experience. Made for everyone." }
         }
-    },
+    })],
     data () {
         return {
             leftDrawer: false,
@@ -93,12 +95,12 @@ export default {
     },
     computed: {
         barTitle() {
-            return this.$route.meta.customBarTitle ? this.$store.state.barTitle : "Legendword Blog";
+            return this.$route.meta.customBarTitle ? useMainStore().barTitle : "Legendword Blog";
         },
         canGoBack() {
             return !this.menuLinks.includes(this.$route.path);
         },
-        ...mapState(["user","isLoggedIn","miniDrawerMode"])
+        ...mapState(useMainStore, ["user","isLoggedIn","miniDrawerMode"])
     },
     methods: {
         scrollBackTop() {
@@ -109,7 +111,7 @@ export default {
         },
         signOut() {
             let params = {};
-            if (this.$q.localStorage.has("identifier") && this.$q.localStorage.has("token")) {
+            if (this.$q.localStorage.hasItem("identifier") && this.$q.localStorage.hasItem("token")) {
                 params = {
                     token: this.$q.localStorage.getItem("token"),
                     identifier: this.$q.localStorage.getItem("identifier")
@@ -124,9 +126,9 @@ export default {
                         position: "top",
                         timeout: 2000
                     });
-                    this.$store.commit("setAuthorization", null);
+                    useMainStore().setAuthorization(null);
                     // delete api.instance.defaults.headers.common["Authorization"]
-                    this.$store.commit("userLogOut");
+                    useMainStore().userLogOut();
                 }
                 else {
                     this.$q.notify({
@@ -136,10 +138,10 @@ export default {
                         timeout: 2000
                     });
                 }
-                this.$store.commit("setAuthorization", null);
+                useMainStore().setAuthorization(null);
                 // delete api.instance.defaults.headers.common["Authorization"]
-                this.$q.localStorage.remove("identifier");
-                this.$q.localStorage.remove("token");
+                this.$q.localStorage.removeItem("identifier");
+                this.$q.localStorage.removeItem("token");
             });
         },
         routerGoBack() {
@@ -160,7 +162,7 @@ export default {
     },
     created() {
         if (window.history && window.history.length) {
-            this.$store.commit("setHistoryLength", window.history.length);
+            useMainStore().setHistoryLength(window.history.length);
         }
         this.menuLinks = mainMenuItems.map(v => v.link);
         api.get("/badges").then(res => {
@@ -175,25 +177,11 @@ export default {
             }
         });
     },
-    beforeRouteEnter (to, from, next) {
-        next();
-        /*
-        api.get("/user/info", {
-            detailed: true
-        }).catch(err => {
-            // apiError()
-            next()
-        }).then(res => {
-            next(vm => vm.setData(res.data))
-        })
-        */
-    },
-    beforeRouteUpdate(to, from, next) {
+    beforeRouteUpdate(to) {
         let itm = this.menuItems.find(v => v.link == to.path);
         if (itm && itm.badge) {
             this.menuBadges[itm.badge] = 0;
         }
-        next();
     }
 };
 </script>

@@ -44,23 +44,23 @@
 </template>
 
 <script>
-import api from "src/api";
-import { apiError } from "src/apiError";
-import logger from "src/logger";
-import CreatorPostList from "src/components/lists/CreatorPostList.vue";
-import UpcomingFeature from "src/components/UpcomingFeature.vue";
+import api from "@/api";
+import { apiError } from "@/apiError";
+import logger from "@/logger";
+import CreatorPostList from "@/components/lists/CreatorPostList.vue";
+import UpcomingFeature from "@/components/UpcomingFeature.vue";
 import requireLoggedIn from "../mixins/requireLoggedIn";
-import CreatorCommentList from "src/components/lists/CreatorCommentList.vue";
+import CreatorCommentList from "@/components/lists/CreatorCommentList.vue";
+import { createMetaMixin } from "quasar";
 
 const tabs = ["overview", "posts", "drafts", "comments"];
 
 export default {
     name: "Creator",
     components: { CreatorPostList, UpcomingFeature, CreatorCommentList },
-    meta: {
+    mixins: [requireLoggedIn, createMetaMixin({
         title: "Creator Dashboard"
-    },
-    mixins: [requireLoggedIn],
+    })],
     data() {
         return {
             tabs: tabs,

@@ -113,7 +113,7 @@
                                     
                                 </div>
                                 <div class="flex flex-center q-mt-md" v-if="!creatorPostLoading">
-                                    <q-pagination v-model="creatorPagination.posts.current" :max="creatorPagination.posts.max" input @input="creatorPageChange" />
+                                    <q-pagination v-model="creatorPagination.posts.current" :max="creatorPagination.posts.max" input @update:model-value="creatorPageChange" />
                                 </div>
                             </q-tab-panel>
                             <q-tab-panel name="comments" class="q-px-sm q-px-sm-md">
@@ -137,7 +137,7 @@
                                     </q-card>
                                 </div>
                                 <div class="flex flex-center q-mt-md" v-if="!creatorCommentLoading">
-                                    <q-pagination v-model="creatorPagination.comments.current" :max="creatorPagination.comments.max" input @input="creatorPageChange" />
+                                    <q-pagination v-model="creatorPagination.comments.current" :max="creatorPagination.comments.max" input @update:model-value="creatorPageChange" />
                                 </div>
                             </q-tab-panel>
                         </q-tab-panels>
@@ -151,13 +151,17 @@
 <script>
 import AuthorCard from "../components/AuthorCard.vue";
 import UserCard from "../components/UserCard.vue";
-import { mapState } from "vuex";
+import { mapState } from "pinia";
 import api from "../api";
 import NeedToLogIn from "../components/NeedToLogIn.vue";
 import UpcomingFeature from "../components/UpcomingFeature.vue";
 import { formatTimeElapsed } from "../util";
-import { apiError } from "src/apiError";
-import logger from "src/logger";
+import { apiError } from "@/apiError";
+import logger from "@/logger";
+import { useMainStore } from "@/stores/main";
+// response fetched in beforeRouteEnter, before the component instance exists
+let preloaded = null;
+
 export default {
     name: "Me",
     components: {
@@ -195,7 +199,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(["isLoggedIn"])
+        ...mapState(useMainStore, ["isLoggedIn"])
     },
     watch: {
         creatorTab: function(val) {
@@ -348,22 +352,27 @@ export default {
             }
         }
     },
-    beforeRouteEnter (to, from, next) {
-        api.get("/user/info", {
+    created() {
+        if (preloaded) {
+            this.setData(preloaded);
+            preloaded = null;
+        }
+    },
+    beforeRouteEnter () {
+        // fetch before the page is shown; created() picks the result up
+        return api.get("/user/info", {
             detailed: true
-        }).catch(err => {
-            apiError();
-            next();
         }).then(res => {
-            next(vm => vm.setData(res.data));
+            preloaded = res.data;
+        }, () => {
+            apiError();
         });
     },
-    beforeRouteUpdate (to, from, next) {
-        api.get("/user/info", {
+    beforeRouteUpdate () {
+        return api.get("/user/info", {
             detailed: true
         }).then(res => {
             this.setData(res.data);
-            next();
         });
     }
 };

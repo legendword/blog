@@ -31,17 +31,19 @@
 </template>
 
 <script>
-import { apiError } from "src/apiError";
+import { apiError } from "@/apiError";
 import DropdownSelect from "../form/DropdownSelect.vue";
 import Comment from "./Comment.vue";
-import api from "src/api";
-import { mapState } from "vuex";
-import logger from "src/logger";
+import api from "@/api";
+import { mapState } from "pinia";
+import logger from "@/logger";
+import { useMainStore } from "@/stores/main";
 export default {
     components: {
         DropdownSelect,
         Comment
     },
+    emits: ["update"],
     props: {
         comments: Array,
         likedComments: Array,
@@ -71,7 +73,7 @@ export default {
         commentCount() {
             return this.list.length ?? null;
         },
-        ...mapState(["isLoggedIn", "user"])
+        ...mapState(useMainStore, ["isLoggedIn", "user"])
     },
     created() {
         this.parse();
@@ -105,7 +107,7 @@ export default {
         parse() {
             let comments = [];
             let childComments = [];
-            for (let i of this.comments) {
+            for (let i of this.comments || []) {
                 i.userLiked = this.likedComments && this.likedComments.includes(i.id);
                 for (let tmp of ["id", "parentId", "likes", "publishTime"]) {
                     i[tmp] = parseInt(i[tmp]);

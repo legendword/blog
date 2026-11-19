@@ -22,13 +22,15 @@
 
 <script>
 import api from "../api";
-import { mapState } from "vuex";
-import { apiError } from "src/apiError";
+import { mapState } from "pinia";
+import { apiError } from "@/apiError";
+import { useMainStore } from "@/stores/main";
+import { createMetaMixin } from "quasar";
 export default {
     name: "Settings",
-    meta: {
+    mixins: [createMetaMixin({
         title: "Settings"
-    },
+    })],
     data() {
         return {
             options: {
@@ -37,14 +39,14 @@ export default {
                     {value: "zh", label: this.$t("settings.general.languages.Chinese")}
                 ]
             },
-            language: this.$root.$i18n.locale
+            language: this.$i18n.locale
         };
     },
     computed: {
         sts() {
-            return this.$store.state.user ? this.$store.state.user.settings : "";
+            return useMainStore().user ? useMainStore().user.settings : "";
         },
-        ...mapState(["isLoggedIn"]) //todo !isLoggedIn message
+        ...mapState(useMainStore, ["isLoggedIn"]) //todo !isLoggedIn message
     },
     methods: {
         backHome() {
@@ -53,7 +55,7 @@ export default {
     },
     watch: {
         language(lang) {
-            this.$root.$i18n.locale = lang;
+            this.$i18n.locale = lang;
             if (this.isLoggedIn) {
                 api.put("/user/settings", {
                     column: "locale",

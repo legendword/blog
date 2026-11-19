@@ -12,7 +12,7 @@
         </div>
         <div class="row justify-between items-center q-mb-lg">
             <div class="text-h6">
-                {{ collection.postCount }} {{ $tc("computed.posts", collection.postCount) }}
+                {{ collection.postCount }} {{ $t("computed.posts", Number(collection.postCount) || 0) }}
             </div>
             <div v-show="isLoggedIn && user.id == collection.userId">
                 <q-btn color="accent" flat :label="$t('collection.editInfo')" @click="editCollectionInfo" />
@@ -34,23 +34,29 @@
 <script>
 import api from "../api";
 import { formatTimeElapsed } from "../util";
-import { mapState } from "vuex";
+import { mapState } from "pinia";
 import PostListItem from "../components/PostListItem.vue";
 import PostListSlideItem from "../components/PostListSlideItem.vue";
-import { apiError } from "src/apiError";
-import CollectionInfoEdit from "src/components/dialogs/CollectionInfoEdit.vue";
-import logger from "src/logger";
+import { apiError } from "@/apiError";
+import CollectionInfoEdit from "@/components/dialogs/CollectionInfoEdit.vue";
+import logger from "@/logger";
+import { useMainStore } from "@/stores/main";
+import { createMetaMixin } from "quasar";
+
+// response fetched in beforeRouteEnter, before the component instance exists
+let preloaded = null;
+
 export default {
     name: "Collection",
     components: {
         PostListItem,
         PostListSlideItem
     },
-    meta() {
+    mixins: [createMetaMixin(function() {
         return {
             title: this.collection.title ?? null
         };
-    },
+    })],
     data() {
         return {
             collectionNotFound: false,
@@ -60,7 +66,7 @@ export default {
             managePostMode: false
         };
     },
-    computed: mapState(["isLoggedIn", "user"]),
+    computed: mapState(useMainStore, ["isLoggedIn", "user"]),
     methods: {
         deletePost(pid) {
             let index = this.collection.posts.findIndex(v => v.postId == pid);
@@ -86,13 +92,14 @@ export default {
         editCollectionInfo() {
             this.$q.dialog({
                 component: CollectionInfoEdit,
-                parent: this,
-                initialValues: {
-                    title: this.collection.title,
-                    description: this.collection.description,
-                    isPublic: this.collection.isPublic == "1"
-                },
-                id: this.collection.id
+                componentProps: {
+                    initialValues: {
+                        title: this.collection.title,
+                        description: this.collection.description,
+                        isPublic: this.collection.isPublic == "1"
+                    },
+                    id: this.collection.id
+                }
             }).onOk((val) => {
                 logger(val);
                 this.collection.title = val.title;
@@ -110,7 +117,7 @@ export default {
                     r.collection[i] = parseInt(r.collection[i]);
                 }
                 this.collection = r.collection;
-                this.$store.commit("setBarTitle", this.$t("collection.title") + " / " + r.collection.title);
+                useMainStore().setBarTitle(this.$t("collection.title") + " / " + r.collection.title);
             }
             else {
                 if (r.errorType && r.errorType == "NotFound") {
@@ -122,23 +129,29 @@ export default {
                         message: r.msg
                     });
                 }
-                this.$store.commit("setBarTitle");
+                useMainStore().setBarTitle();
             }
         }
     },
-    beforeRouteEnter (to, from, next) {
-        api.get("/collections/"+to.params.id).catch(err => {
+    created() {
+        if (preloaded) {
+            this.setData(preloaded);
+            preloaded = null;
+        }
+    },
+    beforeRouteEnter (to) {
+        // fetch before the page is shown; created() picks the result up
+        return api.get("/collections/"+to.params.id).then(res => {
+            preloaded = res.data;
+        }, () => {
             apiError();
-        }).then(res => {
-            next(vm => vm.setData(res.data));
         });
     },
-    beforeRouteUpdate (to, from, next) {
-        api.get("/collections/"+to.params.id).catch(err => {
-            apiError();
-        }).then(res => {
+    beforeRouteUpdate (to) {
+        return api.get("/collections/"+to.params.id).then(res => {
             this.setData(res.data);
-            next();
+        }, () => {
+            apiError();
         });
     }
 };

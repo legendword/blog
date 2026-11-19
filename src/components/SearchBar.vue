@@ -10,6 +10,7 @@
 <script>
 export default {
     name: "SearchBar",
+    emits: ["search"],
     props: {
         inSearchPage: Boolean,
         initialQuery: String

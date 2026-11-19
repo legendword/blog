@@ -1,8 +1,8 @@
 <template>
     <div :class="componentClass">
-        <div class="text-body2 text-grey-8">Tags ({{value.length}}/{{limit}})</div>
+        <div class="text-body2 text-grey-8">Tags ({{modelValue.length}}/{{limit}})</div>
         <div class="row inline items-center">
-            <q-chip v-for="tag in value" :key="tag" removable color="primary" text-color="white" @remove="removeTag(tag)">{{tag}}</q-chip>
+            <q-chip v-for="tag in modelValue" :key="tag" removable color="primary" text-color="white" @remove="removeTag(tag)">{{tag}}</q-chip>
             <q-input class="q-pl-sm" maxlength="20" v-model="newTag" dense borderless @keydown="newTagKeydown" label="+ Add Tag">
                 <template v-slot:append>
                     <q-btn class="touch-only" v-if="newTag != ''" round dense flat icon="add" color="primary" @click="addTag" />
@@ -15,15 +15,12 @@
 <script>
 export default {
     name: "TagSelector",
-    model: {
-        prop: "value",
-        event: "input"
-    },
     props: {
         componentClass: String,
         limit: Number,
-        value: Array
+        modelValue: Array
     },
+    emits: ["update:modelValue"],
     data() {
         return {
             newTag: ""
@@ -31,13 +28,13 @@ export default {
     },
     methods: {
         removeTag(tag) {
-            this.$emit("input", this.value.filter(v => v != tag));
+            this.$emit("update:modelValue", this.modelValue.filter(v => v != tag));
         },
         addTag() {
-            if (this.value.includes(this.newTag) || this.value.length == this.limit) {
+            if (this.modelValue.includes(this.newTag) || this.modelValue.length == this.limit) {
                 return;
             }
-            this.$emit("input", [...this.value, this.newTag]);
+            this.$emit("update:modelValue", [...this.modelValue, this.newTag]);
             this.newTag = "";
         },
         newTagKeydown(ev) {
@@ -45,8 +42,8 @@ export default {
                 this.addTag();
             }
             else if (ev.keyCode == 8) { //Backspace
-                if (this.newTag.length == 0 && this.value.length > 0) {
-                    this.$emit("input", this.value.filter((v, ind, arr) => ind != arr.length - 1));
+                if (this.newTag.length == 0 && this.modelValue.length > 0) {
+                    this.$emit("update:modelValue", this.modelValue.filter((v, ind, arr) => ind != arr.length - 1));
                 }
             }
         }

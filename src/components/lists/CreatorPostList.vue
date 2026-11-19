@@ -2,10 +2,10 @@
     <transition name="fade">
         <q-table
             v-if="initialLoaded"
-            :data="posts"
+            :rows="posts"
             :columns="columns"
             :loading="loading"
-            :pagination.sync="pagination"
+            v-model:pagination="pagination"
             @request="onRequest"
             :rows-per-page-options="[5, 10, 20]"
             class="creater-post-table"
@@ -34,12 +34,11 @@
 
 <script>
 import PostDelete from "../dialogs/PostDelete.vue";
-import { apiError } from "src/apiError";
-import api from "src/api";
-import logger from "src/logger";
+import { apiError } from "@/apiError";
+import api from "@/api";
+import logger from "@/logger";
 export default {
     name: "CreatorPostList",
-    components: { PostDelete },
     data() {
         return {
             posts: [],
@@ -63,8 +62,9 @@ export default {
             logger(post);
             this.$q.dialog({
                 component: PostDelete,
-                parent: this,
-                post: post
+                componentProps: {
+                    post: post
+                }
             }).onOk(() => {
                 this.onRequest({
                     pagination: this.pagination

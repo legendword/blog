@@ -38,14 +38,15 @@
 </template>
 
 <script>
-import { apiError } from "src/apiError";
+import { apiError } from "@/apiError";
 import api from "../api";
-import logger from "src/logger";
+import logger from "@/logger";
+import { createMetaMixin } from "quasar";
 export default {
     name: "PasswordRecovery",
-    meta: {
+    mixins: [createMetaMixin({
         title: "Recover Password"
-    },
+    })],
     data() {
         return {
             loaded: false,

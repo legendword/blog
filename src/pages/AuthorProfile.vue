@@ -15,12 +15,12 @@
                 </div>
             </div>
             <div class="row q-my-md text-subtitle1 q-gutter-md">
-                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ author.followerCount }}</span> {{ $tc("computed.followers", author.followerCount) }}</div>
-                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ author.postCount }}</span> {{ $tc("computed.posts", author.postCount) }}</div>
+                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ author.followerCount }}</span> {{ $t("computed.followers", Number(author.followerCount) || 0) }}</div>
+                <div class="col col-sm-auto"><span class="text-h6 text-primary">{{ author.postCount }}</span> {{ $t("computed.posts", Number(author.postCount) || 0) }}</div>
             </div>
         </q-banner>
         <div class="q-pa-md">
-            <q-tabs v-model="tab" align="left" ref="tab" @input="tabChange">
+            <q-tabs v-model="tab" align="left" ref="tab" @update:model-value="tabChange">
                 <q-tab name="profile" :label="$t('authorProfile.profile')" class="q-px-lg" />
                 <q-tab name="posts" :label="$t('authorProfile.posts')" class="q-px-lg" />
             </q-tabs>
@@ -47,7 +47,7 @@
                         <post-card :post="item"></post-card>
                     </q-intersection>
                     <div class="flex flex-center q-mt-md" v-show="postCount > 0">
-                        <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @input="changePage"></q-pagination>
+                        <q-pagination v-model="postPage" color="primary" :max="maxPages" :max-pages="6" :boundary-numbers="true" @update:model-value="changePage"></q-pagination>
                     </div>
                 </q-tab-panel>
             </q-tab-panels>
@@ -57,23 +57,25 @@
 
 <script>
 import api from "../api";
-import { mapState } from "vuex";
+import { mapState } from "pinia";
 import PostCard from "../components/PostCard.vue";
-import UpcomingFeature from "src/components/UpcomingFeature.vue";
-import { apiError } from "src/apiError";
-import AuthorInfoEdit from "src/components/dialogs/AuthorInfoEdit.vue";
-import logger from "src/logger";
+import UpcomingFeature from "@/components/UpcomingFeature.vue";
+import { apiError } from "@/apiError";
+import AuthorInfoEdit from "@/components/dialogs/AuthorInfoEdit.vue";
+import logger from "@/logger";
+import { useMainStore } from "@/stores/main";
+import { createMetaMixin } from "quasar";
 export default {
     name: "AuthorProfile",
     components: {
         PostCard,
         UpcomingFeature
     },
-    meta() {
+    mixins: [createMetaMixin(function() {
         return {
             title: this.author.displayName ? this.author.displayName : null
         };
-    },
+    })],
     data() {
         return {
             loaded: false,
@@ -93,7 +95,7 @@ export default {
             return this.$route.params.id;
         },
         isLoggedIn () {
-            return this.$store.state.isLoggedIn;
+            return useMainStore().isLoggedIn;
         },
         maxPages () {
             return Math.floor(this.postCount / this.postPerPage) + (this.postCount % this.postPerPage == 0 ? 0 : 1);
@@ -154,14 +156,15 @@ export default {
         enterProfileEdit() {
             this.$q.dialog({
                 component: AuthorInfoEdit,
-                parent: this,
-                initialValues: {
-                    displayName: this.author.displayName,
-                    description: this.author.description
+                componentProps: {
+                    initialValues: {
+                        displayName: this.author.displayName,
+                        description: this.author.description
+                    }
                 }
             }).onOk((val) => {
                 logger(val);
-                this.$store.commit("setBarTitle", this.$t("barTitle.author") + " / " + this.author.displayName);
+                useMainStore().setBarTitle(this.$t("barTitle.author") + " / " + this.author.displayName);
                 this.loadInfo();
             });
         },
@@ -176,8 +179,8 @@ export default {
                 if (r.success) {
                     logger(r.author);
                     this.author = r.author;
-                    this.isCurrentUser = this.$store.state.isLoggedIn && r.author.userId == this.$store.state.user.id;
-                    this.$store.commit("setBarTitle", this.$t("barTitle.author") + " / " + this.author.displayName);
+                    this.isCurrentUser = useMainStore().isLoggedIn && r.author.userId == useMainStore().user.id;
+                    useMainStore().setBarTitle(this.$t("barTitle.author") + " / " + this.author.displayName);
                     this.tabChange(this.tab);
                     this.loaded = true;
                 }
@@ -195,7 +198,7 @@ export default {
                             timeout: 2000
                         });
                     }
-                    this.$store.commit("setBarTitle");
+                    useMainStore().setBarTitle();
                 }
             });
         }

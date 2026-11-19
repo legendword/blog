@@ -23,10 +23,11 @@
 </template>
 
 <script>
-import api from "src/api";
-import { apiError } from "src/apiError";
-// following template https://v1.quasar.dev/quasar-plugins/dialog#invoking-custom-component
+import api from "@/api";
+import { apiError } from "@/apiError";
+// following template https://v2.quasar.dev/quasar-plugins/dialog#invoking-custom-component
 export default {
+    emits: ["ok", "hide"],
     props: {
         post: Object
     },

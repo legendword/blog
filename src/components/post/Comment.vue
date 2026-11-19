@@ -67,13 +67,15 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { formatTimeElapsed } from "src/util";
-import { apiError } from "src/apiError";
-import api from "src/api";
-import logger from "src/logger";
+import { mapState } from "pinia";
+import { formatTimeElapsed } from "@/util";
+import { apiError } from "@/apiError";
+import api from "@/api";
+import logger from "@/logger";
+import { useMainStore } from "@/stores/main";
 export default {
     name: "comment",
+    emits: ["update"],
     props: {
         isReply: Boolean,
         comment: Object,
@@ -84,7 +86,7 @@ export default {
         timeElapsed() {
             return formatTimeElapsed(this.comment.publishTime);
         },
-        ...mapState(["isLoggedIn", "user"])
+        ...mapState(useMainStore, ["isLoggedIn", "user"])
     },
     data() {
         return {

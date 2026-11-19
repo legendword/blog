@@ -1,16 +1,16 @@
 import { Dialog } from "quasar";
-import { i18n } from "boot/i18n";
-import api from "src/api";
-import { apiError } from "src/apiError";
-import logger from "src/logger";
+import { i18n } from "@/boot/i18n";
+import api from "@/api";
+import { apiError } from "@/apiError";
+import logger from "@/logger";
 
 const newCollection = () => {
     return new Promise((resolve, reject) => {
         Dialog.create({
-            title: i18n.t("collections.newCollection"),
+            title: i18n.global.t("collections.newCollection"),
             prompt: {
                 model: "",
-                label: i18n.t("collections.newCollectionDialog.name"),
+                label: i18n.global.t("collections.newCollectionDialog.name"),
                 isValid: val => val.length > 0 && val.length <= 50,
                 type: "text"
             },
@@ -46,7 +46,7 @@ const addToCollection = (collectionId, postId) => {
         }).then(res => {
             let r = res.data;
             if (r.success) {
-                resolve(i18n.t("post.addedToCollection"));
+                resolve(i18n.global.t("post.addedToCollection"));
             }
             else {
                 reject(r.msg);

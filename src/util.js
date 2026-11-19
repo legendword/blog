@@ -19,7 +19,7 @@ export const formatViews = function(n) {
 //todo formatFollowerCount
 export const formatTimeElapsed = function(tm) {
     let secs = Math.floor(Date.now()/1000) - tm;
-    let res = "",num = 0;
+    let res, num;
     if (secs >= 31536000) {
         num = Math.floor(secs / 31536000);
         res = num + " year";

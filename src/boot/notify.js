@@ -1,6 +1,9 @@
+import { defineBoot } from "#q-app";
 import { Notify } from "quasar";
 
-Notify.setDefaults({
-    position: "top",
-    timeout: 2500
+export default defineBoot(() => {
+    Notify.setDefaults({
+        position: "top",
+        timeout: 2500
+    });
 });

@@ -13,7 +13,7 @@ class TableOfContents {
         this.content = markdownContent;
         this.options = options;
         this.mdi = new MarkdownIt();
-        this.parsed = this.mdi.parse(this.content);
+        this.parsed = this.mdi.parse(this.content || "", {});
     }
 
     getHeadings() {

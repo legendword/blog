@@ -1,0 +1,11 @@
+{
+  "name": "wordblog-electron",
+  "version": "1.0.0",
+  "description": "Legendword Blog Electron folder",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@electron/packager": "^20.3.0",
+    "electron": "^45.4.1"
+  }
+}

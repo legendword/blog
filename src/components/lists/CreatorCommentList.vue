@@ -24,9 +24,9 @@
 </template>
 
 <script>
-import api from "src/api";
-import { apiError } from "src/apiError";
-import logger from "src/logger";
+import api from "@/api";
+import { apiError } from "@/apiError";
+import logger from "@/logger";
 export default {
     name: "CreatorCommentList",
     data() {

@@ -72,9 +72,9 @@
                                 </q-btn>
                             </div>
                             <!-- special actions should be inserted above -->
-                            <template v-for="(action, index) in editorActions">
-                                <q-btn v-if="action.type == 'btn'" :key="index" dense flat :icon="action.icon" @click="performEditorAction(action)" />
-                                <q-separator v-else :key="index" vertical spaced />
+                            <template v-for="(action, index) in editorActions" :key="index">
+                                <q-btn v-if="action.type == 'btn'" dense flat :icon="action.icon" @click="performEditorAction(action)" />
+                                <q-separator v-else vertical spaced />
                             </template>
                             <!-- special actions should be inserted below -->
                             <div class="barNoMLImportant">
@@ -108,9 +108,7 @@
                 </q-tab-panel>
                 <q-tab-panel name="preview" class="q-pa-none">
                     <toc v-if="values.showTOC" :headings="headings" @select="goToNthHeading" />
-                    <div class="q-ma-sm post-content content-preview">
-                        <div class="markdown-body" v-html="htmlPreview" />
-                    </div>
+                    <markdown-view class="q-ma-sm post-content content-preview" :content="previewContent" />
                 </q-tab-panel>
             </q-tab-panels>
         </div>
@@ -118,16 +116,13 @@
 </template>
 
 <script>
-import api from "src/api";
+import api from "@/api";
 import TagSelector from "../form/TagSelector.vue";
 import Toc from "./Toc.vue";
-import { apiError } from "src/apiError";
-// import MarkDownItVue from "markdown-it-vue"
-import "src/css/markdown-it-vue.css";
-// import markdownItVueOptions from "src/markdownItVueOptions"
-import markdownIt from "markdown-it";
-import logger from "src/logger";
-import TableOfContents from "src/helpers/TableOfContents";
+import { apiError } from "@/apiError";
+import MarkdownView from "./MarkdownView.vue";
+import logger from "@/logger";
+import TableOfContents from "@/helpers/TableOfContents";
 const emptyValues = {
     title: "",
     description: "",
@@ -157,15 +152,15 @@ export default {
     name: "Editor",
     components: {
         TagSelector,
-        Toc
-        // MarkDownItVue
+        Toc,
+        MarkdownView
     },
     props: {
         initialValues: Object
     },
     data() {
         return {
-            values: this.initialValues ? {...this.initialValues} : emptyValues,
+            values: this.initialValues ? {...this.initialValues} : {...emptyValues, tags: []},
             limits: limits,
             categoryList: [],
 
@@ -174,7 +169,6 @@ export default {
             headingSizes: ["H1", "H2", "H3", "H4", "H5", "H6"],
             editorActions: editorActions,
             editorActionsPerformed: {
-                didPerform: false,
                 selectionRange: [0, 0]
             },
             insertImage: {
@@ -188,8 +182,7 @@ export default {
                 label: ""
             },
 
-            // markdownItVueOptions: markdownItVueOptions,
-            htmlPreview: "",
+            previewContent: "",
             headings: [],
             goToNthHeading: TableOfContents.goToNthHeading
         };
@@ -223,26 +216,22 @@ export default {
             }
         });
     },
-    updated() {
-        if (this.editorActionsPerformed.didPerform) {
-            let textarea = this.$refs.contentInput.$refs.input;
-            // textarea.setSelectionRange(this.editorActionsPerformed.selectionRange[0], this.editorActionsPerformed.selectionRange[1])
-            textarea.setSelectionRange(this.editorActionsPerformed.selectionRange[1], this.editorActionsPerformed.selectionRange[1]);
-            textarea.focus();
-            // logger(textarea.selectionStart, textarea.selectionEnd)
-            this.editorActionsPerformed.didPerform = false;
-        }
-    },
     methods: {
-        generatePreview() {
-            let md = markdownIt({
-                linkify: true
+        // put the caret back after a toolbar action rewrote the content
+        restoreCaret() {
+            this.$nextTick(() => {
+                const input = this.$refs.contentInput;
+                if (!input) return;
+                const textarea = input.getNativeElement();
+                const position = this.editorActionsPerformed.selectionRange[1];
+                textarea.setSelectionRange(position, position);
+                textarea.focus();
             });
-            this.htmlPreview = md.render(this.values.content);
-            // logger(this.htmlPreview)
+        },
+        generatePreview() {
+            this.previewContent = this.values.content;
             let toc = new TableOfContents(this.values.content);
             this.headings = toc.getHeadings();
-            console.log(this.headings);
         },
 
         headingAction(ind) {
@@ -284,7 +273,7 @@ export default {
             this.insertLink.label = "";
         },
         performMultilineInsertion(text) {
-            let textarea = this.$refs.contentInput.$refs.input;
+            let textarea = this.$refs.contentInput.getNativeElement();
             let start = textarea.selectionStart;
             let end = textarea.selectionEnd;
             let content = this.values.content;
@@ -304,26 +293,26 @@ export default {
             newContent += content.substring(lastPos);
 
             this.editorActionsPerformed.selectionRange = [f[0], end + f.length * text.length];
-            this.editorActionsPerformed.didPerform = true;
             this.values.content = newContent;
+            this.restoreCaret();
         },
         performInsertion(text) {
-            let textarea = this.$refs.contentInput.$refs.input;
+            let textarea = this.$refs.contentInput.getNativeElement();
             let end = textarea.selectionEnd;
             let content = this.values.content;
             let newContent = content.substring(0, end) + text + content.substring(end);
             this.editorActionsPerformed.selectionRange = [end + text.length, end + text.length];
-            this.editorActionsPerformed.didPerform = true;
             this.values.content = newContent;
+            this.restoreCaret();
         },
         performEditorAction(action) {
             logger(action);
-            let textarea = this.$refs.contentInput.$refs.input;
+            let textarea = this.$refs.contentInput.getNativeElement();
             //logger(textarea.selectionStart, textarea.selectionEnd)
             let start = textarea.selectionStart;
             let end = textarea.selectionEnd;
             let content = this.values.content;
-            let newContent = "";
+            let newContent;
             let newSelectionRange = [start, end];
             let mode,text;
             if (action.mode == "code") { //code can be block or inline
@@ -340,8 +329,8 @@ export default {
                 newSelectionRange[1] += text.length*2;
 
                 this.editorActionsPerformed.selectionRange = newSelectionRange;
-                this.editorActionsPerformed.didPerform = true;
                 this.values.content = newContent;
+                this.restoreCaret();
             }
             else if (mode == "blocksandwich") {
                 let lineStart = content.lastIndexOf("\n", start-1)+1;
@@ -352,8 +341,8 @@ export default {
                 newSelectionRange[1] = lineEnd;
 
                 this.editorActionsPerformed.selectionRange = newSelectionRange;
-                this.editorActionsPerformed.didPerform = true;
                 this.values.content = newContent;
+                this.restoreCaret();
             }
             else if (mode == "linebegin") {
                 this.performMultilineInsertion(text);

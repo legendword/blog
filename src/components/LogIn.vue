@@ -1,5 +1,5 @@
 <template>
-    <q-dialog :value="open" @input="dialogValueChange" persistent transition-show="scale" transition-hide="scale">
+    <q-dialog :model-value="open" @update:model-value="dialogValueChange" persistent transition-show="scale" transition-hide="scale">
         <q-card class="loginDialog" v-if="signUp">
             <q-card-section>
                 <div class="text-h6">{{ $t("logIn.newAccount") }}</div>
@@ -40,11 +40,13 @@
 </template>
 
 <script>
-import { apiError } from "src/apiError";
+import { apiError } from "@/apiError";
 import api from "../api";
-import logger from "src/logger";
+import logger from "@/logger";
+import { useMainStore } from "@/stores/main";
 export default {
     name: "LogIn",
+    emits: ["closed"],
     props: {
         open: {
             type: Boolean,
@@ -70,7 +72,7 @@ export default {
     },
     methods: {
         dialogValueChange(val) {
-            if (!val) $emit("closed");
+            if (!val) this.$emit("closed");
         },
         forgotPass() {
             this.$q.dialog({
@@ -133,7 +135,7 @@ export default {
             }).then(res => {
                 let r = res.data;
                 if (r.success) {
-                    this.$store.commit("newAccount", this.email);
+                    useMainStore().setNewAccount(this.email);
                     this.resetFields();
                     this.$emit("closed");
                     this.$router.push("/newAccount");
@@ -169,12 +171,12 @@ export default {
                 else if (r.success) {
                     if (r.jwt) {
                         // api.instance.defaults.headers.common["Authorization"] = "Bearer " + r.jwt
-                        this.$store.commit("setAuthorization", "Bearer " + r.jwt);
+                        useMainStore().setAuthorization("Bearer " + r.jwt);
                     }
-                    this.$store.commit("userLogIn", r.user);
+                    useMainStore().userLogIn(r.user);
                     if (r.identifier && r.token) {
-                        this.$q.localStorage.set("token", r.token);
-                        this.$q.localStorage.set("identifier", r.identifier);
+                        this.$q.localStorage.setItem("token", r.token);
+                        this.$q.localStorage.setItem("identifier", r.identifier);
                     }
                     this.resetFields();
                     this.$emit("closed");

@@ -10,7 +10,7 @@
                         <div><strong>{{ user.username }}</strong> <q-chip size="sm" color="accent" text-color="white" icon="done" class="q-ml-sm" v-show="user.isAuthor == true || user.isAuthor == '1'">{{ $t("tag.author") }}</q-chip></div>
                         <div class="text-caption">
                             <span class="q-pr-sm">{{ user.followingCount }} {{ $t("general.following") }}</span>
-                            <span class="q-pl-sm">{{ user.followerCount }} {{ $tc("computed.followers", user.followerCount) }}</span>
+                            <span class="q-pl-sm">{{ user.followerCount }} {{ $t("computed.followers", Number(user.followerCount) || 0) }}</span>
                         </div>
                     </div>
                 </div>

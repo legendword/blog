@@ -18,27 +18,29 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from "pinia";
 import LogIn from "../components/LogIn.vue";
 import api from "../api";
-import { apiError } from "src/apiError";
-import Editor from "src/components/post/Editor.vue";
-import logger from "src/logger";
+import { apiError } from "@/apiError";
+import Editor from "@/components/post/Editor.vue";
+import logger from "@/logger";
+import { useMainStore } from "@/stores/main";
+import { createMetaMixin } from "quasar";
 export default {
     name: "Compose",
     components: {
         LogIn,
         Editor
     },
-    meta: {
+    mixins: [createMetaMixin({
         title: "Compose"
-    },
+    })],
     data() {
         return {
             safeToLeave: false
         };
     },
-    computed: mapState(["user", "isLoggedIn"]),
+    computed: mapState(useMainStore, ["user", "isLoggedIn"]),
     methods: {
         submitPost() {
             let post = {...this.$refs.editor.values};
@@ -91,22 +93,22 @@ export default {
         }
     },
     created() {
-        this.$store.commit("setBarTitle", this.$t("compose.barTitle"));
+        useMainStore().setBarTitle(this.$t("compose.barTitle"));
     },
-    beforeRouteLeave(to, from, next) {
-        if (this.safeToLeave) next();
-        else {
+    beforeRouteLeave() {
+        if (this.safeToLeave) return true;
+        return new Promise(resolve => {
             this.$q.dialog({
                 title: "Confirm",
                 message: "Do you really want to leave? Your changes will be lost.",
                 cancel: true,
                 persistent: true
             }).onOk(() => {
-                next();
+                resolve(true);
             }).onCancel(() => {
-                next(false);
+                resolve(false);
             });
-        }
+        });
     }
 };
 </script>

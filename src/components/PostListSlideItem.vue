@@ -27,9 +27,10 @@
 </template>
 
 <script>
-import { formatViews, formatTimeElapsed } from "src/util";
+import { formatViews, formatTimeElapsed } from "@/util";
 export default {
     name: "PostListSlideItem",
+    emits: ["deletePost"],
     props: {
         post: {
             type: Object,
